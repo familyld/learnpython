@@ -96,7 +96,7 @@ Python字符串采用Unicode编码，支持多语言。
  
     因为Python中字符串用Unicode编码，一个字符对应若干字节，要在网络中传输或存储到硬盘中就要把字符串变为以bytes类型。
 
-    Python显示bytes类型的数据会用b作前缀，如 **b'ABC'**，注意和 **'ABC'** 进行区分，尽管内容一样，但前者的每个字符都只占1个字节，而后者在Python中意Unicode进行编码，每个字符占两个字节。
+    Python显示bytes类型的数据会用b作前缀，如 **b'ABC'**，注意和 **'ABC'** 进行区分，尽管内容一样，但前者的每个字符都只占1个字节，而后者在Python中以Unicode进行编码，每个字符占两个字节。
 
     Unicode字符串可以通过【 encode() 】方法编码为指定的bytes，如ASCII编码，utf-8编码etc，bytes类型的数据如果字符不属于ASCII码的范围，就用【 **'\x##** 】的格式表示。 相应地，如果读取字节流的数据，就要用【 decode() 】方法解码。 此外，还可以用【 len() 】方法来计算字符串的长度，对bytes类型使用的话则得到字节数。
 
@@ -142,3 +142,68 @@ Python字符串采用Unicode编码，支持多语言。
 
 * 只有一个占位符时，后面变量不需要用括号括起。
 * 如果字符串本身包含【 ％ 】，则需要转义，用【 ％％ 】来表示百分号。
+
+##使用list和tuple
+### list
+***
+list是一种Python内置的数据类型，表示有序集合，可动态删除和插入。通过索引可以访问列表元素，索引从0开始，即访问第一个列表元素。并且列表是循环的，可以通过索引－1访问最尾的元素，索引－2访问倒数第二个元素。
+
+**例子**：
+
+    >>> classmates = ['Michael', 'Bob', 'Tracy']
+    >>> classmates
+    ['Michael', 'Bob', 'Tracy']
+    >>> classmates[0]
+    'Michael'       
+                                                                                                                                                                                                         
+另外，还可以用「len()」函数获取列表的元素个数。
+
+list 是一个可变的有序表，所以，可以往 list 中追加元素到末尾：
+
+    >>> classmates.append('Adam')
+    >>> classmates
+    ['Michael', 'Bob', 'Tracy', 'Adam']
+
+也可以把元素插入到指定的位置，比如索引号为 1 的位置：
+
+    >>> classmates.insert(1, 'Jack')
+    >>> classmates
+    ['Michael', 'Jack', 'Bob', 'Tracy', 'Adam']
+
+要删除 list 末尾的元素，用 pop() 方法：
+
+    >>> classmates.pop()
+    'Adam'
+    >>> classmates
+    ['Michael', 'Jack', 'Bob', 'Tracy']
+
+要删除指定位置的元素，用 pop(i) 方法，其中 i 是索引位置：
+
+    >>> classmates.pop(1)
+    'Jack'
+    >>> classmates
+    ['Michael', 'Bob', 'Tracy']
+
+要把某个元素替换成别的元素，可以直接赋值给对应的索引位置： 
+
+    >>> classmates[1] = 'Sarah'
+    >>> classmates
+    ['Michael', 'Sarah', 'Tracy']
+
+list 里面的元素的数据类型也可以不同，比如：
+
+    >>> L = ['Apple', 123, True]
+
+list 元素也可以是另一个 list，比如：
+
+    >>> s = ['python', 'java', ['asp', 'php'], 'scheme']
+    >>> len(s)
+    4
+
+要注意s只有4个元素，s[2]作为一个list类型的元素。要拿到'php'可以用s[2][1]，即把s看作一个二维数组，这样的嵌套可以有很多层。
+
+如果一个 list 中一个元素也没有，就是一个空的 list，它的长度为 0：
+
+    >>> L = []
+    >>> len(L)
+    0
