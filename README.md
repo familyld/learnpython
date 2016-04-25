@@ -288,3 +288,38 @@ while循环的写法和if－else很相似，也是在判定条件后面加一个
 
 另外，对于死循环的程序，可以通过***Ctrl＋C***强制终止。
 
+##使用dict和set
+###dict
+***
+dict即字典，英语存储键值对，查找速度极快。如果使用list来存键值对就需要两个list，要先从key list找出key，再从value list找到对应项的值，因此list越长，耗时越长。用dict实现，可以直接根据key来找value。格式如下：
+
+    >>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+    >>> d['Michael']
+    95
+
+dict速度快是因为Python内部像字典一样建立了索引，字典有部首表，Python内部也会根据不同key算出一个存放的「页码」(哈希算法)，所以速度非常快。出了初始化赋值还可以对一个key多次赋值，会进行覆盖，如果key不存在就会对dict插入一个新的键值对：
+
+    >>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+    >>> d['Michael']
+    95
+
+要判断key是否在dict里面有两种方法：
+
+1.使用in关键字，有则返回True，无则返回False
+
+    >>> 'Thomas' in d
+    False
+
+2.使用dict提供的get方法，有则返回key对应的value，无则返回空值None或者自己指定的值。
+
+    >>> d.get('Thomas')
+    None
+    >>> d.get('Thomas', -1)
+    -1
+
+删除一个key则对应的value也会从dict中删除，使用pop方法来实现：
+
+    >>> d.pop('Bob')
+    75
+
+dict的插入和查找速度极快，不回随着key的增加而增加，但需要占用大量的内存，内存浪费多。list则相反，插入和查找时间随元素增加而增加，但占用空间少。所以dict是一种用空间换时间的方法，注意dict的key是不可变对象，无法修改key，不然dict就混乱了。字符串和整数等都可以作为key，list无法作为key。
