@@ -452,3 +452,30 @@ pass语句什么都不做，但可以用来做占位符。用在其他语句中�
     else:
         return -x 
 
+###返回多个值
+***
+举一个返回坐标点的例子：
+
+    import math
+
+    def move(x, y, step, angle=0):
+        nx = x + step * math.cos(angle)
+        ny = y - step * math.sin(angle)
+        return nx, ny
+
+这里用到math包的函数cos和sin，返回坐标点的两个维度的值。接收时：
+
+    >>> x, y = move(100, 100, 60, math.pi / 6)
+    >>> print(x)
+    151.96152422706632
+    >>> print(y)
+    70.0
+
+或者：
+
+    >>> r = move(100, 100, 60, math.pi / 6)
+    >>> print(r)
+    (151.96152422706632, 70.0)
+
+实际上Python函数返回的仍然是单一值，它会返回一个 **tuple**，而语法上返回一个tuple可以省略括号。 并且我们可以使用多个变量来接收一个tuple，按位置来赋对应的值。
+
