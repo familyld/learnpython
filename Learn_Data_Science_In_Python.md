@@ -72,7 +72,7 @@ Master the use of regular expressions in Python
 
 - 完成 ['baby names'](https://developers.google.com/edu/python/exercises/baby-names) 练习，这是一个使用正则匹配婴儿名字的练习。
 
-- 理解文本挖掘
+- 理解文本清理，可以浏览这个[教程](http://www.analyticsvidhya.com/blog/2014/11/text-data-cleaning-steps-python/)。
 
 ###STEP 4
 
