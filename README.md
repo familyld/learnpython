@@ -588,3 +588,33 @@ Python的函数定义非常简单，但灵活度却非常大。除了正常定�
     14
 
 同样只需要加一个 **\*** 号即可完成转换。
+
+###关键字参数
+***
+可变参数允许传入0个或任一个参数，这些可变参数会自动组装为一个tuple。 而关键字参数允许传入0个或任意个**含参数名**的参数，这些关键字参数会自动组装为一个**dict**。
+
+    def person(name, age, **kw):
+        print('name:', name, 'age:', age, 'other:', kw)
+
+调用时：
+
+    >>> person('Michael', 30)
+    name: Michael age: 30 other: {}
+    >>> person('Bob', 35, city='Beijing')
+    name: Bob age: 35 other: {'city': 'Beijing'}
+    >>> person('Adam', 45, gender='M', job='Engineer')
+    name: Adam age: 45 other: {'gender': 'M', 'job': 'Engineer'}
+
+kw是一个dict类型的对象，没有传入时就是一个空的dict。 和可变参数类似，先组装一个dict然后再传入也是可以的。
+
+    >>> extra = {'city': 'Beijing', 'job': 'Engineer'}
+    >>> person('Jack', 24, city=extra['city'], job=extra['job'])
+    name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+
+或者进行转换：
+
+    >>> extra = {'city': 'Beijing', 'job': 'Engineer'}
+    >>> person('Jack', 24, **extra)
+    name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+
+注意这里使用 **\*****\*** 转换的实质是把extra拷贝一份，然后令kw指向这个拷贝，所以函数内的操作不会对函数外的extra有任何影响。
