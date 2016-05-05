@@ -16,3 +16,8 @@ Python基本语法及入门学习的笔记记录在[My_Python_Notebook](https://
 
 在[Difference_between_DeepCopy_and_ShallowCopy](https://github.com/familyld/learnpython/blob/master/Difference_between_DeepCopy_and_ShallowCopy.md)中记录了Python中直接赋值，浅拷贝，深拷贝的区别，并且使用具体代码作为例子加深理解。
 
+## 库的使用
+
+### Pandas高效使用技巧
+
+在[Efficient_Pandas_Skills](https://github.com/familyld/learnpython/blob/master/Efficient_Pandas_Skills.md)中收录了Pandas库使用的一些技巧，能够提高工作效率。
