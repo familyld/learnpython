@@ -8,6 +8,8 @@
 
 ## 入门
 
+[Turtle_Diagram_of_Python_Learning](https://github.com/familyld/learnpython/blob/master/Turtle_Diagram_of_Python_Learning.md)里有一张国外程序员画的Python学习神图，国内有人翻译成了中文，非常适合入门者初步了解Python的一些特性和使用方式。
+
 Python基本语法及入门学习的笔记记录在[My_Python_Notebook](https://github.com/familyld/learnpython/blob/master/My_Python_Notebook.md)中，主要以廖雪峰的[Python3入门教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000)作为指导，并加入自己实际编写程序时的一些感想。
 
 ## 细节
