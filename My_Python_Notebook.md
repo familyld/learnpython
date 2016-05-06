@@ -618,3 +618,45 @@ kw是一个dict类型的对象，没有传入时就是一个空的dict。 和可
     name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
 
 注意这里使用 **\*****\*** 转换的实质是把extra拷贝一份，然后令kw指向这个拷贝，所以函数内的操作不会对函数外的extra有任何影响。
+
+###命名关键字参数
+***
+关键字参数的自由度很大，但有时我们需要限制用户可以传入哪些参数，这时就需要用到命名关键字参数。
+
+    def person(name, age, *, city, job):
+        print(name, age, city, job)
+
+和关键字参数不同，这里采用一个 **\*** 号作为分隔符，**\*** 号后面的参数被视为关键字参数。 调用如下：
+
+    >>> person('Jack', 24, city='Beijing', job='Engineer')
+    Jack 24 Beijing Engineer
+
+错误举例：
+1.没有给参数名
+
+    >>> person('Jack', 24, 'Beijing', 'Engineer')
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    TypeError: person() takes 2 positional arguments but 4 were given
+
+命名关键字参数必须传入参数名，如果没有参数名，Python解释器会视其为位置参数，从而报参数个数超出的错误。
+
+2.没有传入参数
+
+    >>> person('Jack', 24)
+    Traceback (most recent call last):
+      File "<pyshell#83>", line 1, in <module>
+    person('Jack', 24)
+    TypeError: person() missing 2 required keyword-only arguments: 'city' and 'job'
+
+命名关键字参数若没有定义默认值则被视为必选参数。 可以为命名关键字参数设置默认值， 比如 `def person(name, age, *, city='Beijing', job):`，这样即使不传入也不会报错了。
+
+3.传入没有定义的参数
+
+    >>> person('Jack', 24, city='Beijing', joc='Engineer')
+    Traceback (most recent call last):
+      File "<pyshell#84>", line 1, in <module>
+    person('Jack', 24, city='Beijing', joc='Engineer')
+    TypeError: person() got an unexpected keyword argument 'joc'
+
+命名关键字参数限制了可以传入怎样的参数，如果传入参数的参数名不在其中也会报错。
