@@ -2,7 +2,7 @@
 
 这是一张国外程序员画出Python学习神图，国内有人翻译成了中文，非常适合入门者初步了解Python的一些特性和使用方式。
 
-![Turtle_Diagram_of_Python_Learning](https://github.com/familyld/learnpython/tree/master/graph/Turtle_Diagram_of_Python_Learning.png)
+![Turtle_Diagram_of_Python_Learning](https://github.com/familyld/learnpython/blob/master/graph/Turtle_Diagram_of_Python_Learning.png?raw=true)
 
 从上往下过一遍：
 
