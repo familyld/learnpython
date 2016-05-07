@@ -341,7 +341,7 @@ dtype: int64
 
 [透视表](http://baike.baidu.com/view/1709397.htm)(Pivot Table)是一种交互式的表，可以动态地改变它的版面布置，以便按照不同方式分析数据，也可以重新安排行号、列标、页字段，比如下面的Excel透视表：
 
-![Excel透视表](https://github.com/familyld/learnpython/blob/master/graph/Excecl_Pivot_Table.jpg?raw=true)
+![Excel透视表](http://img0.pconline.com.cn/pconline/1202/22/2681570_shujvtoushi.jpg)
 
 可以自由选择用来做行号和列标的属性，非常便于我们做不同的分析。Pandas也提供类似的透视表的功能。例如`LoanAmount`这个重要的列有缺失值。我们不希望直接使用整体平均值来替换，这样太过笼统，不合理。
 
@@ -373,5 +373,47 @@ Male   No      No             129.936937
 想了解更多请阅读 [Pandas Reference (Pivot Table)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.pivot_table.html#pandas.DataFrame.pivot_table)
 
 ## 5. 多重索引
+
+不同于DataFrame对象，可以看到上一步得到的Pivot Table每个索引都是由三个值组合而成的，这就叫做多重索引。
+
+从上一步中我们得到了每个分组的平均值，接下来我们就可以用来替换`LoanAmount`字段的缺失值了：
+
+```python
+#只在带有缺失值的行中迭代：
+
+for i,row in data.loc[data['LoanAmount'].isnull(),:].iterrows():
+
+  ind = tuple([row['Gender'],row['Married'],row['Self_Employed']])
+
+  data.loc[i,'LoanAmount'] = impute_grps.loc[ind].values[0]
+```
+
+特别注意对Pivot Table使用loc定位的方式，Pivot Table的索引是一个tuple。从上面的代码可以看到，先把DataFrame中所有`LoanAmount`字段缺失的数据记录取出，并且使用iterrows函数转为一个按行迭代的对象，每次迭代返回一个索引(DataFrame里的索引)以及对应行的内容。然后从行的内容中把 `Gender`、`Married`、`Self_Employed`三个字段的值提取出放入一个tuple里，这个tuple就可以用作前面定义的Pivot Table的索引了。
+
+接下来的赋值对DataFrame使用loc定位根据索引定位，并且只抽取`LoanAmount`字段，把它赋值为在Pivot Table中对应分组的平均值。最后检查一下，这样我们又处理好一个列的缺失值了。
+
+```python
+#再次检查缺失值以确认：
+
+print(data.apply(num_missing, axis=0))
+```
+
+```python
+Gender                0
+Married               0
+Dependents           15
+Education             0
+Self_Employed         0
+ApplicantIncome       0
+CoapplicantIncome     0
+LoanAmount            0
+Loan_Amount_Term     14
+Credit_History       50
+Property_Area         0
+Loan_Status           0
+dtype: int64
+```
+
+## 6. 二维表
 
 
