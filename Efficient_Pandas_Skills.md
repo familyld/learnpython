@@ -416,4 +416,105 @@ dtype: int64
 
 ## 6. 二维表
 
+二维表这个东西可以帮助我们快速验证一些基本假设，从而获取对数据表格的初始印象。例如，本例中`Credit_History`字段被认为对会否获得贷款有显著影响。可以用下面这个二维表进行验证：
+
+```python
+pd.crosstab(data["Credit_History"],data["Loan_Status"],margins=True)
+```
+
+<div>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Loan_Status</th>
+      <th>N</th>
+      <th>Y</th>
+      <th>All</th>
+    </tr>
+    <tr>
+      <th>Credit_History</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.0</th>
+      <td>82</td>
+      <td>7</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <th>1.0</th>
+      <td>97</td>
+      <td>378</td>
+      <td>475</td>
+    </tr>
+    <tr>
+      <th>All</th>
+      <td>192</td>
+      <td>422</td>
+      <td>614</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+`crosstab`的第一个参数是index，用于行的分组；第二个参数是columns，用于列的分组。代码中还用到了一个`margins`参数，这个参数默认为False，启用后得到的二维表会包含汇总数据。
+
+然而，相比起绝对数值，百分比更有助于快速了解数据。我们可以用apply函数达到目的：
+
+```python
+def percConvert(ser):
+  return ser/float(ser[-1])
+
+pd.crosstab(data["Credit_History"],data["Loan_Status"],margins=True).apply(percConvert, axis=1)
+```
+
+<div>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Loan_Status</th>
+      <th>N</th>
+      <th>Y</th>
+      <th>All</th>
+    </tr>
+    <tr>
+      <th>Credit_History</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.0</th>
+      <td>0.921348</td>
+      <td>0.078652</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>1.0</th>
+      <td>0.204211</td>
+      <td>0.795789</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>All</th>
+      <td>0.312704</td>
+      <td>0.687296</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+从这个二维表中我们可以看到有信用记录 (`Credit_History`字段为1.0) 的人获得贷款的可能性更高。接近80%有信用记录的人都 获得了贷款，而没有信用记录的人只有大约8% 获得了贷款。令人惊讶的是，如果我们直接利用信用记录进行训练集的预测，在614条记录中我们能准确预测出460条记录 (不会获得贷款+会获得贷款：82+378) ，占总数足足75%。不过呢~在训练集上效果好并不代表在测试集上效果也一样好。有时即使提高0.001%的准确度也是相当困难的，这就是我们为什么需要建立模型进行预测的原因了。
+
+想了解更多请阅读 [Pandas Reference (crosstab)](http://pandas.pydata.org/pandas-docs/version/0.17.0/generated/pandas.crosstab.html)
+
+## 7. 数据框合并
+
 
