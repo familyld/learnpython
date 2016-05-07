@@ -244,6 +244,98 @@ dtype: int64
 
 ## 3. 替换缺失值
 
+一般来说我们会把某一列的缺失值替换为所在列的平均值/众数/中位数。`fillna()`函数可以帮我们实现这个功能。但首先要从scipy库导入获取统计值的函数。
+
+```python
+# 首先导入一个寻找众数的函数：
+
+from scipy.stats import mode
+
+GenderMode = mode(data['Gender'].dropna())
+print(GenderMode)
+print(GenderMode.mode[0],':',GenderMode.count[0])
+```
+
+```python
+ModeResult(mode=array(['Male'], dtype=object), count=array([489]))
+Male : 489
+
+F:\Anaconda3\lib\site-packages\scipy\stats\stats.py:257: RuntimeWarning: The input array could not be properly checked for nan values. nan values will be ignored.
+  "values. nan values will be ignored.", RuntimeWarning)
+```
+
+可以看到对DataFrame的某一列使用mode函数可以得到这一列的众数以及它所出现的次数，由于众数可能不止一个，所以众数的结果是一个列表，对应地出现次数也是一个列表。可以使用`.mode`和`.count`提取出这两个列表。
+
+**特别留意**，可能是版本原因，我使用的scipy (0.17.0)不支持原帖子中的代码，直接使用`mode(data['Gender'])`是会报错的:
+
+```python
+F:\Anaconda3\lib\site-packages\scipy\stats\stats.py:257: RuntimeWarning: The input array could not be p
+roperly checked for nan values. nan values will be ignored.
+  "values. nan values will be ignored.", RuntimeWarning)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "F:\Anaconda3\lib\site-packages\scipy\stats\stats.py", line 644, in mode
+    scores = np.unique(np.ravel(a))       # get ALL unique values
+  File "F:\Anaconda3\lib\site-packages\numpy\lib\arraysetops.py", line 198, in unique
+    ar.sort()
+TypeError: unorderable types: str() > float()
+```
+
+必须使用`mode(data['Gender'].dropna())`，传入dropna()处理后的DataFrame才可以。虽然Warning仍然存在，但是可以执行得到结果。Stackoverflow里有这个问题的讨论：[Scipy Stats Mode function gives Type Error unorderable types](http://stackoverflow.com/questions/36239953/scipy-stats-mode-function-gives-type-error-unorderable-types-str-float)。指出scipy的mode函数无法处理列表中包含混合类型的情况，比方说上面的例子就是包含了缺失值NAN类型和字符串类型，所以无法直接处理。
+
+同时也指出Pandas自带的mode函数是可以处理混合类型的，我测试了一下：
+
+```python
+from pandas import Series
+Series.mode(data['Gender'])
+```
+
+```python
+0    Male
+dtype: object
+```
+
+确实没问题，不需要使用dropna()处理，但是只能获得众数，没有对应的出现次数。返回结果是一个Pandas的Series对象。可以有多个众数，索引是int类型，从0开始。
+
+掌握了获取众数的方法后就可以使用fiilna替换缺失值了：
+
+```python
+#值替换:
+data['Gender'].fillna(GenderMode.mode[0], inplace=True)
+
+MarriedMode = mode(data['Married'].dropna())
+data['Married'].fillna(MarriedMode.mode[0], inplace=True)
+
+Self_EmployedMode = mode(data['Self_Employed'].dropna())
+data['Self_Employed'].fillna(Self_EmployedMode.mode[0], inplace=True)
+```
+
+先提取出某一列，然后用fillna把这一列的缺失值都替换为计算好的平均值/众数/中位数。inplace关键字用于指定是否直接对这个对象进行修改，默认是False，如果指定为True则直接在对象上进行修改，其他地方调用这个对象时也会收到影响。这里我们希望修改直接覆盖缺失值，所以指定为True。
+
+```python
+#再次检查缺失值以确认:
+print(data.apply(num_missing, axis=0))
+```
+
+```python
+Gender                0
+Married               0
+Dependents           15
+Education             0
+Self_Employed         0
+ApplicantIncome       0
+CoapplicantIncome     0
+LoanAmount           22
+Loan_Amount_Term     14
+Credit_History       50
+Property_Area         0
+Loan_Status           0
+dtype: int64
+```
+
+可以看到`Gender`,`Married`,`Self_Employed`这几列的缺失值已经都替换成功了，所以缺失值的个数为0。
+
+## 4. 透视表
 
 
 
