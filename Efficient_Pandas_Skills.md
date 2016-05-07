@@ -182,7 +182,7 @@ loc允许四种input方式:
 
 此外，这四种input方式都支持第二个参数，使用一个columns的列表，表示只取出记录中的某些列。上面的例子就是只取出了`Gender`,`Education`,`Loan_Status`这三列，当然，获得的新DataFrame的索引依然是Loan_ID。
 
-想了解更多请阅读 Pandas Selecting and Indexing。
+想了解更多请阅读 [Pandas Selecting and Indexing](http://pandas.pydata.org/pandas-docs/stable/indexing.html)。
 
 ## 2. Apply函数
 
@@ -240,7 +240,7 @@ LP001008    0
 dtype: int64
 ```
 
-想了解更多请阅读 Pandas Reference (apply)
+想了解更多请阅读 [Pandas Reference (apply)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.apply.html#pandas.DataFrame.apply)
 
 ## 3. 替换缺失值
 
@@ -335,7 +335,43 @@ dtype: int64
 
 可以看到`Gender`,`Married`,`Self_Employed`这几列的缺失值已经都替换成功了，所以缺失值的个数为0。
 
+想了解更多请阅读 [Pandas Reference (fillna)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.fillna.html#pandas.DataFrame.fillna)
+
 ## 4. 透视表
 
+[透视表](http://baike.baidu.com/view/1709397.htm)(Pivot Table)是一种交互式的表，可以动态地改变它的版面布置，以便按照不同方式分析数据，也可以重新安排行号、列标、页字段，比如下面的Excel透视表：
+
+![Excel透视表](https://github.com/familyld/learnpython/blob/master/graph/Excecl_Pivot_Table.jpg?raw=true)
+
+可以自由选择用来做行号和列标的属性，非常便于我们做不同的分析。Pandas也提供类似的透视表的功能。例如`LoanAmount`这个重要的列有缺失值。我们不希望直接使用整体平均值来替换，这样太过笼统，不合理。
+
+这时可以用先根据 `Gender`、`Married`、`Self_Employed`分组后，再按各组的均值来分别替换缺失值。每个组 `LoanAmount`的均值可以用如下方法确定：
+
+```python
+#Determine pivot table
+
+impute_grps = data.pivot_table(values=["LoanAmount"], index=["Gender","Married","Self_Employed"], aggfunc=np.mean)
+
+print(impute_grps)
+```
+
+```python
+                              LoanAmount
+Gender Married Self_Employed
+Female No      No             114.691176
+               Yes            125.800000
+       Yes     No             134.222222
+               Yes            282.250000
+Male   No      No             129.936937
+               Yes            180.588235
+       Yes     No             153.882736
+               Yes            169.395833
+```
+
+关键字`values`用于指定要使用集成函数(字段`aggfunc`)计算的列，选填，不进行指定时默认对所有index以外符合集成函数处理类型的列进行处理，比如这里使用`mean`作集成函数，则合适的类型就是数值类型。`index`是行标，可以是多重索引，处理时会按序分组。
+
+想了解更多请阅读 [Pandas Reference (Pivot Table)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.pivot_table.html#pandas.DataFrame.pivot_table)
+
+## 5. 多重索引
 
 
