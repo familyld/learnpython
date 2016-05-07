@@ -186,6 +186,63 @@ loc允许四种input方式:
 
 ## 2. Apply函数
 
+Apply是一个方便我们处理数据的函数，可以把我们指定的一个函数应用到DataFrame的每一行或者每一列(使用参数axis设定，默认为0，即应用到每一列)。
+
+如果要应用到特定的行和列只需要先提取出来再apply就可以了，比如`data['Gender'].apply(func)`。特别地，这里指定的函数可以是系统自带的，也可以是我们定义的(可以用匿名函数)。比如下面这个例子统计每一列的缺失值个数：
+
+```python
+# 创建一个新函数:
+
+def num_missing(x):
+
+  return sum(x.isnull())
+
+# Apply到每一列:
+print("Missing values per column:")
+
+print(data.apply(num_missing, axis=0)) # axis=0代表函数应用于每一列
+```
+
+```python
+Missing values per column:
+Gender               13
+Married               3
+Dependents           15
+Education             0
+Self_Employed        32
+ApplicantIncome       0
+CoapplicantIncome     0
+LoanAmount           22
+Loan_Amount_Term     14
+Credit_History       50
+Property_Area         0
+Loan_Status           0
+dtype: int64
+```
+
+下面这个例子统计每一行的缺失值个数，因为行数太多，所以使用head函数仅打印出DataFrame的前5行：
+
+```python
+# Apply到每一行:
+print("\nMissing values per row:")
+
+print(data.apply(num_missing, axis=1).head()) # axis=1代表函数应用于每一行
+```
+
+```python
+Missing values per row:
+Loan_ID
+LP001002    1
+LP001003    0
+LP001005    0
+LP001006    0
+LP001008    0
+dtype: int64
+```
+
+想了解更多请阅读 Pandas Reference (apply)
+
+## 3. 替换缺失值
 
 
 
