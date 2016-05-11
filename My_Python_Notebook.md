@@ -1115,3 +1115,32 @@ Python中可迭代的对象包括字符串，list，tuple，dict，set和文件�
 
 另一个窍门就是这里的列表生成式。 注意这里计算时还没赋值，引用列表b的内容是上一行的信息，所以能巧妙地借助上一行计算相邻两数之和，最终得到n-2项的中间的list。
 
+###迭代器
+***
+迭代器即**Iterator**， 前面说到可以通过**collections模块**的**Iterable类型**来判断一个对象是否可迭代对象。 这里引入Iterator的概念，可以通过类似的方式判断。
+
+list，dict，str虽然是Iterable，却不是Iterator。 生成器都是Iterator。Iterator的特性允许对象通过**next()函数**不断返回下一个值。
+
+    >>> from collections import Iterator
+    >>> isinstance((x for x in range(10)), Iterator)
+    True
+    >>> isinstance([], Iterator)
+    False
+    >>> isinstance({}, Iterator)
+    False
+    >>> isinstance('abc', Iterator)
+    False
+
+要把list，dict，str变为Iterator可以使用iter()函数：
+
+    >>> isinstance(iter([]), Iterator)
+    True
+    >>> isinstance(iter('abc'), Iterator)
+    True
+
+Python的Iterator对象表示的其实是一个**数据流**，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。
+
+可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算，也因此能够节省空间。
+
+Iterator甚至可以表示一个**无限大的数据流**，例如全体自然数。而使用list是永远不可能存储全体自然数的。
+
