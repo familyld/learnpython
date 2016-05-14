@@ -1204,3 +1204,45 @@ Python仅对函数式编程**提供部分支持**。由于Python允许使用变�
 
 输入是确定的，输出就是确定的。
 
+###简单举例
+***
+
+以往面向过程式的编程需要引入额外的逻辑变量以及使用循环：
+
+    upname =['HAO', 'CHEN', 'COOLSHELL']
+    lowname =[]
+    for i in range(len(upname)):
+        lowname.append( upname[i].lower() )
+
+而函数式编程则非常简洁易懂：
+
+    def toUpper(item):
+      return item.upper()
+
+    upper_name = map(toUpper, ["hao", "chen", "coolshell"])
+    print upper_name
+
+再看一个计算一个列表中所有正数的平均数的例子：
+
+    num =[2, -5, 9, 7, -2, 5, 3, 1, 0, -3, 8]
+    positive_num_cnt = 0
+    positive_num_sum = 0
+    for i in range(len(num)):
+        if num[i] > 0:
+            positive_num_cnt += 1
+            positive_num_sum += num[i]
+
+    if positive_num_cnt > 0:
+        average = positive_num_sum / positive_num_cnt
+
+    print average
+
+如果采用函数式编程：
+
+    positive_num = filter(lambda x: x>0, num)
+    average = reduce(lambda x,y: x+y, positive_num) / len( positive_num )
+
+可以看到函数式编程减少了变量的使用，也就减少了出Bug的可能，维护更加方便。可读性更高，代码量也更小。
+
+更多的例子和解析详见[函数式编程](http://coolshell.cn/articles/10822.html)。
+
