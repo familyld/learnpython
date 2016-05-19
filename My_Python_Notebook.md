@@ -1641,4 +1641,59 @@ Python中的闭包从表现形式上定义为：如果在一个内部函数里�
     def build(x, y):
         return lambda: x * x + y * y
 
+###装饰器
+***
+
+函数对象有一个__name__属性，可以拿到函数的名字：
+
+    >>> def now():
+    ...     print('2015-3-25')
+    ...
+    >>> now.__name__
+    'now'
+
+假设我们要增强now()函数的功能，比如，在函数调用前后自动打印日志，但又**不希望修改now()函数的定义**，这种**在代码运行期间动态增加功能**的方式，称之为“装饰器”（Decorator）。
+
+比方说定义一个打印日志的decorator：
+
+    def log(func):
+        def wrapper(*args, **kw):
+            print('call %s():' % func.__name__)
+            return func(*args, **kw)
+        return wrapper
+
+像正常函数一样定义，接收一个函数作为参数，并且返回一个函数wrapper。
+
+    @log
+    def now():
+        print('2016-2-10')
+
+使用时借助Python的**@语法**，把decorator放在函数定义前。
+
+运行时：
+
+    >>> now()
+    call now():
+    2015-3-25
+
+原理如下：
+
+把@log放在now()函数前实际上即执行了：
+
+    now = log(now)
+
+now这个函数名作为变量指向了log(now)返回的wrapper函数，如果查看now的函数名：
+
+    >>> now.__name__
+    'wrapper'
+
+就可以看到这样的结果。 然后当我们调用now()函数时，wrapper的代码就会被执行，也就是打印了 `call now():`。
+
+接下来因为wrapper函数返回的是**执行原函数**(传入log函数的参数)得到**的结果**，所以就可以看到原函数执行的结果。
+
+**Notice**：
+
+wrapper函数的参数是 `*args, **kw`，按照前面章节的说法，wrapper函数**可以接收任何参数**！
+
+并且因为使用**@语法**之后，now指向的就是wrapper函数，所以这里传入wrapper函数的参数在调用时就是传入now函数中，所以如果要传入参数到wrapper中，调用时 `now(参数列表)` 就可以了。
 
