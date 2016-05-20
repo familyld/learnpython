@@ -1747,3 +1747,72 @@ wrapper函数的参数是 `*args, **kw`，按照前面章节的说法，wrapper�
 
 而Python除了能支持OOP的decorator外，直接**从语法层次**支持decorator。Python的decorator可以用函数实现，**也可以用类实现**。
 
+####练习
+1.编写一个decorator，能在函数调用的前后打印出'begin call'和'end call'的日志。
+
+    def decorator(func):
+        def warps(*args,**kw):
+            print("begin call")
+            a = func(*args,**kw)
+            print("end call")
+            return a
+        return warps
+
+    @decorator
+    def now():
+        print("haha")
+
+    now()
+
+**解析**：
+
+这题now()函数没返回，return的实际就是None，所以a指向的是None。 调用now()返回的也就是None，但执行warps的过程中打印了我们需要的结果。
+
+流程：`执行warps时先打印了begin call` -> `然后执行func时打印了haha` -> `最后执行完func打印end call`。
+
+2.写出一个@log的decorator，使它既支持：
+
+    @log
+    def f():
+        pass
+
+又支持：
+
+    @log('execute')
+    def f():
+        pass
+
+**解析**：
+
+思路很简单，和前文的带参数decorator一样，不过把参数设置为**默认参数**，然后在wrapper中判断一下参数是否默认值，再作对应处理就可以了。
+
+    >>> import functools
+    >>> def log(text=''):
+            def decorator(func):
+            @functools.wraps(func)    #属性复制
+            def warps(*args,**kw):
+                if text=='':
+                    print('%s():' % func.__name__)
+                    return func(*args, **kw)
+                else:
+                    print('%s %s():' % (text, func.__name__))
+                    return func(*args, **kw)
+            return warps
+        return decorator
+
+    >>> @log('execute')  #带参数text的decorator
+    ... def now():
+        print('2016-2-10')
+
+    >>> now()
+    execute now():
+    2016-2-10
+
+    >>> @log()           #无参数的decorator
+    ... now():
+    print('2016-2-10')
+
+    >>> now()
+    now():
+    2016-2-10
+
