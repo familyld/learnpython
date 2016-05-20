@@ -1697,3 +1697,32 @@ wrapper函数的参数是 `*args, **kw`，按照前面章节的说法，wrapper�
 
 并且因为使用**@语法**之后，now指向的就是wrapper函数，所以这里传入wrapper函数的参数在调用时就是传入now函数中，所以如果要传入参数到wrapper中，调用时 `now(参数列表)` 就可以了。
 
+####带参数的decorator
+如果decorator本身还要传入参数，就要在外层再写一个返回decorator的高阶函数，比如自定义打印的文本：
+
+    def log(text):
+        def decorator(func):
+            def wrapper(*args, **kw):
+                print('%s %s():' % (text, func.__name__))
+                return func(*args, **kw)
+            return wrapper
+        return decorator
+
+使用decorator时：
+
+    @log('execute')
+    def now():
+        print('2015-3-25')
+
+执行结果如下：
+
+    >>> now()
+    execute now():
+    2015-3-25
+
+这时把@log放在now()函数前实际上即执行了：
+
+    >>> now = log('execute')(now)
+
+其中'execute'是log函数的参数，log函数返回decorator函数，将传入参数now，然后decorator再返回wrapper，并且赋值给变量now。
+
