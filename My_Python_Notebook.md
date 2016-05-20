@@ -1742,3 +1742,8 @@ wrapper函数的参数是 `*args, **kw`，按照前面章节的说法，wrapper�
 
 完整的decorator定义代码如上，唯一修改的就是加上了 `@functools.wraps(func)` 这一句。 并且要把functools模块import进来。
 
+####小结
+在面向对象（OOP）的设计模式中，decorator被称为**装饰模式**。OOP的装饰模式需要通过继承和组合来实现。
+
+而Python除了能支持OOP的decorator外，直接**从语法层次**支持decorator。Python的decorator可以用函数实现，**也可以用类实现**。
+
