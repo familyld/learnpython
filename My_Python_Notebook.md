@@ -1726,3 +1726,19 @@ wrapper函数的参数是 `*args, **kw`，按照前面章节的说法，wrapper�
 
 其中'execute'是log函数的参数，log函数返回decorator函数，将传入参数now，然后decorator再返回wrapper，并且赋值给变量now。
 
+####属性复制
+前面已经提到使用**@语法**之后，now变量指向的函数名字等属性都改变了，变成了wrapper的，实际我们希望now的属性依然是now()函数的属性，这时就需要进行**属性复制**。
+
+我们不需要编写 `wrapper.__name__ = func.__name__` 这样的代码，Python内置的 `functools.wraps` 可以满足我们的需求。
+
+    import functools
+
+    def log(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            print('call %s():' % func.__name__)
+            return func(*args, **kw)
+        return wrapper
+
+完整的decorator定义代码如上，唯一修改的就是加上了 `@functools.wraps(func)` 这一句。 并且要把functools模块import进来。
+
