@@ -955,3 +955,58 @@ cut函数原型是`cut(x, bins, right=True, labels=None, retbins=False, precisio
 想了解更多请阅读 [Pandas Reference (cut)](http://pandas.pydata.org/pandas-docs/version/0.17.1/generated/pandas.cut.html)
 
 ## 11.为分类变量编码
+
+有时，我们会面对要改动分类变量的情况。原因可能是：
+
+有些算法（如logistic回归）要求所有输入项目是数字形式。所以分类变量常被编码为0, 1….(n-1)
+有时同一个分类变量可能会有两种表现方式。如，温度可能被标记为“High”， “Medium”， “Low”，“H”， “low”。这里 “High” 和 “H”都代表同一类别。同理， “Low” 和“low”也是同一类别。但Python会把它们当作不同的类别。
+**一些类别的频数非常低，把它们归为一类是个好主意**。
+
+这里我们定义了一个函数，以字典的方式输入数值，用‘replace’函数进行编码
+
+```python
+#使用Pandas replace函数定义新函数：
+
+def coding(col, codeDict):
+
+  colCoded = pd.Series(col, copy=True)
+
+  for key, value in codeDict.items():
+
+    colCoded.replace(key, value, inplace=True)
+
+  return colCoded
+
+
+#把贷款状态LoanStatus编码为Y=1, N=0:
+
+print('Before Coding:')
+
+print(pd.value_counts(data["Loan_Status"]))
+
+data["Loan_Status_Coded"] = coding(data["Loan_Status"], {'N':0,'Y':1})
+
+print('\nAfter Coding:')
+
+print(pd.value_counts(data["Loan_Status_Coded"]))
+
+
+Before Coding:
+Y    422
+N    192
+Name: Loan_Status, dtype: int64
+
+After Coding:
+1    422
+0    192
+Name: Loan_Status_Coded, dtype: int64
+```
+
+在coding函数中第二个参数是一个dict，定义了需要编码的字段中每个值对应的编码。
+实现上首先把传入的列转换为Series对象，copy参数表示是否要进行复制，关于copy可以看我另一篇笔记：[深拷贝与浅拷贝的区别](https://github.com/familyld/learnpython/blob/master/Difference_between_DeepCopy_and_ShallowCopy.md)。
+
+copy得到的Series对象不会影响到原本DataFrame传入的列，所以可以放心修改，这里replace函数中的inplace参数表示是否直接在调用对象上作出更改，我们选择是，那么colCoded对像在调用replace后就会被修改为编码形式了。最后，把编码后的列加入到data中，比较编码前后的效果。
+
+## 12. 在一个数据框的各行循环迭代
+
+
