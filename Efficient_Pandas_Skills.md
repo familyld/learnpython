@@ -729,8 +729,136 @@ df_sorted
 
 ## 9. 绘图（箱型图&直方图）
 
+Pandas除了表格操作之外，还可以直接绘制箱型图和直方图且只需一行代码。这样就不必单独调用matplotlib了。
 
+```python
+%matplotlib inline
+# coding:utf-8
+data.boxplot(column="ApplicantIncome",by="Loan_Status")
+```
 
+![箱型图1](https://raw.githubusercontent.com/familyld/learnpython/master/graph/pandas_box_1.png)
 
+###箱型图
+
+因为之前没怎么接触过箱型图，所以这里单独开一节简单归纳一下。
+
+箱形图（英文：Box-plot），又称为盒须图、盒式图、盒状图或箱线图，是一种用作显示一组数据分散情况资料的统计图。因型状如箱子而得名。详细解析看[维基百科](https://zh.wikipedia.org/wiki/%E7%AE%B1%E5%BD%A2%E5%9C%96)。
+
+因为上面那幅图不太容易看，用个简单点的例子来说，还是上一小节那个只有a列和b列的表格。按b列对a列进行分组：
+
+```python
+df_temp.boxplot(column="a",by="b")
+```
+![箱型图2](https://raw.githubusercontent.com/familyld/learnpython/master/graph/pandas_box_3.png)
+
+定义b列值为0的分组为Group1，b列值为1的分组为Group2。Group1分组有4，2，1三个值，毫无疑问最大值4，最小值1，在箱型图中这两个值对应箱子发出的**虚线顶端的两条实线**。Group2分组有3，3，2，1四个值，由于最大值3和上四分位数3(箱子顶部)相同，所以重合了。
+
+Group1中位数是2，而Group2的中位数则是中间两个数2和3的平均数，也即2.5。在箱型图中由箱子中间的有色线段表示。
+
+###四分位数
+
+[四分位数](https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%88%86%E4%BD%8D%E6%95%B0)是统计学的一个概念。把所有数值由小到大排列好，然后分成四等份，处于三个分割点位置的数值就是四分位数，其中：
+
+- **第一四分位数** (Q1)，又称“**较小四分位数**”或“**下四分位数**”，等于该样本中所有数值由小到大排列后，在四分之一位置的数。
+- **第二四分位数** (Q2)，又称“**中位数**”，等于该样本中所有数值由小到大排列后，在二分之一位置的数。
+- **第三四分位数** (Q3)，又称“**较大四分位数**”或“**上四分位数**”，等于该样本中所有数值由小到大排列后，在四分之三位置的数。
+
+**Notice：**Q3与Q1的差距又称**四分位距**（InterQuartile Range, IQR）。
+
+计算四分位数时首先计算位置，假设有n个数字，则：
+
+- Q1位置 = (n-1) / 4
+- Q2位置 = 2 * (n-1) / 4 = (n-1) / 2
+- Q3位置 = 3 * (n-1) / 4
+
+如果n-1恰好是4的倍数，那么数列中对应位置的就是各个四分位数了。但是，**如果n-1不是4的倍数呢**？
+
+这时位置会是一个带小数部分的数值，四分位数以**距离该值最近的两个位置的加权平均值求出**。其中，距离较近的数，权值为小数部分；而距离较远的数，权值为(1-小数部分)。
+
+再看例子中的Group1，Q1位置为0.5，Q2位置为1，Q3位置为1.5。（**注意：位置从下标0开始！**），所以：
+
+    Q1 = 0.5*1+0.5*2 = 1.5
+    Q2 = 2
+    Q3 = 0.5*2+0.5*4 = 3
+
+而Group2中，Q1位置为0.75，Q2位置为1.5，Q3位置为2.25。
+
+    Q1 = 0.25*1+0.72*2 = 1.75
+    Q2 = 0.5*2+0.5*3 = 2.5
+    Q3 = 0.25*3+0.75*3 = 3
+
+这样是否就清晰多了XD  然而，**四分位数的取法还存在分歧**，定义不一，我在学习这篇文章时也曾经很迷茫，**直到阅读了源码！！**
+
+因为Pandas库依赖numpy库，所以它计算四分位数的方式自然也是使用了numpy库的。而**numpy中实现计算百分比数的函数为percentile**，代码实现如下：
+
+```python
+def percentile(N, percent, key=lambda x:x):
+    """
+    Find the percentile of a list of values.
+
+    @parameter N - is a list of values. Note N MUST BE already sorted.
+    @parameter percent - a float value from 0.0 to 1.0.
+    @parameter key - optional key function to compute value from each element of N.
+
+    @return - the percentile of the values
+    """
+    if not N:
+        return None
+    k = (len(N)-1) * percent
+    f = math.floor(k)
+    c = math.ceil(k)
+    if f == c:
+        return key(N[int(k)])
+    d0 = key(N[int(f)]) * (c-k)
+    d1 = key(N[int(c)]) * (k-f)
+    return d0+d1
+```
+
+读一遍源码之后就更加清晰了。最后举个例子：
+
+```python
+from numpy import percentile, mean, median
+temp = [1,2,4] # 数列包含3个数
+print(min(temp))
+print(percentile(temp,25))
+print(percentile(temp,50))
+print(percentile(temp,75))
+print(max(temp))
+
+1
+1.5
+2.0
+3.0
+4
+
+temp2 = [1,2,3,3] # 数列包含4个数
+print(min(temp2))
+print(percentile(temp2,25))
+print(percentile(temp2,50))
+print(percentile(temp2,75))
+print(max(temp2))
+
+1
+1.75
+2.5
+3.0
+3
+
+temp3 = [1,2,3,4,5] # 数列包含5个数
+print(min(temp2))
+print(percentile(temp3,25))
+print(percentile(temp3,50))
+print(percentile(temp3,75))
+print(max(temp3))
+
+1
+2.0
+3.0
+4.0
+5
+```
+
+不熟悉的话就再手撸一遍！！！不要怕麻烦！！！这一小节到此Over~
 
 
