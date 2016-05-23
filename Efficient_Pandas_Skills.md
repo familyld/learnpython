@@ -1007,6 +1007,109 @@ Name: Loan_Status_Coded, dtype: int64
 
 copy得到的Series对象不会影响到原本DataFrame传入的列，所以可以放心修改，这里replace函数中的inplace参数表示是否直接在调用对象上作出更改，我们选择是，那么colCoded对像在调用replace后就会被修改为编码形式了。最后，把编码后的列加入到data中，比较编码前后的效果。
 
+想了解更多请阅读 [Pandas Reference (replace)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.replace.html#pandas.DataFrame.replace)
+
 ## 12. 在一个数据框的各行循环迭代
 
+有时我们会需要用一个for循环来处理每行。比方说下面两种情况：
 
+1. 带数字的分类变量被当做数值。
+2. 带文字的数值变量被当做分类变量。
+
+先看看data表格的数据类型：
+
+```python
+#检查当前数据类型：
+
+data.dtypes
+```
+
+结果：
+
+```python
+Gender                 object
+Married                object
+Dependents             object
+Education              object
+Self_Employed          object
+ApplicantIncome         int64
+CoapplicantIncome     float64
+LoanAmount            float64
+Loan_Amount_Term      float64
+Credit_History        float64
+Property_Area          object
+Loan_Status            object
+LoanAmount_Bin       category
+Loan_Status_Coded       int64
+dtype: object
+```
+
+可以看到Credit_History这一列被当作浮点数，而实际上我们原意是分类变量。所以通常来说手动定义变量类型是个好主意。那这种情况下该怎么办呢？这时我们需要**逐行迭代**了。
+
+首先创建一个包含变量名和类型的csv文件，读取该文件：
+
+```python
+#载入文件:
+colTypes = pd.read_csv(r'F:\Datahack_Loan_Prediction\datatypes.csv')
+print(colTypes)
+```
+
+```python
+              feature         type
+0             Loan_ID  categorical
+1              Gender  categorical
+2             Married  categorical
+3          Dependents  categorical
+4           Education  categorical
+5       Self_Employed  categorical
+6     ApplicantIncome   continuous
+7   CoapplicantIncome   continuous
+8          LoanAmount   continuous
+9    Loan_Amount_Term   continuous
+10     Credit_History  categorical
+11      Property_Area  categorical
+12        Loan_Status  categorical
+```
+
+载入这个文件之后，我们能对它的逐行迭代，然后使用astype函数来设置表格的类型。这里把离散值字段都设置为categorical类型(对应np.object)，连续值字段都设置为continuous类型（对应np.float）。
+
+```python
+#迭代每行，指派变量类型。
+
+#注，astype函数用于指定变量类型。
+
+for i, row in colTypes.iterrows(): #i: dataframe索引; row: 连续的每行
+
+    if row['type']=="categorical" and row['feature']!="Loan_ID":
+        data[row['feature']]=data[row['feature']].astype(np.object)
+    elif row['type']=="continuous":
+        data[row['feature']]=data[row['feature']].astype(np.float)
+
+print(data.dtypes)
+```
+
+```python
+Gender                object
+Married               object
+Dependents            object
+Education             object
+Self_Employed         object
+ApplicantIncome      float64
+CoapplicantIncome    float64
+LoanAmount           float64
+Loan_Amount_Term     float64
+Credit_History        object
+Property_Area         object
+Loan_Status           object
+dtype: object
+```
+
+可以看到现在信用记录(`Credit_History`)这一列的类型已经变成了‘object’ ，这在Pandas中代表分类变量。
+
+特别地，无论是中文教程还是原版英文教程这个地方都出错了.. 中文教材代码中判断条件是错的，英文教程中没有考虑到`Loan_ID`这个字段，由于它被设定为表格的索引，所以它的类型是不被考虑的。
+
+想了解更多请阅读 [Pandas Reference (iterrows)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.iterrows.html#pandas.DataFrame.iterrows)
+
+##结语
+
+嗷，暂时没想到写啥，这篇拖了蛮久的时间才把后半部分给补上，因为前阵子实在太忙了... 不过确实学习了这些Pandas技巧之后，使用python处理数据的效率高了很多！！最重要的还是多多练习呗~
