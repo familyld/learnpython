@@ -586,6 +586,8 @@ Name: Credit_History, dtype: float64
 
 连接之后使用了第四小节透视表的方法检验新表格中`Property_Area`字段和`rates`字段的关系。后面跟着的数字表示出现的次数。
 
+想了解更多请阅读 [Pandas Reference (merge)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.merge.html#pandas.DataFrame.merge)
+
 ## 8. 给数据排序
 
 Pandas可以轻松地基于多列进行排序，方法如下：
@@ -726,6 +728,8 @@ df_sorted
 </div>
 
 这里只有a和b两列，可以清晰地看到Pandas的多列排序是先按a列进行排序，a列的值相同则会再按b列的值排序。
+
+想了解更多请阅读 [Pandas Reference (sort_values)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.sort_values.html#pandas.DataFrame.sort_values)
 
 ## 9. 绘图（箱型图&直方图）
 
@@ -886,4 +890,68 @@ data.hist(column="ApplicantIncome",by="Loan_Status",bins=30)
 
 也就是说最大值必须出现在这两个区间内，**区间外的值被视为离群点**，并显示在图上。这样做我们可以避免被过分偏离的数据点带偏，更准确地观测到数据的真实状况，或者说普遍状况。
 
+想了解更多请阅读 [Pandas Reference (hist)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.hist.html#pandas.DataFrame.hist) | [Pandas Reference (boxplot)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.boxplot.html#pandas.DataFrame.boxplot)
 
+##10. 用Cut函数分箱
+
+有时把数值聚集在一起更有意义。例如，如果我们要为交通状况（路上的汽车数量）根据时间（分钟数据）建模。具体的分钟可能不重要，而时段如“上午”“下午”“傍晚”“夜间”“深夜”更有利于预测。如此建模更直观，也能避免过度拟合。
+这里我们定义一个简单的、可复用的函数，轻松为任意变量分箱。
+
+```python
+#分箱:
+
+def binning(col, cut_points, labels=None):
+
+  #Define min and max values:
+
+  minval = col.min()
+
+  maxval = col.max()
+
+  #利用最大值和最小值创建分箱点的列表
+
+  break_points = [minval] + cut_points + [maxval]
+
+  #如果没有标签，则使用默认标签0 ... (n-1)
+
+  if not labels:
+
+    labels = range(len(cut_points)+1)
+
+  #使用pandas的cut功能分箱
+
+  colBin = pd.cut(col,bins=break_points,labels=labels,include_lowest=True)
+
+  return colBin
+
+
+
+#为年龄分箱:
+
+cut_points = [90,140,190]
+
+labels = ["low","medium","high","very high"]
+
+data["LoanAmount_Bin"] = binning(data["LoanAmount"], cut_points, labels)
+
+print(pd.value_counts(data["LoanAmount_Bin"], sort=False))
+
+
+low          104
+medium       273
+high         146
+very high     91
+dtype: int64
+```
+
+解析以下这段代码，首先定义了一个cut_points列表，里面的三个点用于把`LoanAmount`字段分割成四个段，对应地，定义了labels列表，四个箱子(段)按贷款金额分别为低、中、高、非常高。然后把用于分箱的`LoanAmount`字段，cut_points，labels传入定义好的binning函数。
+
+binning函数中，首先拿到分箱字段的最小值和最大值，把这两个点加入到break_points列表的一头一尾，这样用于切割的所有端点就准备好了。如果labels没有定义就默认按0~段数-1命名箱子。 最后借助pandas提供的cut函数进行分箱。
+
+cut函数原型是`cut(x, bins, right=True, labels=None, retbins=False, precision=3, include_lowest=False)`，x是分箱字段，bins是区间端点，right指示区间右端是否闭合，labels不解释..retbins表示是否需要返回bins，precision是label存储和显示的精度，include_lowest指示第一个区间的左端是否闭合。
+
+在把返回的列加入到data后，使用value_counts函数，统计了该列的各个离散值出现的次数，并且指定不需要对结果进行排序。
+
+想了解更多请阅读 [Pandas Reference (cut)](http://pandas.pydata.org/pandas-docs/version/0.17.1/generated/pandas.cut.html)
+
+## 11.为分类变量编码
