@@ -517,4 +517,220 @@ pd.crosstab(data["Credit_History"],data["Loan_Status"],margins=True).apply(percC
 
 ## 7. 数据框合并
 
+就像数据库有多个表的连接操作一样，当数据来源不同时，会产生把不同表格合并的需求。这里假设不同的房产类型有不同的房屋均价数据，定义一个新的表格，如下：
+
+```python
+prop_rates = pd.DataFrame([1000, 5000, 12000], index=['Rural','Semiurban','Urban'],columns=['rates'])
+
+prop_rates
+```
+
+<div>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>rates</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Rural</th>
+      <td>1000</td>
+    </tr>
+    <tr>
+      <th>Semiurban</th>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>Urban</th>
+      <td>12000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+农村房产均价只用1000，城郊这要5000，城镇内房产比较贵，均价为12000。我们获取到这个数据之后，希望把它连接到原始表格Loan_Prediction_Train.csv中以便观察房屋均价对预测的影响。在原始表格中有一列Property_Area就是表明贷款人居住的区域的，可以通过这一列进行表格连接：
+
+```python
+data_merged = data.merge(right=prop_rates, how='inner',left_on='Property_Area',right_index=True, sort=False)
+
+data_merged.pivot_table(values='Credit_History',index=['Property_Area','rates'], aggfunc=len)
+```
+
+```python
+Property_Area  rates
+Rural          1000     179.0
+Semiurban      5000     233.0
+Urban          12000    202.0
+Name: Credit_History, dtype: float64
+```
+
+使用merge函数进行连接,解析一下各个参数：
+
+- 参数right即连接操作右端表格；
+- 参数how指示连接方式，默认是inner，即内连接。可选left、right、outer、inner；
+
+    * left: use only keys from left frame (SQL: left outer join)
+    * right: use only keys from right frame (SQL: right outer join)
+    * outer: use union of keys from both frames (SQL: full outer join)
+    * inner: use intersection of keys from both frames (SQL: inner join)
+
+- 参数left_on用于指定连接的key的列名，即使key在两个表格中的列名不同，也可以通过left_on和right_on参数分别指定。 如果一样的话，使用on参数就可以了。可以是一个标签(单列)，也可以是一个列表（多列）；
+
+- right_index默认为False，设置为True时会把连接操作右端表格的索引作为连接的key。同理还有left_index；
+
+- sort参数默认为False，指示是否需要按key排序。
+
+所以上面的代码是把data表格和prop_rates表格连接起来。连接时，data表格用于连接的key是`Property_Area`，而prop_rates表格用于连接的key是索引，它们的值域是相同的。
+
+连接之后使用了第四小节透视表的方法检验新表格中`Property_Area`字段和`rates`字段的关系。后面跟着的数字表示出现的次数。
+
+## 8. 给数据排序
+
+Pandas可以轻松地基于多列进行排序，方法如下：
+
+```python
+data_sorted = data.sort_values(['ApplicantIncome','CoapplicantIncome'], ascending=False)
+
+data_sorted[['ApplicantIncome','CoapplicantIncome']].head(10)
+```
+
+<div>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ApplicantIncome</th>
+      <th>CoapplicantIncome</th>
+    </tr>
+    <tr>
+      <th>Loan_ID</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>LP002317</th>
+      <td>81000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP002101</th>
+      <td>63337</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP001585</th>
+      <td>51763</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP001536</th>
+      <td>39999</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP001640</th>
+      <td>39147</td>
+      <td>4750.0</td>
+    </tr>
+    <tr>
+      <th>LP002422</th>
+      <td>37719</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP001637</th>
+      <td>33846</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP001448</th>
+      <td>23803</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>LP002624</th>
+      <td>20833</td>
+      <td>6667.0</td>
+    </tr>
+    <tr>
+      <th>LP001922</th>
+      <td>20667</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+**Notice**：Pandas 的`sort`函数现在已经不推荐使用，使用 `sort_values`函数代替。
+
+这里传入了`ApplicantIncome`和`CoapplicantIncome`两个字段用于排序，Pandas会先按序进行。先根据`ApplicantIncome`进行排序，**对于`ApplicantIncome`相同的记录再根据`CoapplicantIncome`进行排序。** ascending参数设为False，表示降序排列。不妨再看个简单的例子：
+
+```python
+from pandas import DataFrame
+df_temp = DataFrame({'a':[1,2,3,4,3,2,1],'b':[0,1,1,0,1,0,1]})
+df_sorted = df_temp.sort_values(['a','b'],ascending=False)
+df_sorted
+```
+
+<div>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+这里只有a和b两列，可以清晰地看到Pandas的多列排序是先按a列进行排序，a列的值相同则会再按b列的值排序。
+
+## 9. 绘图（箱型图&直方图）
+
+
+
+
+
 
