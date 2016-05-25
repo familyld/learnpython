@@ -1876,3 +1876,29 @@ Python的functools模块提供了很多有用的功能，其中一个就是偏�
 - 编写代码不必从零开始。当一个模块编写完毕，就可以被其他地方引用。
 - 避免函数名和变量名冲突。相同名字的函数和变量完全可以分别存在不同的模块中。 但还是要注意**变量名尽量不要与BIF名字冲突**。
 
+###模块名相同怎么办？引入包名！
+***
+
+如果不同的人编写的模块名相同，为了**避免模块名冲突**，Python又引入了**按目录来组织模块**的方法，称为包（Package）。
+
+![图片](http://www.liaoxuefeng.com/files/attachments/001388366035986b515b38d149b4efaaac3f2c721813d2c000/0)
+
+假设图中abc和xyz两个模块的名字和外面其他模块名字冲突了，可以通过包来组织模块，避免冲突。 只要**顶层包名**(这里是创建了一个**mycompany**文件夹)不同即可。
+
+此时abc的**模块名**变为 `mycompany.abc`, xyz的**模块名**变为 `mycompany.xyz`。
+
+
+
+**Notice**：
+
+- **注意区分模块和模块名**！两者不一定相同！
+
+- **每个包**目录下都有一个 `__init__.py` 文件，必须存在！ 否则Python就不会把这个文件夹当作一个包。  `__init__.py`可以是空文件，也可以有Python代码，本身就是一个模块，并且它的模块名是包名(这里是mycompany)。
+
+![图片](http://www.liaoxuefeng.com/files/attachments/00138836605526535c9bebcbf414c3dae2430c50bbeef29000/0)
+
+包结构可以是多级的。比方说这里www.py的**模块名**就是 `mycompany.web.www` 。 两个utils.py的模块名分别是 `mycompany.utils` 和 `mycompany.web.utils` 。 `mycompany.web` 这个模块名对应的就是web目录下的 `__init__.py` 模块。
+
+**Notice**:
+
+自己创建的模块的模块名**不要和Python自带的模块的模块名冲突**！ 比如系统自带sys模块，自己的模块就不要命名sys.py，否则无法import系统自带的sys模块。
