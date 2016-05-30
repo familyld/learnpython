@@ -1902,3 +1902,31 @@ Python的functools模块提供了很多有用的功能，其中一个就是偏�
 **Notice**:
 
 自己创建的模块的模块名**不要和Python自带的模块的模块名冲突**！ 比如系统自带sys模块，自己的模块就不要命名sys.py，否则无法import系统自带的sys模块。
+
+###使用模块
+***
+
+Python本身就内置了很多模块可以直接import使用。 下面自己编写一个hello模块作为例子：
+
+    #!/usr/bin/env python3
+    # -*- coding: utf-8 -*-
+
+    ' a test module '
+
+    __author__ = 'Michael Liao'
+
+    import sys
+
+    def test():
+        args = sys.argv
+        if len(args)==1:
+            print('Hello, world!')
+        elif len(args)==2:
+            print('Hello, %s!' % args[1])
+        else:
+            print('Too many arguments!')
+
+    if __name__=='__main__':
+        test()
+
+
