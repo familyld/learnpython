@@ -1965,4 +1965,21 @@ Python本身就内置了很多模块可以直接import使用。 下面自己编�
 
 如果在别的地方导入hello模块，不会有对 `__name__` 赋值的操作，if判断就会失败。 借助这个特性，我们可以**在if判断中编写一些额外的代码**，用于在命令行运行时执行。**运行测试**就需要这样做。
 
+####在命令行执行
+先切换到保存hello.py的目录，然后执行：
+
+    $ python3 hello.py
+    Hello, world!
+    $ python hello.py Michael
+    Hello, Michael!
+
+####在交互环境下执行
+比方说使用IDLE或者在命令行中输入python进入。
+
+    >>> import hello
+    >>> hello.test()
+    Hello, world!
+
+import将不会促发if判断内的语句，要使用test函数就要通过 `模块名.函数名` 的方式调用，使用模块内的其他变量也同理。
+
 
