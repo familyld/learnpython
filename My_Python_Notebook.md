@@ -2025,4 +2025,37 @@ import将不会促发if判断内的语句，要使用test函数就要通过 `模
 
 - 良好的习惯是**外部不需要引用**的函数全部定义成private，只有**外部需要引用的**函数才定义为public。
 
+###安装第三方模块
+***
+在Python中，安装第三方模块，是通过**包管理工具pip**完成的。
+
+安装Python时选择了安装pip的话，就可以直接在命令行中使用pip工具了。
+
+    pip install Pillow
+
+在命令行键入 `pip install 第三方模块名` 后， pip就会自动帮用户下载并安装第三方模块。
+
+![安装1](http://imglf0.nosdn.127.net/img/dnpRZUpJZlB5VUQ2UTdlUDluSm9RZEZVQ0hEMjZrWjJReENQRmwvNVp4U0tnN3VUV004RE1BPT0.png?imageView&thumbnail=500x0&quality=96&stripmeta=0&type=jpg)
+
+![安装2](http://imglf2.nosdn.127.net/img/dnpRZUpJZlB5VUQ2UTdlUDluSm9RZU9hUFRtT0dMaFRWTENkaW1SREVrN25rd3VXSlVBKy9nPT0.png?imageView&thumbnail=500x0&quality=96&stripmeta=0&type=jpg)
+
+这里安装的是**Python Imaging Library**这个第三方库，是一个Python下非常强大的图像处理工具库。 因为PIL只支持到Python2.7，所以这里用的是基于PIL开发的支持Python3的**Pillow**。
+
+安装完成后打开 `F:\Python35\Lib\site-packages` 文件夹就会发现多了两个文件夹，一个是 `Pillow-3.1.1.dist-info`, 另一个是  `PIL`。 前者包含该库的一些基本信息，后者就是我们需要用到的包了，里面是有 `__init__.py` 文件的。
+
+安装好的包我们可以直接用 `from 包名 import 模块名` 来import我们要用的模块，而不需要再转到这个目录下了。
+
+    >>> from PIL import Image
+    >>> im = Image.
+    >('test.png')
+    >>> print(im.format, im.size, im.mode)
+    PNG (400, 300) RGB
+    >>> im.thumbnail((200, 100))    #创建缩略图
+    >>> im.save('thumb.jpg', 'JPEG')
+    >>> im.show()    #打开图片
+
+这一段就是利用PIL包的Image模块生成图片缩略图的代码，最后用show()函数打开图片可以浏览结果。
+
+其他常用的第三方库还有MySQL的驱动：mysql-connector-python，用于科学计算的NumPy库：numpy，用于生成文本的模板工具Jinja2，等等。
+
 
