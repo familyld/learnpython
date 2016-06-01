@@ -2058,4 +2058,24 @@ import将不会促发if判断内的语句，要使用test函数就要通过 `模
 
 其他常用的第三方库还有MySQL的驱动：mysql-connector-python，用于科学计算的NumPy库：numpy，用于生成文本的模板工具Jinja2，等等。
 
+###模块搜索路径
+***
+
+在Python中导入模块时，Python解释器都会搜索指定好的路径。
+
+    >>> import sys
+    >>> sys.path
+    ['', 'F:\\Python35\\Lib\\idlelib', 'F:\\Python35\\python35.zip', 'F:\\Python35\\DLLs', 'F:\\Python35\\lib', 'F:\\Python35', 'F:\\Python35\\lib\\site-packages']
+
+通过sys模块的path变量，我们可以看到搜索路径包括当前目录(`''`)，以及所有已安装的内置模块和第三方模块的目录。
+
+如果需要使用自己的模块，可以把它们放到这些目录中。 也可以**增加搜索路径**。
+
+1.**方法一**是**直接修改sys.path变量**，这种方法只在运行时有效，重启Python交互环境后会恢复原来的路径。
+
+    >>> import sys
+    >>> sys.path.append('C:\\Users\\Administrator\\Desktop')
+
+2.**方法二**是**配置环境变量PYTHONPATH**(和PATH环境变量类似)，注意只需要增加自己的搜索路径，Python本身默认的不会被覆盖。
+
 
