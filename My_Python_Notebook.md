@@ -2107,4 +2107,52 @@ import将不会促发if判断内的语句，要使用test函数就要通过 `模
 
 相对路径即相对当前工作路径而言的路径，可以避免路径过长，用 `.` 来代替当前工作路径即可。 同样既可以用左斜杠 `/`，也可以用 `\\`。
 
+##面向对象编程
+面向对象编程——Object Oriented Programming，简称OOP，是一种程序设计思想。OOP把对象作为程序的基本单元，一个对象包含**数据**和**操作数据的函数**。
+
+***
+**对比**：
+
+- 面向过程：
+
+把计算机程序视为一系列的命令集合，即一组函数的顺序执行。为了简化程序设计，面向过程把函数继续切分为子函数，即把大块函数通过切割成小块函数来降低系统的复杂度。
+
+- 面向对象：
+
+把计算机程序视为一组对象的集合，而每个对象都可以接收其他对象发过来的消息，并处理这些消息，计算机程序的执行就是一系列消息在各个对象之间传递。
+***
+
+下面以打印学生成绩表为例，分别展示面向过程编程和面向对象编程的不同：
+
+**面向过程**：
+
+    std1 = { 'name': 'Michael', 'score': 98 }
+    std2 = { 'name': 'Bob', 'score': 81 }
+
+    def print_score(std):
+        print('%s: %s' % (std['name'], std['score']))
+
+存储学生和成绩可以用dict，而打印学生成绩则可以通过函数实现。
+
+**面向对象**：
+
+    class Student(object):
+
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    def print_score(self):
+        print('%s: %s' % (self.name, self.score))
+
+    bart = Student('Bart Simpson', 59)
+    lisa = Student('Lisa Simpson', 87)
+    bart.print_score()
+    lisa.print_score()
+
+如果采用面向对象的程序设计思想，则首先想的不是流程，而是学生这个**类型**(class)应该应该被视为一个对象，这个对象拥有 `name` 和 `score` 两个**属性**(propoty)。
+
+如果想打印学生的成绩就要给这个对象**发一个消息**(print_score)，让这个对象自己把成绩打印出来。
+
+给对象发消息实际上就是调用对象的对应函数，成为对象的**方法**(method)。
 
