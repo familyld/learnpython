@@ -2286,3 +2286,23 @@ Class是一种**抽象概念**，比如我们定义的Class——Student，是�
 
 4.有时会看到以**一个下划线开头**的实例变量名，比如 `_name`，这样的实例变量外部是可以访问的，但是，按照约定，这样的变量将**视为私有变量，不应**在外部直接访问。
 
+####获取和修改限制访问的变量
+对于限制访问的变量，外部代码还是需要获取和修改，我们可以在类中定义对应的get方法和set方法：
+
+    class Student(object):
+        ...
+
+        def get_name(self):
+            return self.__name
+
+        def get_score(self):
+            return self.__score
+
+        def set_score(self, score):
+        if 0 <= score <= 100:
+            self.__score = score
+        else:
+            raise ValueError('bad score')
+
+这样做而不直接在外部修改有一个明显的好处，我们可以在类的方法中**对参数做检查**，**避免传入无效的参数**。 比如这里可以限制修改成绩时成绩的范围必须是0~100，超出就报错。
+
