@@ -2306,3 +2306,35 @@ Class是一种**抽象概念**，比如我们定义的Class——Student，是�
 
 这样做而不直接在外部修改有一个明显的好处，我们可以在类的方法中**对参数做检查**，**避免传入无效的参数**。 比如这里可以限制修改成绩时成绩的范围必须是0~100，超出就报错。
 
+###继承和多态
+***
+
+在OOP程序设计中，当我们定义一个class的时候，可以从某个现有的class继承，新的class称为**子类**（Subclass），而被继承的class称为**基类、父类或超类**（Base class、Super class）。
+
+    >>> class Animal(object):
+            def run(self):
+                print('Animal is running...')
+
+比方说已经有了Animal类，并且类有一个run方法。
+
+    >>> class Dog(Animal):
+           pass
+
+    >>> dog=Dog()
+    >>> dog.run()
+    Animal is running...
+
+定义一个Dog类继承Animal类，虽然什么都没做，但是Dog类可以**获得父类的全部功能**，所以自动获得了 `run()` 方法。
+
+子类还可以增加一些别的方法：
+
+    class Dog(Animal):
+
+        def run(self):
+            print('Dog is running...')
+
+        def eat(self):
+            print('Eating meat...')
+
+继承的另一个好处就是**多态**，如果子类也定义一个和父类相同的方法，则执行时**总是调用子类的方法**。
+
