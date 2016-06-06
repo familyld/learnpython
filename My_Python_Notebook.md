@@ -2348,3 +2348,29 @@ Class是一种**抽象概念**，比如我们定义的Class——Student，是�
     True
 
 实例化子类的对象**既属于子类数据类型也属于父类数据类型**！ 但是反过来就不可以，实例化父类的对象不属于子类数据类型。
+
+####多态的好处
+
+比方说在外部编写一个函数，接收Aniaml类型的变量作参数：
+
+    def run_twice(animal):
+        animal.run()
+        animal.run()
+
+当传入Animal类的实例时就执行animal的run方法，当传入Dog类的实例时也能执行Dog类的run方法，非常方便：
+
+    >>> run_twice(Animal())
+    Animal is running...
+    Animal is running...
+    >>> run_twice(Dog())
+    Dog is running...
+    Dog is running...
+
+有了多态的特性：
+
+1.**我们不需要为每个子类都在外部重写一个函数**，也不需要再修改函数。
+
+2.只要函数**接收父类类型的变量作参数**，不管我们定义多少**子类都能直接使用这个外部函数**。
+
+3.并且传入的任意类型在实际运行时，调用类的方法时都会**调用实际类型的方法**，这就是多态。
+
