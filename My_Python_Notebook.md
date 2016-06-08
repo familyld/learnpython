@@ -2542,4 +2542,37 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
             return readData(fp)
         return None
 
+###实例属性和类属性
+***
+
+类属性是属于一个类的，类的所有实例都可以访问到。 注意和在 `__init__` 函数中定义的区别开来:
+
+    >>> class Student(object):
+    ...     name = 'Student'
+    ...
+    >>> s = Student() # 创建实例s
+    >>> print(s.name) # 打印name属性，因为实例并没有name属性，所以会继续查找class的name属性
+    Student
+    >>> print(Student.name) # 打印类的name属性
+    Student
+    >>> s.name = 'Michael' # 给实例绑定name属性
+    >>> print(s.name) # 由于实例属性优先级比类属性高，因此，它会屏蔽掉类的name属性
+    Michael
+    >>> print(Student.name) # 但是类属性并未消失，用Student.name仍然可以访问
+    Student
+    >>> del s.name # 如果删除实例的name属性
+    >>> print(s.name) # 再次调用s.name，由于实例的name属性没有找到，类的name属性就显示出来了
+    Student
+
+实例属性的绑定可以通过：
+
+1. 给实例绑定一个属性。
+2. 通过 `__init__` 函数，在创建实例时利用 `self` 变量进行绑定。 如: `self.name = name`。
+
+**Notice**：
+
+- **实例属性和类属性不要重名！**否则通过实例查看这个属性时实例属性就会覆盖掉类属性。 当然，如果删除了实例属性，类属性就能正常访问了。
+
+- **修改类属性必须是** `类名.类属性名=新值`，不能通过实例的变量名来改，否则只是给实例绑定了一个实例属性。
+
 
