@@ -2404,3 +2404,142 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
 
 - 动态语言的鸭子类型特点决定了**继承不像静态语言那样是必须的**。
 
+###获取对象信息
+***
+
+这一小节主要介绍给定一个对象，如何了解对象的类型以及有哪些方法。
+
+1.**`type()` 函数：**
+
+    >>> type('str')
+    <class 'str'>
+    >>> type(None)
+    <type(None) 'NoneType'>
+    >>> type(abs)
+    <class 'builtin_function_or_method'>
+    >>> type(a)
+    <class '__main__.Animal'>
+
+不仅可以判断基本类型，还可以判断函数和类。 `type()` 函数本身**返回的是type类型的对象**，**值是参数对应的Class**。
+
+    >>> type(type('123'))
+    <class 'type'>
+    >>> type('123')==str
+    True
+
+判断一个对象是否函数可以借助 `types` 模块定义的常量：
+
+    >>> import types
+    >>> def fn():
+    ...     pass
+    ...
+    >>> type(fn)==types.FunctionType
+    True
+    >>> type(abs)==types.BuiltinFunctionType
+    True
+    >>> type(lambda x: x)==types.LambdaType
+    True
+    >>> type((x for x in range(10)))==types.GeneratorType
+    True
+
+2.**`isinstance()` 函数：**
+
+对于类的继承关系来说，`type()` 函数不合适。 使用 `isinstance()` 函数。 子类的实例也能看作是父类的实例。
+
+前面用 `type()` 函数判断类型，这里用 `isinstance()` 函数也能达到一样的效果：
+
+    >>> isinstance('a', str)
+    True
+    >>> isinstance(123, int)
+    True
+    >>> isinstance(b'a', bytes)
+    True
+    >>> isinstance([1, 2, 3], (list, tuple))
+    True
+
+并且参数二还能是一个tuple，此时 `isinstance()` 函数将判断参数一是否属于参数二tuple中**所有类型的其中一种**，是则返回 `True`。
+
+3.**`dir()` 函数：**
+
+`dir()` 函数返回一个对象的所有属性和方法：
+
+    >>> dir('ABC')
+    ['__add__', '__class__', '__contains__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getnewargs__', '__gt__', '__hash__', '__init__', '__iter__', '__le__', '__len__', '__lt__', '__mod__', '__mul__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__rmod__', '__rmul__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'capitalize', 'casefold', 'center', 'count', 'encode', 'endswith', 'expandtabs', 'find', 'format', 'format_map', 'index', 'isalnum', 'isalpha', 'isdecimal', 'isdigit', 'isidentifier', 'islower', 'isnumeric', 'isprintable', 'isspace', 'istitle', 'isupper', 'join', 'ljust', 'lower', 'lstrip', 'maketrans', 'partition', 'replace', 'rfind', 'rindex', 'rjust', 'rpartition', 'rsplit', 'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase', 'title', 'translate', 'upper', 'zfill']
+
+形如 `__xxx__` 的属性和方法都是有特殊用途的，比如 `__len__` 方法会返回对象长度，还可以调用 `len()` 函数获取。 实际上，len()函数内部就是在调用该对象的 `__len__()` 方法。
+
+    >>> len('ABC')
+    3
+    >>> 'ABC'.__len__()
+    3
+
+实际上，上面两句代码是等价的。 如果自己写的类想用 `len()` 函数获取长度可以**自己定义一个 `__len__()` 方法。**
+
+    >>> class MyDog(object):
+    ...     def __len__(self):
+    ...         return 100
+    ...
+    >>> dog = MyDog()
+    >>> len(dog)
+    100
+
+4.**`getattr()` 函数、 `setattr()` 函数、 `hasattr()` 函数：**
+
+这几个函数允许我们直接操作一个对象的状态：
+
+    >>> class MyObject(object):
+    ...     def __init__(self):
+    ...         self.x = 9
+    ...     def power(self):
+    ...         return self.x * self.x
+    ...
+    >>> obj = MyObject()
+
+测试属性：
+
+    >>> hasattr(obj, 'x') # 有属性'x'吗？
+    True
+    >>> obj.x
+    9
+    >>> hasattr(obj, 'y') # 有属性'y'吗？
+    False
+    >>> setattr(obj, 'y', 19) # 设置一个属性'y'
+    >>> hasattr(obj, 'y') # 有属性'y'吗？
+    True
+    >>> getattr(obj, 'y') # 获取属性'y'
+    19
+    >>> obj.y # 获取属性'y'
+    19
+
+如果试图获取不存在的属性，会抛出AttributeError的错误：
+
+    >>> getattr(obj, 'z') # 获取属性'z'
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'MyObject' object has no attribute 'z'
+
+可以传入一个default参数，如果属性不存在，就返回默认值,但仅仅是返回，不会把这个没有的属性绑定到对象：
+
+    >>> getattr(obj, 'z', 404) # 获取属性'z'，如果不存在，返回默认值404
+    404
+
+除了获取属性还可以获取方法，并且赋值到变量，然后通过变量使用：
+
+    >>> fn = getattr(obj, 'power') # 获取属性'power'并赋值到变量fn
+    >>> fn # fn指向obj.power
+    <bound method MyObject.power of <__main__.MyObject object at 0x10077a6a0>>
+    >>> fn() # 调用fn()与调用obj.power()是一样的
+    81
+
+**Notice**:
+
+只有在不知道对象信息的时候，才要获取对象信息。如果可以直接写： `sum = obj.x + obj.y` 就不要写： `sum = getattr(obj, 'x') + getattr(obj, 'y')`。
+
+比方说读取对象fp，首先判断fp是否有   `read()` 方法，有则fp是流对象，可以读取：
+
+    def readSomething(fp):
+        if hasattr(fp, 'read'):
+            return readData(fp)
+        return None
+
+
