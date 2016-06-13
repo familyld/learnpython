@@ -2569,7 +2569,61 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
 1. 给实例绑定一个属性。
 2. 通过 `__init__` 函数，在创建实例时利用 `self` 变量进行绑定。 如: `self.name = name`。
 
-**Notice**：
+**Notice**：###使用 \_\_slots\_\_
+***
+
+####绑定方法
+前面提到，基于Python的动态语言特性，可以在定义类之后再给类的实例或者类绑定属性。 事实上，绑定方法(函数)也是可以的，注意**绑定在实例名上**(只有这个实例可用)和**绑定在类名上**(该类的全部实例可用)的区别。
+
+绑定方法有三种方式：
+
+- 直接在类中定义方法
+- 像绑定属性一样绑定(右值可以是指向函数的变量名)，并且**只能绑定到类**，绑定到实例则self参数系统无法自动传入，要用 `实例名.方法名(实例名)` 的方式才能正常使用。
+- 通过 `MethodType` 函数动态**创建**方法
+
+第三种方法：
+
+    class Student(object):
+        pass
+    >>> def set_age(self, age): # 定义一个函数作为实例方法
+    ...     self.age = age
+    ...
+    >>> from types import MethodType
+    >>> s.set_age = MethodType(set_age, s) # 给实例绑定一个方法
+    >>> s.set_age(25) # 调用实例方法
+    >>> s.age # 测试结果
+    25
+
+注意第二种方法绑定到实例和第三种方法绑定到实例，作用范围都仅仅是绑定的实例，其他实例无法调用该方法。
+
+如果想给所有实例都绑定方法，可以作用到类名上：
+
+    ` Student.set_score = MethodType(set_score, Student)`
+
+####\_\_slots\_\_
+`__slots` 变量是一个特殊的类属性，用于**限制类可以添加的属性**。
+
+    class Student(object):
+        __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称
+
+    >>> s = Student() # 创建新的实例
+    >>> s.name = 'Michael' # 绑定属性'name'
+    >>> s.age = 25 # 绑定属性'age'
+    >>> s.score = 99 # 绑定属性'score'
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Student' object has no attribute 'score'
+
+可以看到score属性没有写到 `__slots__` 里面，所以就无法绑定到Student类。
+
+    >>> class GraduateStudent(Student):
+    ...     pass
+    ...
+    >>> g = GraduateStudent()
+    >>> g.score = 9999
+
+注意！ `__slots__` 定义的属性限制仅对当前类的实例有效，**对继承的子类无效**。 但是！ 如果集成的子类也定义了 `__slots__`，那么子类实例允许添加的属性范围就等于**自身的 `__slots__` 加上父类的 `__slots__`**。
+
 
 - **实例属性和类属性不要重名！**否则通过实例查看这个属性时实例属性就会覆盖掉类属性。 当然，如果删除了实例属性，类属性就能正常访问了。
 
@@ -2578,4 +2632,58 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
 ##面向对象高级编程
 前面的章节介绍了OOP最基础的数据封装、继承和多态3个概念。 在Python中OOP还有很多更高级的特性，这一章会讨论多重继承、定制类、元类等概念。
 
+###使用 \_\_slots\_\_
+***
+
+####绑定方法
+前面提到，基于Python的动态语言特性，可以在定义类之后再给类的实例或者类绑定属性。 事实上，绑定方法(函数)也是可以的，注意**绑定在实例名上**(只有这个实例可用)和**绑定在类名上**(该类的全部实例可用)的区别。
+
+绑定方法有三种方式：
+
+- 直接在类中定义方法
+- 像绑定属性一样绑定(右值可以是指向函数的变量名)，并且**只能绑定到类**，绑定到实例则self参数系统无法自动传入，要用 `实例名.方法名(实例名)` 的方式才能正常使用。
+- 通过 `MethodType` 函数动态**创建**方法
+
+第三种方法：
+
+    class Student(object):
+        pass
+    >>> def set_age(self, age): # 定义一个函数作为实例方法
+    ...     self.age = age
+    ...
+    >>> from types import MethodType
+    >>> s.set_age = MethodType(set_age, s) # 给实例绑定一个方法
+    >>> s.set_age(25) # 调用实例方法
+    >>> s.age # 测试结果
+    25
+
+注意第二种方法绑定到实例和第三种方法绑定到实例，作用范围都仅仅是绑定的实例，其他实例无法调用该方法。
+
+如果想给所有实例都绑定方法，可以作用到类名上：
+
+    ` Student.set_score = MethodType(set_score, Student)`
+
+####\_\_slots\_\_
+`__slots` 变量是一个特殊的类属性，用于**限制类可以添加的属性**。
+
+    class Student(object):
+        __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称
+
+    >>> s = Student() # 创建新的实例
+    >>> s.name = 'Michael' # 绑定属性'name'
+    >>> s.age = 25 # 绑定属性'age'
+    >>> s.score = 99 # 绑定属性'score'
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Student' object has no attribute 'score'
+
+可以看到score属性没有写到 `__slots__` 里面，所以就无法绑定到Student类。
+
+    >>> class GraduateStudent(Student):
+    ...     pass
+    ...
+    >>> g = GraduateStudent()
+    >>> g.score = 9999
+
+注意！ `__slots__` 定义的属性限制仅对当前类的实例有效，**对继承的子类无效**。 但是！ 如果集成的子类也定义了 `__slots__`，那么子类实例允许添加的属性范围就等于**自身的 `__slots__` 加上父类的 `__slots__`**。
 
