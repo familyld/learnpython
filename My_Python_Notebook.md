@@ -2687,3 +2687,70 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
 
 注意！ `__slots__` 定义的属性限制仅对当前类的实例有效，**对继承的子类无效**。 但是！ 如果集成的子类也定义了 `__slots__`，那么子类实例允许添加的属性范围就等于**自身的 `__slots__` 加上父类的 `__slots__`**。
 
+###使用@property
+***
+
+绑定属性时，属性的值可以随意设置，无法检查参数，这样很不好。 针对这个问题，有两种解决思路：
+
+1.通过方法来设置属性，这样就可以在方法里面检查参数：
+
+    class Student(object):
+
+        def get_score(self):
+            return self._score
+
+        def set_score(self, value):
+            if not isinstance(value, int):
+                raise ValueError('score must be an integer!')
+            if value < 0 or value > 100:
+                raise ValueError('score must between 0 ~ 100!')
+            self._score = value
+
+2.使用Python内置的 `@property` **装饰器**，把一个方法**变成属性**来调用。 这样比起通过方法来设置属性更简单直接：
+
+    class Student(object):
+
+        @property
+        def score(self):
+            return self._score
+
+        @score.setter
+        def score(self, value):
+            if not isinstance(value, int):
+                raise ValueError('score must be an integer!')
+            if value < 0 or value > 100:
+                raise ValueError('score must between 0 ~ 100!')
+            self._score = value
+
+`@property` 实现起来稍微复杂，但很好理解，通过类方法来获取/设置属性时我们会使用**getter方法和setter方法**。
+
+这里使用 `@property` 之后*getter方法* 就**变成了属性**。 原本要用 `变量名.getter方法名()` 的方式来获取属性值，现在**只需要像使用属性一样** `变量名.属性名` 就能返回属性值了~
+
+使用了 `@property` 之后，对于*setter方法*就使用 `属性名.setter` 这样的装饰器。 原本要用 `变量名.setter方法名(新属性值)` 的方式来设置属性值，现在**只需要像使用属性一样** `变量名.属性名 = 新属性值` 就能设置属性值了~
+
+    >>> s = Student()
+    >>> s.score = 60 # OK，实际转化为s.set_score(60)
+    >>> s.score # OK，实际转化为s.get_score()
+    60
+    >>> s.score = 9999
+    Traceback (most recent call last):
+      ...
+    ValueError: score must between 0 ~ 100!
+
+利用 `@property` ，我们就能够给类绑定**可控的属性**了。 实际上，我们依然是通过**getter方法和setter方法**来完成值的控制，只是**加上了装饰器**。
+
+    class Student(object):
+
+        @property
+        def birth(self):
+            return self._birth
+
+        @birth.setter
+        def birth(self, value):
+            self._birth = value
+
+        @property
+        def age(self):
+            return 2015 - self._birth
+
+还可以不定义setter方法，如上面的age，这样getter方法转换成的属性就是一个**只读属性**，而birth则是一个**可读写属性**。 age是在获取时自动根据birth计算的，所以只用getter方法就可以了。
