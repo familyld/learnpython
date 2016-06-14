@@ -2769,3 +2769,36 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
 
 相比于Java的单一继承，Python允许多重继承，**子类可以继承多个父类并获得所有父类的功能**。(Java其实也能用接口来实现多重继承，也即使用implements，但接口类是有要求的。)
 
+####为什么要用到多重继承？
+
+比方说对动物进行分类。 我们可以分出哺乳类、鸟类等等；也可以分出可飞行不可飞行等等；还可以分出可作宠物不可作宠物等等。
+
+如果只能单一继承，那么类的层次会非常复杂，我们要设置非常多的层次。 因为哺乳类和鸟类都分可飞行不可飞行，这样就分出四个子类，而这四个子类再要根据可作宠物不可作宠物分就分成了八个字类。这样下去，**类的数目会呈指数增长**。
+
+![单一继承](http://www.liaoxuefeng.com/files/attachments/0013946304409926336fd4395ef4ce1809253a1d87dd2fe000/0)
+
+采用多重继承后，一个子类可以继承多个父类就避免了过多无意义的重复。
+
+    class Animal(object):
+        pass
+
+    # 大类:
+    class Mammal(Animal):
+        pass
+
+    class Bird(Animal):
+        pass
+
+    class Runnable(object):
+        def run(self):
+            print('Running...')
+
+    class Flyable(object):
+        def fly(self):
+            print('Flying...')
+
+    class Dog(Mammal, Runnable):
+        pass
+
+    class Bat(Mammal, Flyable):
+        pass
