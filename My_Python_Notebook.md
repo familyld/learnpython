@@ -2916,3 +2916,90 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
     >>> Fib()[5]
     8
 
+####切片
+记得前面章节提到list还支持切片操作，但这里不行：
+
+    >>> Fib()[5:8]
+    Traceback (most recent call last):
+      File "<pyshell#24>", line 1, in <module>
+        Fib()[5:8]
+      File "<pyshell#20>", line 4, in __getitem__
+        for x in range(n):
+    TypeError: 'slice' object cannot be interpreted as an integer
+
+原因是 `__getitem__` 传入的参数可能是一个直接的下标(int类型对象)，也可能是一个切片(slice对象)。 要对这两种参数做出判断才行：
+
+    class Fib(object):
+        def __getitem__(self, n):
+            if isinstance(n, int): # n是索引
+                a, b = 1, 1
+                for x in range(n):
+                    a, b = b, a + b
+                return a
+            if isinstance(n, slice): # n是切片
+                start = n.start
+                stop = n.stop
+                if start is None:
+                    start = 0
+                a, b = 1, 1
+                L = []
+                for x in range(stop):
+                    if x >= start:
+                        L.append(a)
+                    a, b = b, a + b
+                return L
+
+这样定义后再使用切片就能正常获取结果了：
+
+    >>> f = Fib()
+    >>> f[0:5]
+    [1, 1, 2, 3, 5]
+    >>> f[:10]
+    [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+
+**Notice**:
+
+1. 这里还未对step和负数下标进行处理，不妨自己增加。
+
+2. `__getitem__()` 不仅仅能模仿list和tuple，**也能模仿dict**。 也就是说它的参数可以是作为key的对象，然后提取出value。
+
+3. 除了 `__getitem__()` 之外，我们还可以自定义 `__setitem__()` 和 `__delitem__()` 方法用于设置某一项/删除某一项。
+
+- **\_\_getattr\_\_**
+
+正常情况下，当我们调用类的方法或属性时，如果不存在，就会报错。 但是通过自定义 `__getattr__` 方法，我们可以**动态返回一个不存在的属性**。
+
+    class Student(object):
+
+        def __init__(self):
+            self.name = 'Michael'
+
+        def __getattr__(self, attr):
+            if attr=='score':
+                return 99
+
+比方说上面这个例子，Student类没有score这个属性，当**调用不存在的属性时**，比如score，Python解释器**会试图调用`__getattr__(self, 'score')` 来尝试获得属性**，这样，我们就有机会返回score的值。
+
+    >>> s = Student()
+    >>> s.name
+    'Michael'
+    >>> s.score
+    99
+    >>> print(s.abc)
+    None
+
+注意！ 此时调用没有的属性返回的是None，还是不符合，应该改为查找没有的属性时抛出错误。
+
+并且 `__getattr__(self, attr)` 还可以返回一个函数，比如：
+
+    class Student(object):
+        def __getattr__(self, attr):
+            if attr=='age':
+                return lambda: 25
+            raise AttributeError('\'Student\' object has no attribute \'%s\'' % attr)
+
+自然，调用时也要改为函数的调用方式，实际是返回了一个函数对象，然后执行这个返回的函数:
+
+    >>> s.age()
+    25
+
