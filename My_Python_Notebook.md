@@ -3003,3 +3003,43 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
     >>> s.age()
     25
 
+####动态返回的优势和应用
+
+举个例子，很多网站都有REST API，调用API的URL类似：
+
+    http://api.server/user/friends
+    http://api.server/user/timeline/list
+
+写SDK时，如果对每个URL对应的API都写一个类方法，那得累死，而且API一旦改动，就要重写SDK，借助 `__getattr__(self, attr)` 的动态特性就可以：
+
+    class Chain(object):
+
+        def __init__(self, path=''):
+            self._path = path
+
+        def __getattr__(self, path):
+            return Chain('%s/%s' % (self._path, path))
+
+        def __str__(self):
+            return self._path
+
+        __repr__ = __str__
+
+    >>> Chain().status.user.timeline.list
+    '/status/user/timeline/list'
+
+可以动态地生成一个path，而不用每个path写一个类方法，这样就非常方便简单了。
+
+- **\_\_call\_\_**
+
+`__call__` 方法允许我们把实例对象作为一个方法来调用。 我们调用类方法时是以 `实例名.方法名()`来调用的，而 `__call__` 方法则使得我们可以以 `实例名()` 的方式调用一个方法。
+
+    class Student(object):
+        def __init__(self, name):
+            self.name = name
+
+        def __call__(self):
+            print('My name is %s.' % self.name)
+
+并且`__call__` 方法还可以定义参数，调用时就好像我们调用其他函数的方式一样。
+
