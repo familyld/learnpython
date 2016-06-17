@@ -3057,3 +3057,50 @@ Python的 "**file-like object**" 就是一种鸭子类型。真正的文件对�
     >>> callable('str')
     False
 
+###使用枚举类
+***
+
+在笔记起初的章节提到，在Python中定义常量是通过全大写的变量名定义，但**本质上还是变量**，可能会被误操作影响。 更好的方法是利用枚举类型(Eunm类)来创建一个新类，**每个常量都是类的一个唯一实例**。
+
+    from enum import Enum
+
+    Month = Enum('Month', ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+
+    >>> Month.Jan
+    <Month.Jan: 1>
+    >>> Month.Jan.name
+    'Jan'
+    >>> Month.Jan.value
+    1
+    >>> Month.__members__
+    mappingproxy(OrderedDict([('Jan', <Month.Jan: 1>), ('Feb', <Month.Feb: 2>), ('Mar', <Month.Mar: 3>), ('Apr', <Month.Apr: 4>), ('May', <Month.May: 5>), ('Jun', <Month.Jun: 6>), ('Jul', <Month.Jul: 7>), ('Aug', <Month.Aug: 8>), ('Sep', <Month.Sep: 9>), ('Oct', <Month.Oct: 10>), ('Nov', <Month.Nov: 11>), ('Dec', <Month.Dec: 12>)]))
+    >>> Month['Jan']
+    <Month.Jan: 1>
+
+可以直接通过 `.` 运算符来引用常量，返回的是一个拥有name属性和value属性的枚举类型对象。 其中**value是自动赋给成员的int类型常量，默认从1开始计数**。
+
+也可以使用 `__members__` 来枚举全部成员，返回的是一个**dict**，可以使用dict的方法来遍历和访问。
+
+Enum和Month都是类，Month继承Enum，
+各个枚举值是Month的实例，同时也是Enum的实例。
+
+如果我们需要更精确地控制枚举类型，可以自定义类：
+
+    from enum import Enum, unique
+
+    @unique
+    class Weekday(Enum):
+        Sun = 0 # Sun的value被设定为0
+        Mon = 1
+        Tue = 2
+        Wed = 3
+        Thu = 4
+        Fri = 5
+        Sat = 6
+
+其中 `@unique` 装饰器可以帮助检查枚举的常量的value重复，如有重复，定义时会报错。
+
+####小结
+
+Enum可以把一组相关常量定义在一个class中，**且class不可变**，已经定义，类属性的值也不可再修改，而且成员可以直接比较。
+
