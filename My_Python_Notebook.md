@@ -3128,3 +3128,33 @@ Enum可以把一组相关常量定义在一个class中，**且class不可变**�
 
 `type()` 函数可以查看一个类型或变量的类型。 Hello是一个类(class)，它的类型就是 `type`。 h是一个实例，它的类型就是 `Hello`。
 
+####动态创建类
+
+前面说类定义是运行时动态创建的，创建的方法就是使用 `type()` 函数。 `type()` 函数除了前面查看类型的用途，**还可以用来直接创建出新类型**而不需通过 `class Hello(object) ...` 的方式定义。
+
+    >> def fn(self, name='world'): # 先定义函数
+    ...     print('Hello, %s.' % name)
+    ...
+    >>> Hello = type('Hello', (object,), dict(hello=fn)) # 创建Hello class
+    >>> h = Hello()
+    >>> h.hello()
+    Hello, world.
+    >>> print(type(Hello))
+    <class 'type'>
+    >>> print(type(h))
+    <class '__main__.Hello'>
+
+`type()` 函数的三个参数依次是：
+
+1. 类名
+2. 继承的父类集合
+3. 类属性和类方法
+
+**Notice**：
+
+参数2是一个**tuple**， 注意只有一个父类的写法， **单元素tuple要加上逗号以区分于数学表达式**。
+
+参数3是一个**dict**，这里用 `dict(key1=value1, key2=value2, ...)` 的形式来创建这个类方法名/属性名和对象对应的dict。
+
+这样创造出的类和直接写class完全一样，因为Python解释器遇到class定义时，仅仅是扫描一下class定义的语法，然后调用type()函数创建出class。
+
