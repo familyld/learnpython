@@ -3104,3 +3104,27 @@ Enum和Month都是类，Month继承Enum，
 
 Enum可以把一组相关常量定义在一个class中，**且class不可变**，已经定义，类属性的值也不可再修改，而且成员可以直接比较。
 
+###使用元类
+***
+
+首先要理解，Python作为动态语言，对于**函数和类的定义**与静态语言是不同的。 动态语言**不在编译时进行定义**，是在运行时才动态创建的。
+
+比方说把类定义写在 `hello.py` 模块中：
+
+    class Hello(object):
+        def hello(self, name='world'):
+            print('Hello, %s.' % name)
+
+当Python解释器载入hello模块时，就会**依次执行该模块的所有语句**，执行结果就是**动态创建出一个Hello的class对象**(注意是创建出一个类而非类的实例)。
+
+    >>> from hello import Hello
+    >>> h = Hello()
+    >>> h.hello()
+    Hello, world.
+    >>> print(type(Hello))
+    <class 'type'>
+    >> print(type(h))
+    <class 'hello.Hello'>
+
+`type()` 函数可以查看一个类型或变量的类型。 Hello是一个类(class)，它的类型就是 `type`。 h是一个实例，它的类型就是 `Hello`。
+
