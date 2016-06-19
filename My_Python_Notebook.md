@@ -3158,3 +3158,42 @@ Enum可以把一组相关常量定义在一个class中，**且class不可变**�
 
 这样创造出的类和直接写class完全一样，因为Python解释器遇到class定义时，仅仅是扫描一下class定义的语法，然后调用type()函数创建出class。
 
+####元类
+元类即metaclass，可以用来**控制类的创建行为**。 可以这样理解元类的概念：
+
+- 要创建类实例，必须先定义类；
+- 要创建类，必须先定义元类。
+
+可以把类看成是metaclass的一个“*实例*”。
+
+    # metaclass是类的模板，所以必须从`type`类型派生：
+    class ListMetaclass(type):
+        def __new__(cls, name, bases, attrs):
+            attrs['add'] = lambda self, value: self.append(value)
+            return type.__new__(cls, name, bases, attrs)
+
+按照默认习惯，metaclass的类名总是以Metaclass结尾，以便清楚地表示这是一个metaclass。
+
+`__new__()` 方法接收到的参数依次是：
+
+1. 当前准备创建的类的对象；
+2. 类的名字；
+3. 类继承的父类集合；
+4. 类的方法集合。
+
+    class MyList(list, metaclass=ListMetaclass):
+        pass
+
+当定义类时传入关键字 `metaclass=元类名` 时，元类就会生效，该例中，`MyList` 类在创建时会通过 `ListMetaclass.__new__()` 来创建。 在这个new方法里，可以修改类定义，加上新方法/属性，然后**返回修改后的类定义**。
+
+    >>> L = MyList()
+    >>> L.add(1)
+    >> L
+    [1]
+
+测试可知add方法确实被加入到创建的MyList类中。 这个在元类中添加的方法称为**魔术方法**。 那么这样**动态修改到底有什么意义**？  显然正常状况下直接在类中写add方法更加简单。
+
+但也有必须通过metaclass修改类定义的情景，比方说**ORM框架**。 ORM全称“**Object Relational Mapping**”，即对象-关系映射。
+
+核心的思想是把关系型数据库的一行映射为一个对象，一个表映射为一个类。 这样写代码时就不需要直接操作SQL语句。 这里不作详细展开，代码实现可看 [ORM的Python实现](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000)。
+
