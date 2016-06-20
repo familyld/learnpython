@@ -3237,3 +3237,35 @@ Python的错误类型其实也是类，所有错误类型都是 `BaseException` 
 
 注意如果捕捉一个父类的错误类型，则子类的错误也会被一网打尽，所以except块捕捉的顺序也要注意。
 
+####调用堆栈
+
+前面说道Python的错误处理机制允许多层调用，如果错误没有被捕获，就会一直往上抛，直到被Python解释器捕获并处理，然后程序退出。
+
+    # err.py:
+    def foo(s):
+        return 10 / int(s)
+
+    def bar(s):
+        return foo(s) * 2
+
+    def main():
+        bar('0')
+
+    main()
+
+在命令行中运行：
+
+    $ python3 err.py
+    Traceback (most recent call last):
+      File "err.py", line 11, in <module>
+        main()
+      File "err.py", line 9, in main
+        bar('0')
+      File "err.py", line 6, in bar
+        return foo(s) * 2
+      File "err.py", line 3, in foo
+        return 10 / int(s)
+    ZeroDivisionError: division by zero
+
+错误信息**由上往下表示整个调用链**，并在最后指出属于何种错误。
+
