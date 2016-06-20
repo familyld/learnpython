@@ -3204,3 +3204,30 @@ Enum可以把一组相关常量定义在一个class中，**且class不可变**�
 
 测试是为了保证程序输出符合我们的预期，在程序修改之后依然能反复运行。
 
+###错误处理
+***
+
+所有高级语言都内置了一套 `try...except...finally...` 的错误处理机制，Python也不例外，举个例子：
+
+    try:
+        print('try...')
+        r = 10 / int('a')
+        print('result:', r)
+    except ValueError as e:
+        print('ValueError:', e)
+    except ZeroDivisionError as e:
+        print('ZeroDivisionError:', e)
+    else:
+        print('no error!')
+    finally:
+        print('finally...')
+    print('END')
+
+当我们认为某段代码内部可能出错时，使用try来括起，出错时后续代码不再执行而是直接跳转到错误处理代码处，也即except块。
+
+except块捕捉到对应错误类型时会执行。 如果没有错误发生，会执行except块后的esle块。 finally块则是不管有没有错误发生都会在最后执行的一段代码。
+
+使用这种模式而不使用错误码是因为这样写更加方便简洁，试想函数a调用函数b调用函数c，如果c中出错，使用错误码的形式就要一层层return一个自己定义的错误码(比方说用整数-1表示除0错误),然后在能处理错误的函数(比方说这里顶层的a函数)中用if来判断，然后处理。
+
+这样做非常繁琐，而且容易把正常结果和错误码混淆。 而使用 `try...except...finally...` 的机制，就可以实现多层调用，c中出错，只要a中有用try括起调用c的代码就能捕捉到错误，不需要写其他额外的判断。
+
