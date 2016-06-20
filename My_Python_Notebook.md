@@ -3231,3 +3231,9 @@ except块捕捉到对应错误类型时会执行。 如果没有错误发生，�
 
 这样做非常繁琐，而且容易把正常结果和错误码混淆。 而使用 `try...except...finally...` 的机制，就可以实现多层调用，c中出错，只要a中有用try括起调用c的代码就能捕捉到错误，不需要写其他额外的判断。
 
+####错误类型
+
+Python的错误类型其实也是类，所有错误类型都是 `BaseException` 的子类，常见的错误类型和继承关系看这里：[Python错误类型文档](https://docs.python.org/3/library/exceptions.html#exception-hierarchy)
+
+注意如果捕捉一个父类的错误类型，则子类的错误也会被一网打尽，所以except块捕捉的顺序也要注意。
+
