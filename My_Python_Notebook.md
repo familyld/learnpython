@@ -3307,3 +3307,58 @@ Python的错误类型其实也是类，所有错误类型都是 `BaseException` 
 
 可以看到例子中捕获了错误，并且使用logging进行记录，打印完错误信息之后继续执行程序并输出END。 **实际中，我们往往还会通过一定的配置，使用logging把错误信息记录到日志文件中，方便事后排查**。
 
+####抛出错误
+
+错误其实是一个class，捕获错误捕获到的其实就是该class的一个实例。 所以错误其实是**有意创建并抛出**的，Python的内置函数会抛出很多类型的错误，我们也可以自己编写错误类型并抛出：
+
+    # err_raise.py
+    class FooError(ValueError):
+    pass
+
+    def foo(s):
+        n = int(s)
+        if n==0:
+            raise FooError('invalid value: %s' % s)
+        return 10 / n
+
+    foo('0')
+
+在命令行中运行：
+
+    $ python3 err_raise.py
+    Traceback (most recent call last):
+      File "err_throw.py", line 11, in <module>
+        foo('0')
+      File "err_throw.py", line 8, in foo
+        raise FooError('invalid value: %s' % s)
+    __main__.FooError: invalid value: 0
+
+既然Python本身已有丰富的错误类型，我们就不需要自己额外定义，能使用Python内置的就尽量使用。
+
+这里再提及一种错误处理的方式：
+
+    # err_reraise.py
+
+    def foo(s):
+        n = int(s)
+        if n==0:
+            raise ValueError('invalid value: %s' % s)
+        return 10 / n
+
+    def bar():
+        try:
+            foo('0')
+        except ValueError as e:
+            print('ValueError!')
+            raise
+
+    bar()
+
+这段例子中，在上层的bar函数中捕获了错误并且打印，然后**又再次抛出这个错误**。
+
+这是因为捕获错误仅仅是为了进行记录便于后期追踪。 如果当前函数不知道如何处理该错误就应该继续往上抛，**让顶层调用者去处理**。
+
+如果raise语句不带参数，就把当前错误原样抛出。 带上参数的话完全可以做到**修改错误类型及错误信息**。 但注意要符合逻辑。
+
+自己编写的程序，应当注意**在文档中指出**会抛出哪些错误及错误产生的原因。
+
