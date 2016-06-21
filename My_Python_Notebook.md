@@ -3269,3 +3269,41 @@ Python的错误类型其实也是类，所有错误类型都是 `BaseException` 
 
 错误信息**由上往下表示整个调用链**，并在最后指出属于何种错误。
 
+####记录错误
+
+上面的例子**没有对错误进行捕获，所以打印错误信息后程序也结束**了。 如果**打印错误信息后程序能继续执行**，可以使用logging模块的功能。
+
+    # err_logging.py
+    import logging
+
+    def foo(s):
+        return 10 / int(s)
+
+    def bar(s):
+        return foo(s) * 2
+
+    def main():
+        try:
+            bar('0')
+        except Exception as e:
+            logging.exception(e)
+
+    main()
+    print('END')
+
+在命令行中执行：
+
+    $ python3 err_logging.py
+    ERROR:root:division by zero
+    Traceback (most recent call last):
+      File "err_logging.py", line 13, in main
+        bar('0')
+      File "err_logging.py", line 9, in bar
+        return foo(s) * 2
+      File "err_logging.py", line 6, in foo
+        return 10 / int(s)
+    ZeroDivisionError: division by zero
+    END
+
+可以看到例子中捕获了错误，并且使用logging进行记录，打印完错误信息之后继续执行程序并输出END。 **实际中，我们往往还会通过一定的配置，使用logging把错误信息记录到日志文件中，方便事后排查**。
+
