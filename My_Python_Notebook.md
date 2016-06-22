@@ -3372,3 +3372,16 @@ Python的错误类型其实也是类，所有错误类型都是 `BaseException` 
         print('>>> n = %d' % n)
         return 10 / n
 
+####断言
+
+把所有用 `print()` 查看变量的地方改为用assert来代替：
+
+    def foo(s):
+        n = int(s)
+        assert n != 0, 'n is zero!'
+        return 10 / n
+
+语法是 `assert 表达式, '错误信息'`， 运行时会判断是否满足表达式，满足则继续，不满足则抛出 `AssertionError`并打印错误信息。
+
+但是这也不是一个很好的解决方案，到处都是assert效果和 `print()` 差不多。 不过启动Python解释器时可以用 `-O` 参数来关闭assert。 注意是字母O不是数字0。 即 `$ python3 -O err.py`，这时，可以把所有assert语句看作pass。
+
