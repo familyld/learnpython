@@ -3399,3 +3399,37 @@ Python的错误类型其实也是类，所有错误类型都是 `BaseException` 
 
 这里第二行的语句是对logging进行配置，否则不会输出任何信息。 logging的好处是**允许记录信息的级别**，按程度由低到高有 `debug`, `info`, `waring`, `error` 等等。 如果配置等级为 `error` 则 `debug`, `info`, `waring`这三个等级的信息不会输出。 这就类似于java中的 `Log.e(标识,错误信息)` 这种用法。
 
+####调试器
+Python自带调试器pdb，能让程序以以单步方式运行，可以随时查看运行状态。
+
+在命令行中以 `python -m pdb 文件名.py` 的方式执行文件即可进入Pdb模式，该模式下输入l可以查看代码，输入n会执行下一行代码，输入 `p 变量名` 可以查看变量值，输入q会结束调试，退出程序。
+
+比方说写一个最简单的程序：
+
+    a=1
+    print(a)
+    b='aa'
+    print(b)
+
+调试：
+
+    f:\Python35>python -m pdb test.py
+    > f:\python35\test.py(1)<module>()
+    -> a=1
+    (Pdb) l
+      1  -> a=1
+      2     print(a)
+      3     b='aa'
+      4     print(b)
+    [EOF]
+    (Pdb) n
+    > f:\python35\test.py(2)<module>()
+    -> print(a)
+    (Pdb) n
+    1
+    > f:\python35\test.py(3)<module>()
+    -> b='aa'
+    (Pdb) q
+
+    f:\Python35>
+
