@@ -3385,3 +3385,17 @@ Python的错误类型其实也是类，所有错误类型都是 `BaseException` 
 
 但是这也不是一个很好的解决方案，到处都是assert效果和 `print()` 差不多。 不过启动Python解释器时可以用 `-O` 参数来关闭assert。 注意是字母O不是数字0。 即 `$ python3 -O err.py`，这时，可以把所有assert语句看作pass。
 
+####记录
+
+使用logging更优，因为logging不会抛出错误，而且**可以把信息输出到文件**。
+
+    import logging
+    logging.basicConfig(level=logging.INFO)
+
+    s = '0'
+    n = int(s)
+    logging.info('n = %d' % n)
+    print(10 / n)
+
+这里第二行的语句是对logging进行配置，否则不会输出任何信息。 logging的好处是**允许记录信息的级别**，按程度由低到高有 `debug`, `info`, `waring`, `error` 等等。 如果配置等级为 `error` 则 `debug`, `info`, `waring`这三个等级的信息不会输出。 这就类似于java中的 `Log.e(标识,错误信息)` 这种用法。
+
