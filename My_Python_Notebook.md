@@ -3433,3 +3433,48 @@ Python自带调试器pdb，能让程序以以单步方式运行，可以随时�
 
     f:\Python35>
 
+####设置断点
+
+Pdb的功能很方便，但我们并不是每次都想逐步执行，Python又提供了设置断点的功能，这需要我们在代码中进行标记。
+
+需要载入pdb这个模块，然后用 `pdb.set_trace()` 在需要的地方设置断点，这样运行程序时就会在这个地方**暂停并进入pdb调试环境**。
+
+依然写个简单的例子：
+
+    import pdb
+    a=1
+    print(a)
+    pdb.set_trace()
+    b='aa'
+    print(b)
+
+执行时：
+
+    f:\Python35>python test.py
+    1
+    > f:\python35\test.py(5)<module>()
+    -> b='aa'
+    (Pdb) l
+      1     import pdb
+      2     a=1
+      3     print(a)
+      4     pdb.set_trace()
+      5  -> b='aa'
+      6     print(b)
+    [EOF]
+    (Pdb) p a
+    1
+    (Pdb) n
+    > f:\python35\test.py(6)<module>()
+    -> print(b)
+    (Pdb) c
+    aa
+
+    f:\Python35>
+
+可以看到断点前的语句都会执行，然后到达断点时暂停程序变为逐步执行模式。 如果**输入c就会执行后续代码直到遇到下一断点或者程序结束**。
+
+####小结
+
+使用IDE可以更方便地设置断点和执行调试，但最好的调试方式还是使用logging。
+
