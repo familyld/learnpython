@@ -3737,3 +3737,87 @@ Pdb的功能很方便，但我们并不是每次都想逐步执行，Python又�
 
 4.单元测试代码要非常简单，测试代码太复杂则本身就可能有bug。
 
+###文档测试
+***
+
+Python的官方文档往往都会自带一些示例代码，这些代码和其他说明可以写在注视中，然后通过一些工具来自动生成文档。
+
+这一节讲得主要就是，既然这些代码本身可以复制出来运行，那么可不可以**直接自动执行写在注视中的代码**呢？
+
+答案是肯定的。 以上一节写的Dict为例子，只是这次把单元测试改为文档测试：
+
+    # mydict2.py
+    class Dict(dict):
+        '''
+        Simple dict but also support access as x.y style.
+
+        >>> d1 = Dict()
+        >>> d1['x'] = 100
+        >>> d1.x
+        100
+        >>> d1.y = 200
+        >>> d1['y']
+        200
+        >>> d2 = Dict(a=1, b=2, c='3')
+        >>> d2.c
+        '3'
+        >>> d2['empty']
+        Traceback (most recent call last):
+            ...
+        KeyError: 'empty'
+        >>> d2.empty
+        Traceback (most recent call last):
+            ...
+        AttributeError: 'Dict' object has no attribute 'empty'
+        '''
+
+        def __init__(self, **kw):
+            super(Dict, self).__init__(**kw)
+
+        def __getattr__(self, key):
+            try:
+                return self[key]
+            except KeyError:
+                raise AttributeError(r"'Dict' object has no attribute '%s'" % key)
+
+        def __setattr__(self, key, value):
+            self[key] = value
+
+    if __name__=='__main__':
+        import doctest
+        doctest.testmod()
+
+可以看到中间由 `'''` 括起的是多行注释，中间包括文字描述和测试样例。 测试样例是按输入和输出轮番排列的，doctest模块也会严格按照给出的输入输出判断测试结果。
+
+正常状况下执行该脚本是没有输出的，但如果模块有问题不能通过文档测试就会报错了，比方说注释掉 `__getattr__()` 方法后：
+
+    $ python3 mydict2.py
+    **********************************************************************
+    File "/Users/michael/Github/learn-python3/samples/debug/mydict2.py", line 10, in __main__.Dict
+    Failed example:
+        d1.x
+    Exception raised:
+        Traceback (most recent call last):
+          ...
+        AttributeError: 'Dict' object has no attribute 'x'
+    **********************************************************************
+    File "/Users/michael/Github/learn-python3/samples/debug/mydict2.py", line 16, in __main__.Dict
+    Failed example:
+        d2.c
+    Exception raised:
+        Traceback (most recent call last):
+          ...
+        AttributeError: 'Dict' object has no attribute 'c'
+    **********************************************************************
+    1 items had failures:
+      2 of   9 in __main__.Dict
+    ***Test Failed*** 2 failures.
+
+**Notice**：
+
+1. 在IDLE中import模块时，doctest不会被执行，只有在命令行(也即测试环境下)直接作为脚本运行时，才会执行doctest。
+
+2. 解读doctest的报错信息，可以看到它是把每对输入输出作为一个example，前面文档有9个输入输出，对应就有9个example。 然后会测试输入是否能得到和文档中同样的输出，否则failed example。
+
+3. 输入输出是严格按照Python交互式命令行的，所以 **`>>>` 和代码句中间还有个空格，千万不能漏**！！
+
