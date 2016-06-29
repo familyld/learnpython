@@ -3907,3 +3907,24 @@ Stream(流)是一个重要的概念，可以**把流想作一个水管，数据�
 
     >>> f = open('/Users/michael/gbk.txt', 'r', encoding='gbk', errors='ignore')
 
+####写文件
+
+写文件和读文件类似，只是打开文件传入标识符改为 `w` 或者 `wb`，并且换成用 `write()` 方法。
+
+    >>> f = open('/Users/michael/test.txt', 'w')
+    >>> f.write('Hello, world!')
+    >>> f.close()
+
+可以反复调用 `write()` 方法写文件，但操作系统往往不会立即将数据写入磁盘，而是放在内存中缓存，空闲时再写。 **调用 `close()` 方法时操作系统才会把没写入的数据全部写入磁盘**。
+
+为了保险，同样可以使用 `with` 语句来实现写文件，并且不用调用 `close()` 方法：
+
+    with open('/Users/michael/test.txt', 'w') as f:
+        f.write('Hello, world!')
+
+**Notice**：
+
+1. 要写入特定编码文本文件，同样可以给 `open()` 函数传入 `encoding` 参数。
+
+2. 使用 `with` 语句操作文件IO是个好习惯。
+
