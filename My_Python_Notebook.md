@@ -3928,3 +3928,38 @@ Stream(流)是一个重要的概念，可以**把流想作一个水管，数据�
 
 2. 使用 `with` 语句操作文件IO是个好习惯。
 
+###StringIO和BytesIO
+***
+前面说道数据读写不仅仅是文件，还可以在内存中读写String和Bytes。
+
+####StringIO
+
+要把str写入StringIO，需要先创建一个StringIO，然后像写入文件一样写入：
+
+    >>> from io import StringIO
+    >>> f = StringIO()
+    >>> f.write('hello')
+    5
+    >>> f.write(' ')
+    1
+    >>> f.write('world!')
+    6
+    >>> print(f.getvalue())
+    hello world!
+
+`getvalue()` 方法用于获得StringIO中的字符串。
+
+读取StringIO的方法和读文件类似：
+
+    >>> from io import StringIO
+    >>> f = StringIO('Hello!\nHi!\nGoodbye!') #初始化StringIO
+    >>> while True:
+    ...     s = f.readline()
+    ...     if s == '':
+    ...         break
+    ...     print(s.strip())
+    ...
+    Hello!
+    Hi!
+    Goodbye!
+
