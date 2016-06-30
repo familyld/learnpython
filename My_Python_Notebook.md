@@ -3980,3 +3980,76 @@ StringIO只能操作str，要操作二进制数据就要用BytesIO读写bytes。
     >>> f = BytesIO(b'\xe4\xb8\xad\xe6\x96\x87')
     >>> f.read()
     b'\xe4\xb8\xad\xe6\x96\x87'
+
+###操作文件和目录
+***
+
+Python内置的os模块允许我们直接调用操作系统提供的接口函数以进行目录和文件操作。
+
+####查看信息
+
+    >>> import os
+    >>> os.name
+    'nt'
+
+`os.environ` 可以查看所有环境变量，要获得某个环境变量可以用 `os.environ.get('key')`：
+
+    >>> os.environ.get('JAVA_HOME')
+    'C:\\Program Files\\Java\\jdk1.7.0_67'
+
+`os.uname()` 可以查看用户信息，但Windows操作系统上不提供接口。
+
+####创建/删除目录
+
+操作文件和目录的函数方法os模块和`os.path`模块中。 其中`os.path.abspath()` 函数用来生成一条绝对路径：
+
+    >>> os.path.abspath('.') #点符代表当前路径
+    'F:\\Python35'
+    >>> os.path.abspath('Tools\\demos') #相对路径
+    'F:\\Python35\\Tools\\demos'
+
+要在某个目录下创建一个新目录要先把新目录的绝对路径生成出来，可以**先获得当前路径，然后利用join函数合并生成**。 最后**用mkdir函数创建目录**。
+
+    >>> curpath = os.path.abspath('.')
+    >>> newpath = os.path.join(curpath, 'test_new')
+    >>> newpath
+    'F:\\Python35\\test_new'
+    >>> os.mkdir(newpath)
+    >>> os.rmdir(newpath)
+
+合成路径时用join函数更优，因为**不同操作系统下路径分隔符不一样**，这样处理可以避免错误。
+
+同理，拆分路径时也不应直接拆，而是通过split函数拆分，split函数会将路径拆分为路径和最后级别的目录/文件名两部分：
+
+    >>> os.path.split('F:\\Python35\\Tools\\demos')
+    ('F:\\Python35\\Tools', 'demos')
+    >>> os.path.split('F:\\Python35\\hello.py')
+    ('F:\\Python35', 'hello.py')
+    >>> os.path.splitext('F:\\Python35\\hello.py')
+    ('F:\\Python35\\hello', '.py')
+
+利用splitext函数还可以方便地获取文件扩展名，如果是目录路径则扩展名为 `''`。
+
+**Notice**：
+
+合并和拆分函数针对的是字符串，所以路径不需要真实存在。
+
+####复制文件
+
+复制文件的函数在os模块中不存在，但 `shutil` 模块提供了 `copyfile()` 函数。
+
+    >>> import shutil
+    >>> shutil.copyfile('F:\\Python35\\hello.py','F:\\Python35\\Tools\\hello.py')
+    'F:\\Python35\\Tools\\hello.py'
+
+####过滤文件
+
+下面举列出当前目录下所有目录和列出当前目录下所有 `.py` 脚本文件为例：
+
+    >>> [x for x in os.listdir('.') if os.path.isdir(x)]
+    ['DLLs', 'Doc', 'include', 'Lib', 'libs', 'Scripts', 'tcl', 'Tools', '__pycache__']
+    >>> [x for x in os.listdir('.') if os.path.isfile(x) and os.path.splitext(x)[1]=='.py']
+    ['hello.py', 'mydict.py', 'mydict2.py', 'mydict_test.py', 'test.py']
+
+其实就是用了列表生成式和os模块的函数，用 `os.path.isdir()` 函数判断是否目录； 用 `os.path.isfile()` 函数判断是否文件，然后再用 `os.path.splitext[]` 拆分路径，然后去tuple的第二个元素(下标1)就是扩展名了。
+
