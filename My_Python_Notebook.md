@@ -3963,3 +3963,20 @@ Stream(流)是一个重要的概念，可以**把流想作一个水管，数据�
     Hi!
     Goodbye!
 
+####BytesIO
+
+StringIO只能操作str，要操作二进制数据就要用BytesIO读写bytes。创建和写入方法类似：
+
+    >>> from io import BytesIO
+    >>> f = BytesIO()
+    >>> f.write('中文'.encode('utf-8')) #先编码得到UTF-8编码的bytes再写入
+    6
+    >>> print(f.getvalue())
+    b'\xe4\xb8\xad\xe6\x96\x87'
+
+读取：
+
+    >>> from io import StringIO
+    >>> f = BytesIO(b'\xe4\xb8\xad\xe6\x96\x87')
+    >>> f.read()
+    b'\xe4\xb8\xad\xe6\x96\x87'
