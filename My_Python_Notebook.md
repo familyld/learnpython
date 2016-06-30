@@ -4053,3 +4053,20 @@ Python内置的os模块允许我们直接调用操作系统提供的接口函数
 
 其实就是用了列表生成式和os模块的函数，用 `os.path.isdir()` 函数判断是否目录； 用 `os.path.isfile()` 函数判断是否文件，然后再用 `os.path.splitext[]` 拆分路径，然后去tuple的第二个元素(下标1)就是扩展名了。
 
+####作业
+
+编写一个程序，能在当前目录以及当前目录的所有子目录下查找文件名包含指定字符串的文件，并打印出绝对路径。
+
+    import os
+
+    key = input('Please inter what you want to search:\n')
+
+    for x in os.walk('.'):
+        for y in x[2]:
+            if key in os.path.split(y)[1]:
+                print(os.path.join(os.path.abspath(x[0]), y))
+
+os模块提供非常强大的walk函数可以用于生成制定路径下的目录树，返回的tuple有`dirpath`, `dirname`, `filename`三个元素。 这里用y提取出第三个元素也即文件名，然后判断一下我们输入的字符串是否在文件名中，是就把路径(第一个元素)和文件名拼接输出。
+
+
+
