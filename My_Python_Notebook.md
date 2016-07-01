@@ -4074,3 +4074,33 @@ os模块提供非常强大的walk函数可以用于生成制定路径下的目�
 **把变量从内存中变成可存储或传输的过程**称为序列化，在Python中叫做 pickling，在其他语言中也被称为 serialization，marshalling(信号编集)，flattening（压平）等等。
 
 序列化后的内容可以写入磁盘或者通过网络传输到别的机器上。 反过来，**把变量内容从序列化的对象重新读到内存里**称为反序列化，也即 unpickling。
+
+####PICKLE
+
+Python提供 `pickle` 模块来实现序列化：
+
+    >>> import pickle
+    >>> d = dict(name='Bob', age=20, score=88)
+    >>> pickle.dumps(d)
+    b'\x80\x03}q\x00(X\x03\x00\x00\x00ageq\x01K\x14X\x05\x00\x00\x00scoreq\x02KXX\x04\x00\x00\x00nameq\x03X\x03\x00\x00\x00Bobq\x04u.'
+
+`pickle.dumps()` 方法能把任意对象序列化，返回一个bytes对象。 这个bytes对象就可以写入文件。
+
+此外 `pickle.dump()` 方法允许我们直接把一个对象序列化并写入文件：
+
+    >>> f = open('dump.txt', 'wb')
+    >>> pickle.dump(d, f)
+    >>> f.close()
+
+要把变量内容从磁盘读到内存时，可以先用bytes对象读出内容，再用 `pickle.loads()` 方法反序列化出对象。 也可以直接用 `pickle.load()` 方法反序列化出对象：
+
+    >>> f = open('dump.txt', 'rb')
+    >>> d = pickle.load(f)
+    >>> f.close()
+    >>> d
+    {'age': 20, 'score': 88, 'name': 'Bob'}
+
+**Notice**：
+
+使用pickle的问题是，它只属于Python特有的序列化，只能用于Python，甚至不同版本Python也互补兼容，所以只用来保存一些不重要的数据。
+
