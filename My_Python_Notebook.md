@@ -4104,3 +4104,57 @@ Python提供 `pickle` 模块来实现序列化：
 
 使用pickle的问题是，它只属于Python特有的序列化，只能用于Python，甚至不同版本Python也互补兼容，所以只用来保存一些不重要的数据。
 
+####JSON
+
+要在不同编程语言之间传递对象就必须把对象爱那个序列化成标准格式，如XML，更好的方法是**序列化为JSON**，因为**JSON表示出来就是一个字符串，可以被所有语言读取**，也可以方便地存储到磁盘或者通过网络传输，比XML更快，而且可以直接在WEB页面读取。
+
+JSON表示的对象就是标准的JavaScript语言的对象，JSON和Python内置的数据类型对应如下：
+
+<table border="1px" cellspacing="2px" style="width:500px;margin:0 auto;text-align:center">
+    <tr>
+        <td># JSON类型 #</td>
+        <td># Python类型 #</td>
+    </tr>
+    <tr>
+        <td>{}</td>
+        <td>dict</td>
+    </tr>
+    <tr>
+        <td>[]</td>
+        <td>list</td>
+    </tr>
+    <tr>
+        <td>"string"</td>
+        <td>str</td>
+    </tr>
+    <tr>
+        <td>1234.56</td>
+        <td>int或float</td>
+    </tr>
+    <tr>
+        <td>true/false</td>
+        <td>True/False</td>
+    </tr>
+    <tr>
+        <td>null</td>
+        <td>None</td>
+    </tr>
+</table>
+
+Python提供了 `json` 模块用于Python对象和JSON格式的转换：
+
+    >>> import json
+    >>> d = dict(name='Bob', age=20, score=88)
+    >>> json.dumps(d)
+    '{"age": 20, "score": 88, "name": "Bob"}'
+
+`dumps()` 方法返回一个str，内容就是标准的JSON。类似的，`dump()` 方法可以直接把JSON写入一个 `file-like Object`。
+
+反序列化也类似，用 `loads()` 或者对应的 `load()` 方法，前者把JSON的字符串反序列化，后者从 `file-like Object` 中读取字符串并反序列化：
+
+    >>> json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+    >>> json.loads(json_str)
+    {'age': 20, 'score': 88, 'name': 'Bob'}
+
+由于JSON标准规定**JSON编码是UTF-8**，所以我们总是能正确地在Python的str与JSON的字符串之间转换。
+
