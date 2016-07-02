@@ -4158,3 +4158,43 @@ Python提供了 `json` 模块用于Python对象和JSON格式的转换：
 
 由于JSON标准规定**JSON编码是UTF-8**，所以我们总是能正确地在Python的str与JSON的字符串之间转换。
 
+####JSON进阶
+
+除了上面表格包含的类型，有时我们会自定义类型，比方说定义一个Student类，如果还是直接用 `dumps()` 方法进行序列化就会抛出 `TypeError` 的错误了。
+
+    import json
+
+    class Student(object):
+        def __init__(self, name, age, score):
+            self.name = name
+            self.age = age
+            self.score = score
+
+    s = Student('Bob', 20, 88)
+
+其实 `dumps()` 方法除了必须的obj参数，还有一大堆[可选参数](https://docs.python.org/3/library/json.html#json.dumps)可以用来定制JSON序列化。
+
+其中，可选参数 `default` 就是**把任意一个对象变成一个可序列为JSON的对象**，我们只需要为Student专门写一个**转换函数**，再把函数传进去即可：
+
+    def student2dict(std):
+        return {
+            'name': std.name,
+            'age': std.age,
+            'score': std.score
+        }
+
+    >>> print(json.dumps(s, default=student2dict))
+    {"age": 20, "name": "Bob", "score": 88}
+
+但是下次我们定义了另外一个类就又要再写一个转换函数了，这样很麻烦，其实可以直接用类对象的 `__dict__` 属性，除了定义了 `__slots__` 的类之外，每个类的实例都有 `__dict__` 属性，这是一个用来存储实例变量的dict。
+
+因此我们只要写为 `print(json.dumps(s, default=lambda obj: obj.__dict__))` 就可以了。
+
+但反过来就必须定义转换函数了，思路是用属性值生成一个新的实例然后返回：
+
+    def dict2student(d):
+        return Student(d['name'], d['age'], d['score'])
+
+    >>> json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+    >>> print(json.loads(json_str, object_hook=dict2student))
+    <__main__.Student object at 0x10cd3c190>
