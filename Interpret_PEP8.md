@@ -15,19 +15,46 @@
 
 <!-- MarkdownTOC -->
 
-- Introduction
-- A Foolish Consistency is the Hobgoblin of Little Minds
-- Code lay-out
-- String Quotes
-- Whitespace in Expressions and Statements
-- Comments
-- Version Bookkeeping
-- Naming Conventions
-- Programming Recommendations
-- References
-- Copyright
+- [Introduction](#introduction)
+- [A Foolish Consistency is the Hobgoblin of Little Minds](#a-foolish-consistency-is-the-hobgoblin-of-little-minds)
+- [Code lay-out](#code-lay-out)
+  - [Indentation](#indentation)
+  - [Tabs or Spaces?](#tabs-or-spaces)
+  - [Maximum Line Length](#maximum-line-length)
+  - [Blank Lines](#blank-lines)
+  - [Source File Encoding](#source-file-encoding)
+  - [Imports](#imports)
+- [String Quotes](#string-quotes)
+- [Whitespace in Expressions and Statements](#whitespace-in-expressions-and-statements)
+  - [Pet Peeves](#pet-peeves)
+  - [Other Recommendations](#other-recommendations)
+- [Comments](#comments)
+  - [Block Comments](#block-comments)
+  - [Inline Comments](#inline-comments)
+  - [Documentation Strings](#documentation-strings)
+- [Version Bookkeeping](#version-bookkeeping)
+- [Naming Conventions](#naming-conventions)
+  - [Overriding Principle](#overriding-principle)
+  - [Descriptive: Naming Styles](#descriptive-naming-styles)
+  - [Prescriptive: Naming Conventions](#prescriptive-naming-conventions)
+    - [Names to Avoid](#names-to-avoid)
+    - [Package and Module Names](#package-and-module-names)
+    - [Class Names](#class-names)
+    - [Exception Names](#exception-names)
+    - [Global Variable Names](#global-variable-names)
+    - [Function Names](#function-names)
+    - [Function and method arguments](#function-and-method-arguments)
+    - [Method Names and Instance Variables](#method-names-and-instance-variables)
+    - [Constants](#constants)
+    - [Designing for inheritance](#designing-for-inheritance)
+  - [Public and internal interfaces](#public-and-internal-interfaces)
+- [Programming Recommendations](#programming-recommendations)
+  - [Function Annotations](#function-annotations)
+- [References](#references)
+- [Copyright](#copyright)
 
 <!-- /MarkdownTOC -->
+
 
 
 ## Introduction
