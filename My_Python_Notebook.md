@@ -4213,3 +4213,34 @@ Python提供了 `json` 模块用于Python对象和JSON格式的转换：
 
 如何调度进程和线程，完全**由操作系统决定**，程序自己不能决定什么时候执行，执行多长时间。 多进程和多线程的程序涉及到**同步数据共享**的问题，编写起来更复杂。
 
+###多进程
+***
+
+Unix/Linux操作系统提供 `fork()` 系统调用，这个函数调用非常特殊，**调用一次，返回两次**。 操作系统会自动把当前进程(称为*父进程*)复制一份(称为*子进程*)，然后**分别在父进程和子进程内返回**。
+
+子进程永远返回0，父进程返回子进程ID。 因为一个父进程可以fork出很多子进程，所以要记下每个子进程的ID，而子进程只需要调用 `getppid()` 就可以拿到父进程的ID。
+
+Python的 `os` 模块封装着常见的系统调用，其中就包括 `fork`，所以可以在Python中很轻松地创建子进程：
+
+    import os
+
+    print('Process (%s) start...' % os.getpid())
+    # Only works on Unix/Linux/Mac:
+    pid = os.fork()
+    if pid == 0:
+        print('I am child process (%s) and my parent is %s.' % (os.getpid(), os.getppid()))
+    else:
+        print('I (%s) just created a child process (%s).' % (os.getpid(), pid))
+
+运行结果：
+
+    Process (876) start...
+    I (876) just created a child process (877).
+    I am child process (877) and my parent is 876.
+
+可以看到首先在父进程中返回，返回的pid是子进程的，不为0，所以执行else代码块。 然后到子进程中返回，子进程返回0，执行if代码块，此时 `getpid` 得到子进程自己的pid， `getppid` 得到父进程的pid。
+
+**Notice**：
+
+1. Windows没有提供 `fork` 调用，上面这段代码无法执行。
+2. 有了 `fork` 调用，进程接到新任务时就可以赋值出一个子进程来处理新任务，常见的Apache服务器就是由父进程监听端口，每当有新的http请求时，就fork出子进程来处理新的http请求。
