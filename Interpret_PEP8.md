@@ -1,63 +1,57 @@
 # Python编程规范-PEP8
 
-    PEP: 8
-    Title: Style Guide for Python Code
-    Version: $Revision$
-    Last-Modified: $Date$
-    Author: Guido van Rossum <guido@python.org>,
-            Barry Warsaw <barry@python.org>,
-            Nick Coghlan <ncoghlan@gmail.com>
-    Status: Active
-    Type: Process
-    Content-Type: text/x-rst
-    Created: 05-Jul-2001
-    Post-History: 05-Jul-2001, 01-Aug-2013
+良好的代码风格是非常有必要的，不仅能让自己在review代码时思路更加清晰，免去重复造轮子的麻烦，在多人合作开发项目的情况下，也能避免歧义，使得大家可以更好地专注于算法本身。
+
+在使用Python语言编写代码也需要遵循一定的规范，在这篇笔记里，我对Python官方定义的编程规范-PEP8进行了翻译，并加入一些自己的见解。原文来自[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)，作者是Guido van Rossum, Barry Warsaw, and Nick Coghlan，最后发布于2013.8.1。在翻译的过程中，我参考了Github上Damnever的中译文版本[PEP8-Style-Guide-for-Python-Code](https://github.com/Damnever/Note/blob/master/note/PEP8-Style-Guide-for-Python-Code.md)。
+
+## 目录
 
 <!-- MarkdownTOC -->
 
-- [Introduction](#introduction)
-- [A Foolish Consistency is the Hobgoblin of Little Minds](#a-foolish-consistency-is-the-hobgoblin-of-little-minds)
-- [Code lay-out](#code-lay-out)
-  - [Indentation](#indentation)
-  - [Tabs or Spaces?](#tabs-or-spaces)
-  - [Maximum Line Length](#maximum-line-length)
-  - [Blank Lines](#blank-lines)
-  - [Source File Encoding](#source-file-encoding)
-  - [Imports](#imports)
-- [String Quotes](#string-quotes)
-- [Whitespace in Expressions and Statements](#whitespace-in-expressions-and-statements)
-  - [Pet Peeves](#pet-peeves)
-  - [Other Recommendations](#other-recommendations)
-- [Comments](#comments)
-  - [Block Comments](#block-comments)
-  - [Inline Comments](#inline-comments)
-  - [Documentation Strings](#documentation-strings)
-- [Version Bookkeeping](#version-bookkeeping)
-- [Naming Conventions](#naming-conventions)
-  - [Overriding Principle](#overriding-principle)
-  - [Descriptive: Naming Styles](#descriptive-naming-styles)
-  - [Prescriptive: Naming Conventions](#prescriptive-naming-conventions)
-    - [Names to Avoid](#names-to-avoid)
-    - [Package and Module Names](#package-and-module-names)
-    - [Class Names](#class-names)
-    - [Exception Names](#exception-names)
-    - [Global Variable Names](#global-variable-names)
-    - [Function Names](#function-names)
-    - [Function and method arguments](#function-and-method-arguments)
-    - [Method Names and Instance Variables](#method-names-and-instance-variables)
-    - [Constants](#constants)
-    - [Designing for inheritance](#designing-for-inheritance)
-  - [Public and internal interfaces](#public-and-internal-interfaces)
-- [Programming Recommendations](#programming-recommendations)
-  - [Function Annotations](#function-annotations)
-- [References](#references)
-- [Copyright](#copyright)
+- [介绍](#介绍)
+- [一昧地保持一致是愚蠢的](#一昧地保持一致是愚蠢的)
+- [代码排版](#代码排版)
+    - [缩进](#缩进)
+    - [使用Tab还是空格？](#使用tab还是空格？)
+    - [每行最多字符数](#每行最多字符数)
+    - [空行](#空行)
+    - [源文件编码](#源文件编码)
+    - [导入](#导入)
+- [字符串的引号](#字符串的引号)
+- [表达式和语句中的空格](#表达式和语句中的空格)
+    - [不可容忍的错误](#不可容忍的错误)
+    - [其他建议](#其他建议)
+- [注释](#注释)
+    - [块注释](#块注释)
+    - [行内注释](#行内注释)
+    - [文档字符串](#文档字符串)
+- [版本标注](#版本标注)
+- [命名约定](#命名约定)
+    - [覆盖原则](#覆盖原则)
+    - [描述：命名风格](#描述：命名风格)
+    - [规范：命名约定](#规范：命名约定)
+        - [要避免的命名](#要避免的命名)
+        - [包名和模块名](#包名和模块名)
+        - [类名](#类名)
+        - [异常名](#异常名)
+        - [全局变量名](#全局变量名)
+        - [函数名](#函数名)
+        - [函数和方法参数](#函数和方法参数)
+        - [方法名和实例变量](#方法名和实例变量)
+        - [常数](#常数)
+        - [继承的设计](#继承的设计)
+    - [公共接口和内部接口](#公共接口和内部接口)
+- [编程建议](#编程建议)
+    - [函数注释](#函数注释)
+- [参考文献](#参考文献)
+- [版权](#版权)
 
 <!-- /MarkdownTOC -->
 
 
 
-## Introduction
+## 介绍
+**Introduction**
 
 This document gives coding conventions for the Python code comprising
 the standard library in the main Python distribution.  Please see the
@@ -76,7 +70,8 @@ Many projects have their own coding style guidelines. In the event of any
 conflicts, such project-specific guides take precedence for that project.
 
 
-## A Foolish Consistency is the Hobgoblin of Little Minds
+## 一昧地保持一致是愚蠢的
+**A Foolish Consistency is the Hobgoblin of Little Minds**
 
 One of Guido's key insights is that code is read much more often than
 it is written.  The guidelines provided here are intended to improve
@@ -111,10 +106,12 @@ Some other good reasons to ignore a particular guideline:
    Python that don't support the feature recommended by the style guide.
 
 
-## Code lay-out
+## 代码排版
+**Code lay-out**
 
 
-### Indentation
+### 缩进
+**Indentation**
 
 Use 4 spaces per indentation level.
 
@@ -219,7 +216,8 @@ starts the multi-line construct, as in::
     )
 
 
-### Tabs or Spaces?
+### 使用Tab还是空格？
+**Tabs or Spaces?**
 
 Spaces are the preferred indentation method.
 
@@ -237,7 +235,8 @@ tabs and spaces.  When using ``-tt`` these warnings become errors.
 These options are highly recommended!
 
 
-### Maximum Line Length
+### 每行最多字符数
+**Maximum Line Length**
 
 Limit all lines to a maximum of 79 characters.
 
@@ -303,7 +302,8 @@ before it.  Some examples::
             Blob.__init__(self, width, height,
                           color, emphasis, highlight)
 
-### Blank Lines
+### 空行
+**Blank Lines**
 
 Surround top-level function and class definitions with two blank
 lines.
@@ -324,7 +324,8 @@ Note, some editors and web-based code viewers may not recognize
 control-L as a form feed and will show another glyph in its place.
 
 
-### Source File Encoding
+### 源文件编码
+**Source File Encoding**
 
 Code in the core Python distribution should always use UTF-8 (or ASCII
 in Python 2).
@@ -353,7 +354,8 @@ Open source projects with a global audience are encouraged to adopt a
 similar policy.
 
 
-### Imports
+### 导入
+**Imports**
 
 - Imports should usually be on separate lines, e.g.::
 
@@ -427,7 +429,8 @@ similar policy.
   public and internal interfaces still apply.
 
 
-## String Quotes
+## 字符串的引号
+**String Quotes**
 
 In Python, single-quoted strings and double-quoted strings are the
 same.  This PEP does not make a recommendation for this.  Pick a rule
@@ -439,9 +442,11 @@ For triple-quoted strings, always use double quote characters to be
 consistent with the docstring convention in PEP 257.
 
 
-## Whitespace in Expressions and Statements
+## 表达式和语句中的空格
+**Whitespace in Expressions and Statements**
 
-### Pet Peeves
+### 不可容忍的错误
+**Pet Peeves**
 
 Avoid extraneous whitespace in the following situations:
 
@@ -504,7 +509,8 @@ Avoid extraneous whitespace in the following situations:
       long_variable = 3
 
 
-### Other Recommendations
+### 其他建议
+**Other Recommendations**
 
 - Avoid trailing whitespace anywhere.  Because it's usually invisible,
   it can be confusing: e.g. a backslash followed by a space and a
@@ -620,7 +626,8 @@ Avoid extraneous whitespace in the following situations:
 
       if foo == 'blah': one(); two(); three()
 
-## Comments
+## 注释
+**Comments**
 
 Comments that contradict the code are worse than no comments.  Always
 make a priority of keeping the comments up-to-date when the code
@@ -643,7 +650,8 @@ Python coders from non-English speaking countries: please write your
 comments in English, unless you are 120% sure that the code will never
 be read by people who don't speak your language.
 
-### Block Comments
+### 块注释
+**Block Comments**
 
 Block comments generally apply to some (or all) code that follows
 them, and are indented to the same level as that code.  Each line of a
@@ -653,7 +661,8 @@ indented text inside the comment).
 Paragraphs inside a block comment are separated by a line containing a
 single ``#``.
 
-### Inline Comments
+### 行内注释
+**Inline Comments**
 
 Use inline comments sparingly.
 
@@ -670,7 +679,8 @@ But sometimes, this is useful::
 
     x = x + 1                 # Compensate for border
 
-### Documentation Strings
+### 文档字符串
+**Documentation Strings**
 
 Conventions for writing good documentation strings
 (a.k.a. "docstrings") are immortalized in PEP 257.
@@ -693,7 +703,8 @@ Conventions for writing good documentation strings
   the same line.
 
 
-## Version Bookkeeping
+## 版本标注
+**Version Bookkeeping**
 
 If you have to have Subversion, CVS, or RCS crud in your source file,
 do it as follows. ::
@@ -705,7 +716,8 @@ These lines should be included after the module's docstring, before
 any other code, separated by a blank line above and below.
 
 
-## Naming Conventions
+## 命名约定
+**Naming Conventions**
 
 The naming conventions of Python's library are a bit of a mess, so
 we'll never get this completely consistent -- nevertheless, here are
@@ -714,12 +726,14 @@ the currently recommended naming standards.  New modules and packages
 standards, but where an existing library has a different style,
 internal consistency is preferred.
 
-### Overriding Principle
+### 覆盖原则
+**Overriding Principle**
 
 Names that are visible to the user as public parts of the API should
 follow conventions that reflect usage rather than implementation.
 
-### Descriptive: Naming Styles
+### 描述：命名风格
+**Descriptive: Naming Styles**
 
 There are a lot of different naming styles.  It helps to be able to
 recognize what naming style is being used, independently from what
@@ -779,9 +793,11 @@ case convention):
   E.g. ``__init__``, ``__import__`` or ``__file__``.  Never invent
   such names; only use them as documented.
 
-### Prescriptive: Naming Conventions
+### 规范：命名约定
+**Prescriptive: Naming Conventions**
 
-#### Names to Avoid
+#### 要避免的命名
+**Names to Avoid**
 
 Never use the characters 'l' (lowercase letter el), 'O' (uppercase
 letter oh), or 'I' (uppercase letter eye) as single character variable
@@ -790,7 +806,8 @@ names.
 In some fonts, these characters are indistinguishable from the
 numerals one and zero.  When tempted to use 'l', use 'L' instead.
 
-#### Package and Module Names
+#### 包名和模块名
+**Package and Module Names**
 
 Modules should have short, all-lowercase names.  Underscores can be
 used in the module name if it improves readability.  Python packages
@@ -802,7 +819,8 @@ Python module that provides a higher level (e.g. more object oriented)
 interface, the C/C++ module has a leading underscore
 (e.g. ``_socket``).
 
-#### Class Names
+#### 类名
+**Class Names**
 
 Class names should normally use the CapWords convention.
 
@@ -813,13 +831,15 @@ Note that there is a separate convention for builtin names: most builtin
 names are single words (or two words run together), with the CapWords
 convention used only for exception names and builtin constants.
 
-#### Exception Names
+#### 异常名
+**Exception Names**
 
 Because exceptions should be classes, the class naming convention
 applies here.  However, you should use the suffix "Error" on your
 exception names (if the exception actually is an error).
 
-#### Global Variable Names
+#### 全局变量名
+**Global Variable Names**
 
 (Let's hope that these variables are meant for use inside one module
 only.)  The conventions are about the same as those for functions.
@@ -830,7 +850,8 @@ older convention of prefixing such globals with an underscore (which
 you might want to do to indicate these globals are "module
 non-public").
 
-#### Function Names
+#### 函数名
+**Function Names**
 
 Function names should be lowercase, with words separated by
 underscores as necessary to improve readability.
@@ -839,7 +860,8 @@ mixedCase is allowed only in contexts where that's already the
 prevailing style (e.g. threading.py), to retain backwards
 compatibility.
 
-#### Function and method arguments
+#### 函数和方法参数
+**Function and method arguments**
 
 Always use ``self`` for the first argument to instance methods.
 
@@ -851,7 +873,8 @@ use an abbreviation or spelling corruption.  Thus ``class_`` is better
 than ``clss``.  (Perhaps better is to avoid such clashes by using a
 synonym.)
 
-#### Method Names and Instance Variables
+#### 方法名和实例变量
+**Method Names and Instance Variables**
 
 Use the function naming rules: lowercase with words separated by
 underscores as necessary to improve readability.
@@ -870,13 +893,15 @@ name conflicts with attributes in classes designed to be subclassed.
 
 Note: there is some controversy about the use of __names (see below).
 
-#### Constants
+#### 常数
+**Constants**
 
 Constants are usually defined on a module level and written in all
 capital letters with underscores separating words.  Examples include
 ``MAX_OVERFLOW`` and ``TOTAL``.
 
-#### Designing for inheritance
+#### 继承的设计
+**Designing for inheritance**
 
 Always decide whether a class's methods and instance variables
 (collectively: "attributes") should be public or non-public.  If in
@@ -951,7 +976,8 @@ With this in mind, here are the Pythonic guidelines:
   advanced callers.
 
 
-### Public and internal interfaces
+### 公共接口和内部接口
+**Public and internal interfaces**
 
 Any backwards compatibility guarantees apply only to public interfaces.
 Accordingly, it is important that users be able to clearly distinguish
@@ -980,7 +1006,8 @@ API, such as ``os.path`` or a package's ``__init__`` module that exposes
 functionality from submodules.
 
 
-## Programming Recommendations
+## 编程建议
+**Programming Recommendations**
 
 - Code should be written in a way that does not disadvantage other
   implementations of Python (PyPy, Jython, IronPython, Cython, Psyco,
@@ -1256,7 +1283,8 @@ functionality from submodules.
       No:    if greeting == True:
       Worse: if greeting is True:
 
-### Function Annotations
+### 函数注释
+**Function Annotations**
 
 With the acceptance of PEP 484, the style rules for function
 annotations are changing.
@@ -1280,9 +1308,9 @@ annotations are changing.
 
 - For code that wants to make a different use of function annotations
   it is recommended to put a comment of the form::
-
-    # type: ignore
-
+```python
+# type: ignore
+```
   near the top of the file; this tells type checker to ignore all
   annotations.  (More fine-grained ways of disabling complaints from
   type checkers can be found in PEP 484.)
@@ -1301,18 +1329,18 @@ annotations are changing.
 
 - For code that needs to be backwards compatible, function annotations
   can be added in the form of comments.  Basically, this Python 3 annotation::
-
+```python
     def embezzle(self, account: str, funds: int = 1000000, **fake_receipts: str) -> None:
         """Embezzle funds from account using fake receipts."""
         <code goes here>
-
+```
   is equivalent to the following::
-
+```python
     def embezzle(self, account, funds=1000000, **fake_receipts):
         # type: (str, int, **str) -> None
         """Embezzle funds from account using fake receipts."""
         <code goes here>
-
+```
   The mypy type checker [5]_ currently supports this syntax, and other
   type checkers are encouraged to adopt it.
 
@@ -1327,7 +1355,8 @@ annotations are changing.
    indented until the closing parenthesis.
 
 
-## References
+## 参考文献
+**References**
 
 1. PEP 7, Style Guide for C Code, van Rossum
 2. Barry's GNU Mailman style guide
@@ -1341,17 +1370,8 @@ annotations are changing.
 
 
 
-## Copyright
+## 版权
+**Copyright**
 
 This document has been placed in the public domain.
 
-
-
-..
-   Local Variables:
-   mode: indented-text
-   indent-tabs-mode: nil
-   sentence-end-double-space: t
-   fill-column: 70
-   coding: utf-8
-   End:
