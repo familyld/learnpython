@@ -2,7 +2,7 @@
 
 良好的代码风格是非常有必要的，不仅能让自己在review代码时思路更加清晰，免去重复造轮子的麻烦，在多人合作开发项目的情况下，也能避免歧义，使得大家可以更好地专注于算法本身。
 
-在使用Python语言编写代码也需要遵循一定的规范，在这篇笔记里，我对Python官方给出的编程规范-PEP8进行了翻译，并加入一些自己的见解。原文来自[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)，作者是Guido van Rossum、Barry Warsaw和Nick Coghlan。在翻译的过程中，我参考了Github上Damnever的中译文版本[PEP8-Style-Guide-for-Python-Code](https://github.com/Damnever/Note/blob/master/note/PEP8-Style-Guide-for-Python-Code.md)，但该版本与PEP8最新版有所出入，缺失了部分章节。
+在使用Python语言编写代码也需要遵循一定的规范，在这篇笔记中，我对Python官方给出的编程规范-PEP8进行了翻译，并加入一些自己的见解。原文来自[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)，作者是Guido van Rossum、Barry Warsaw和Nick Coghlan。在翻译的过程中，我参考了Github上Damnever的中译文版本[PEP8-Style-Guide-for-Python-Code](https://github.com/Damnever/Note/blob/master/note/PEP8-Style-Guide-for-Python-Code.md)，但该版本与PEP8最新版有所出入，缺失了部分的章节内容。
 
 ## 目录
 <!-- MarkdownTOC -->
@@ -52,17 +52,20 @@
 ## 介绍
 **Introduction**
 
-This document gives coding conventions for the Python code comprising the standard library in the main Python distribution. Please see the companion informational PEP describing style guidelines for the C code in the C implementation of Python [[1]](https://www.python.org/dev/peps/pep-0008/#id8).
-这份文档
+This document gives coding conventions for the Python code comprising the standard library in the main Python distribution. Please see the companion informational PEP describing style guidelines for the C code in the C implementation of Python [[1]](https://www.python.org/dev/peps/pep-0008/#id8).<br>
+> 这份文档给出的代码规范适用于Python主要发行版中所有标准库的Python代码。 你可以参阅相关的PEP（全称：Python Enhancement Proposal，Python改进方案）信息，它用于描述Python的C代码规范。
 
-This document and [PEP 257](https://www.python.org/dev/peps/pep-0257) (Docstring Conventions) were adapted from Guido's original Python Style Guide essay, with some additions from Barry's style guide [[2]](https://www.python.org/dev/peps/pep-0008/#id9).
+This document and [PEP 257](https://www.python.org/dev/peps/pep-0257) (Docstring Conventions) were adapted from Guido's original Python Style Guide essay, with some additions from Barry's style guide [[2]](https://www.python.org/dev/peps/pep-0008/#id9).<br>
+> 这篇文档和 PEP 257（文档字符串约定）都改编自Guido的Python风格指南一文，并从Barry的风格指南中引入了部分内容。
 
 This style guide evolves over time as additional conventions are
 identified and past conventions are rendered obsolete by changes in
-the language itself.
+the language itself.<br>
+> 随着时间推移，这份风格指南不断发展。并且，作为一份额外的约定，已被认可。旧的约定则随着语言本身的发展被淘汰了。
 
 Many projects have their own coding style guidelines. In the event of any
-conflicts, such project-specific guides take precedence for that project.
+conflicts, such project-specific guides take precedence for that project.<br>
+> 很多项目都有自己的代码风格指南，在这种情况下，如果（与PEP8）存在冲突，应优先考虑项目指定的代码风格。
 
 
 ## 一昧地保持一致是愚蠢的
