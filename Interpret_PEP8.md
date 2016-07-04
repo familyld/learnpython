@@ -2,7 +2,7 @@
 
 良好的代码风格是非常有必要的，不仅能让自己在review代码时思路更加清晰，免去重复造轮子的麻烦，在多人合作开发项目的情况下，也能避免歧义，使得大家可以更好地专注于算法本身。
 
-在使用Python语言编写代码也需要遵循一定的规范，在这篇笔记中，我对Python官方给出的编程规范-PEP8进行了翻译，并加入一些自己的见解。原文来自[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)，作者是Guido van Rossum、Barry Warsaw和Nick Coghlan。在翻译的过程中，我参考了Github上Damnever的中译文版本[PEP8-Style-Guide-for-Python-Code](https://github.com/Damnever/Note/blob/master/note/PEP8-Style-Guide-for-Python-Code.md)，但该版本与PEP8最新版有所出入，缺失了部分的章节内容。
+在使用Python语言编写代码也需要遵循一定的规范，在这篇笔记中，我对Python官方给出的编程规范-PEP8进行了翻译，并加入一些自己的见解。原文来自[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)，作者是Guido van Rossum、Barry Warsaw和Nick Coghlan。在翻译的过程中，我参考了Github上Damnever的中译文版本[PEP8-Style-Guide-for-Python-Code](https://github.com/Damnever/Note/blob/master/note/PEP8-Style-Guide-for-Python-Code.md)，但该译本存在一些翻译错误，并且缺失了PEP8最新版本中的部分内容。
 
 ## 目录
 <!-- MarkdownTOC -->
@@ -72,7 +72,7 @@ conflicts, such project-specific guides take precedence for that project.<br>
 **A Foolish Consistency is the Hobgoblin of Little Minds**
 
 One of Guido's key insights is that code is read much more often than it is written.  The guidelines provided here are intended to improve the readability of code and make it consistent across the wide spectrum of Python code. As [PEP 20](https://www.python.org/dev/peps/pep-0020) says, "Readability counts".<br>
-> Guido的一个关键见解就是，我们需要读代码的次数远多于需要写代码的次数。 因此，给出这份指南旨在提高代码的可读性并使大多数Python代码能保持一致（的风格）。正如PEP20中说到的那样，可读性是非常重要的。
+> Guido的一个重要观点就是，我们需要读代码的次数远多于需要写代码的次数。 因此，给出这份指南旨在提高代码的可读性并使大多数Python代码能保持一致（的风格）。正如PEP20中说到的那样，可读性是非常重要的。
 
 A style guide is about consistency.  Consistency with this style guide is important.  Consistency within a project is more important. Consistency within one module or function is the most important.<br>
 > 一致性对于一份风格指南来说是很重要的，对于一个项目来说就更重要了，对于一个模块或函数来说更甚。
@@ -107,92 +107,87 @@ Some other good reasons to ignore a particular guideline:<br>
 ### 缩进
 **Indentation**
 
-Use 4 spaces per indentation level.
+Use 4 spaces per indentation level.<br>
+> 每层缩进采用4个空格。
 
-Continuation lines should align wrapped elements either vertically
-using Python's implicit line joining inside parentheses, brackets and
-braces, or using a *hanging indent* [[7]](https://www.python.org/dev/peps/pep-0008/#fn-hi).  When using a hanging
-indent the following should be considered; there should be no
-arguments on the first line and further indentation should be used to
-clearly distinguish itself as a continuation line.
+Continuation lines should align wrapped elements either vertically using Python's implicit line joining inside parentheses, brackets and braces, or using a *hanging indent* [[7]](https://www.python.org/dev/peps/pep-0008/#fn-hi).  When using a hanging indent the following should be considered; there should be no arguments on the first line and further indentation should be used to clearly distinguish itself as a continuation line.<br>
+> 续行时，对于包裹在括号中的元素有两种对齐的方案。要么利用Python的隐式行连接（可以参考[Python风格规范](http://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/)和[Python语言参考手册](http://manual.linuxnote.org/python/implicit-joining.html)中的说明）特性进行垂直对齐（注：这一特性使得编写Python代码时，括号内的续行不需使用反斜线标明，并且缩进不影响代码逻辑。这样我们可以采用任意数量的缩进来实现续行之中各行的对齐）；要么就用悬挂缩进。注意使用悬挂缩进时，第一行不能有参数，并且要使用一个额外的缩进来表明这一行属于续行（从而和其他代码块区分开来）。
 
-Yes:
+正确示例：
 
 ```python
-# Aligned with opening delimiter.
+# 同开始分界符(左括号)对齐
 foo = long_function_name(var_one, var_two,
                          var_three, var_four)
 
-# More indentation included to distinguish this from the rest.
+# 续行多缩进一级以跟其他代码区别开来
 def long_function_name(
         var_one, var_two, var_three,
         var_four):
     print(var_one)
 
-# Hanging indents should add a level.
+# 悬挂缩进需要多缩进一级
 foo = long_function_name(
     var_one, var_two,
     var_three, var_four)
 ```
 
+错误示例：
+
 ```python
-# Arguments on first line forbidden when not using vertical alignment.
+# 采用垂直对齐时第一行不应该有参数
 foo = long_function_name(var_one, var_two,
     var_three, var_four)
 
-# Further indentation required as indentation is not distinguishable.
+# 续行没有和（其他代码块）区分开，应再缩进一级
 def long_function_name(
     var_one, var_two, var_three,
     var_four):
     print(var_one)
 ```
 
-The 4-space rule is optional for continuation lines.
+The 4-space rule is optional for continuation lines.<br>
+> 续行中的缩进可以不必是4个空格
 
-Optional:
+可选的：
 
 ```python
-# Hanging indents *may* be indented to other than 4 spaces.
+# 悬挂缩进可以不采用4空格缩进
 foo = long_function_name(
     var_one, var_two,
     var_three, var_four)
 ```
 
-When the conditional part of an ``if``-statement is long enough to require
-that it be written across multiple lines, it's worth noting that the
-combination of a two character keyword (i.e. ``if``), plus a single space,
-plus an opening parenthesis creates a natural 4-space indent for the
-subsequent lines of the multiline conditional.  This can produce a visual
-conflict with the indented suite of code nested inside the ``if``-statement,
-which would also naturally be indented to 4 spaces.  This PEP takes no
-explicit position on how (or whether) to further visually distinguish such
-conditional lines from the nested suite inside the ``if``-statement.
-Acceptable options in this situation include, but are not limited to:
+When the conditional part of an ``if``-statement is long enough to require that it be written across multiple lines, it's worth noting that the combination of a two character keyword (i.e. ``if``), plus a single space, plus an opening parenthesis creates a natural 4-space indent for the subsequent lines of the multiline conditional. This can produce a visual conflict with the indented suite of code nested inside the ``if``-statement, which would also naturally be indented to 4 spaces.  This PEP takes no explicit position on how (or whether) to further visually distinguish such
+conditional lines from the nested suite inside the ``if``-statement. Acceptable options in this situation include, but are not limited to:<br>
+> 当if语句的条件部分足够长，需要分开多个行来写的时候，有一点值得注意的是，对于两字符的关键词（比方说if），可以加入一个空格和左括号来创造自然的4空格缩进，使得if语句条件部分中的各行可以按照这个缩进进行对齐。 但是，这样会和嵌套在if语句中的代码块构成视觉冲突，因为这个代码块同样采用了4空格缩进。 对于如何把if语句的条件部分和嵌套在if语句中的代码块在视觉上区分开来，这份指南并没有给出明确规定。可接受但不限于以下的写法：
 
 ```python
-# No extra indentation.
+# 不采用额外缩进
 if (this_is_one_thing and
     that_is_another_thing):
     do_something()
 
-# Add a comment, which will provide some distinction in editors
+# 增加一行注释，这样在编辑器中显示时能有所区分
 # supporting syntax highlighting.
 if (this_is_one_thing and
     that_is_another_thing):
     # Since both conditions are true, we can frobnicate.
     do_something()
 
-# Add some extra indentation on the conditional continuation line.
+# 在条件语句的续行增加一级缩进
 if (this_is_one_thing
         and that_is_another_thing):
     do_something()
 ```
 
-(Also see the discussion of whether to break before or after binary operators below.)
+(Also see the discussion of whether to break before or after binary operators below.)<br>
+> （这里还涉及到了应该在二元操作符前进行换行还是在其后进行换行的问题，可以参看本文的后续内容。）
 
 The closing brace/bracket/parenthesis on multi-line constructs may
 either line up under the first non-whitespace character of the last
-line of list, as in:
+line of list, as in:<br>
+> 多行结构中的右括号应放在最后一行第一个非空白字符的下方，如下所示：
 
 ```python
 my_list = [
@@ -207,6 +202,8 @@ result = some_function_that_takes_arguments(
 
 or it may be lined up under the first character of the line that
 starts the multi-line construct, as in:
+<br>
+> 也可以放在多行结构中第一行第一个字符的下方，如下所示：
 
 ```python
 my_list = [
@@ -222,40 +219,48 @@ result = some_function_that_takes_arguments(
 ### 使用Tab还是空格？
 **Tabs or Spaces?**
 
-Spaces are the preferred indentation method.
+Spaces are the preferred indentation method.<br>
+> 采用空格是缩进的首选。
 
-Tabs should be used solely to remain consistent with code that is
-already indented with tabs.
+Tabs should be used solely to remain consistent with code that is already indented with tabs.<br>
+> 仅当我们需要和以往采用Tab进行缩进的代码保持一致性时使用Tab。
 
-Python 3 disallows mixing the use of tabs and spaces for indentation.
+Python 3 disallows mixing the use of tabs and spaces for indentation.<br>
+> Python 3 不允许同时采用Tab和空格进行缩进。
 
-Python 2 code indented with a mixture of tabs and spaces should be
-converted to using spaces exclusively.
+Python 2 code indented with a mixture of tabs and spaces should be converted to using spaces exclusively.<br>
+> Python 2 中混合使用Tab和空格进行缩进的代码应该都转换为只使用空格。
 
-When invoking the Python 2 command line interpreter with
-the ``-t`` option, it issues warnings about code that illegally mixes
-tabs and spaces.  When using ``-tt`` these warnings become errors.
-These options are highly recommended!
+When invoking the Python 2 command line interpreter with the ``-t`` option, it issues warnings about code that illegally mixes tabs and spaces.  When using ``-tt`` these warnings become errors. These options are highly recommended!<br>
+> 当使用``-t``选项启动Python 2命令行解释器时，混合使用Tab和空格进行缩进的代码会被警告。当使用``-tt``选项启动Python 2命令行解释器时，这些警告会变成错误。强烈推荐使用这些选项！
 
 
 ### 每行最多字符数
 **Maximum Line Length**
 
-Limit all lines to a maximum of 79 characters.
+Limit all lines to a maximum of 79 characters.<br>
+> 每行最多包含79个字符。
 
-For flowing long blocks of text with fewer structural restrictions (docstrings or comments), the line length should be limited to 72 characters.
+For flowing long blocks of text with fewer structural restrictions (docstrings or comments), the line length should be limited to 72 characters.<br>
+> 对于连续的大段文本块（比方说文档字符串或注释），结构上的限制较少，这些文本块每行应限制在72个字符长度内。
 
-Limiting the required editor window width makes it possible to have several files open side-by-side, and works well when using code review tools that present the two versions in adjacent columns.
+Limiting the required editor window width makes it possible to have several files open side-by-side, and works well when using code review tools that present the two versions in adjacent columns.<br>
+> 限制编辑器窗口宽度使得同时打开几个文件并在屏幕上并排显示成为了可能（这里可以理解为并排显示时依然能够完整地看到每一行，而无需借助横向滚动条）。当使用代码评审工具把两个版本的代码在（软件面板的）相邻列显示时，效果也很好。
 
-The default wrapping in most tools disrupts the visual structure of the code, making it more difficult to understand. The limits are chosen to avoid wrapping in editors with the window width set to 80, even if the tool places a marker glyph in the final column when wrapping lines. Some web based tools may not offer dynamic line wrapping at all.
+The default wrapping in most tools disrupts the visual structure of the code, making it more difficult to understand. The limits are chosen to avoid wrapping in editors with the window width set to 80, even if the tool places a marker glyph in the final column when wrapping lines. Some web based tools may not offer dynamic line wrapping at all.<br>
+> 很多工具提供的自动换行功能会破坏代码的视觉结构，令代码变得更难以理解。即使在一个窗口宽度设置为80个字符的编辑器中，换行时编辑器会在每行末尾放置记号，为了避免自动换行，我们还是需要限制每行最多允许的字符数。一些基于web的工具可能根本就没有提供自动换行的功能了（这种情况下，人为地限制每行的字符数就更加关键了）。
 
-Some teams strongly prefer a longer line length. For code maintained exclusively or primarily by a team that can reach agreement on this issue, it is okay to increase the nominal line length from 80 to 100 characters (effectively increasing the maximum length to 99 characters), provided that comments and docstrings are still wrapped at 72 characters.
+Some teams strongly prefer a longer line length. For code maintained exclusively or primarily by a team that can reach agreement on this issue, it is okay to increase the nominal line length from 80 to 100 characters (effectively increasing the maximum length to 99 characters), provided that comments and docstrings are still wrapped at 72 characters.<br>
+> 一些团队可能对更长的行长度（每行显示更多字符）有强烈的需求。 对于仅由或主要由一个团队进行维护的代码，把行长度增加至80到100个字符（实际上最大行长是99字符）是允许的，但文档字符串和注释依然要求按72字符的行长度进行换行。
 
-The Python standard library is conservative and requires limiting lines to 79 characters (and docstrings/comments to 72).
+The Python standard library is conservative and requires limiting lines to 79 characters (and docstrings/comments to 72).<br>
+> Python标准库的代码遵循常规，要求把行长度限制在79个字符内（文档字符串/注释为72个字符）。
 
-The preferred way of wrapping long lines is by using Python's implied line continuation inside parentheses, brackets and braces. Long lines can be broken over multiple lines by wrapping expressions in parentheses. These should be used in preference to using a backslash for line continuation.
+The preferred way of wrapping long lines is by using Python's implied line continuation inside parentheses, brackets and braces. Long lines can be broken over multiple lines by wrapping expressions in parentheses. These should be used in preference to using a backslash for line continuation.<br>
+> 一种推荐的换行方式是利用Python的隐式行连接特性（前文已经提及到），括号中的表达式可以被分为多行。这种方式应当优先考虑而非采用反斜杠进行换行。
 
-Backslashes may still be appropriate at times. For example, long, multiple with -statements cannot use implicit continuation, so backslashes are acceptable:
+Backslashes may still be appropriate at times. For example, long, multiple with -statements cannot use implicit continuation, so backslashes are acceptable:<br>
+> 但反斜杠也有适用的情景。比方说，较长的多个with语句就无法采用隐式行连接的方式换行，但是可以采用反斜杠：
 
 ```python
 with open('/path/to/some/file/you/want/to/read') as file_1, \
@@ -264,11 +269,14 @@ with open('/path/to/some/file/you/want/to/read') as file_1, \
 ```
 
 (See the previous discussion on [multiline if-statements](https://www.python.org/dev/peps/pep-0008/#multiline-if-statements) for further
-thoughts on the indentation of such multiline ``with``-statements.)
+thoughts on the indentation of such multiline ``with``-statements.)<br>
+> 可以参照（参照前面关于多行if语句的讨论来进一步考虑这里with语句的缩进。）
 
-Another such case is with ``assert`` statements.
+Another such case is with ``assert`` statements.<br>
+> 另一个典型的例子是assert语句。
 
-Make sure to indent the continued line appropriately.
+Make sure to indent the continued line appropriately.<br>
+> 要确保续行有适当的缩进。
 
 ### 换行应在二元操作符前还是后？
 **Should a line break before or after a binary operator?**
@@ -276,7 +284,7 @@ Make sure to indent the continued line appropriately.
 For decades the recommended style was to break after binary operators. But this can hurt readability in two ways: the operators tend to get scattered across different columns on the screen, and each operator is moved away from its operand and onto the previous line. Here, the eye has to do extra work to tell which items are added and which are subtracted:
 
 ```python
-# No: operators sit far away from their operands
+# 错误示例： operators sit far away from their operands
 income = (gross_wages +
           taxable_interest +
           (dividends - qualified_dividends) -
@@ -289,7 +297,7 @@ To solve this readability problem, mathematicians and their publishers follow th
 Following the tradition from mathematics usually results in more readable code:
 
 ```python
-# Yes: easy to match operators with operands
+# 正确示例： easy to match operators with operands
 income = (gross_wages
           + taxable_interest
           + (dividends - qualified_dividends)
@@ -357,10 +365,10 @@ similar policy.
 - Imports should usually be on separate lines, e.g.:
 
 ```python
-Yes: import os
+正确示例： import os
      import sys
 
-No:  import sys, os
+错误示例：  import sys, os
 ```
 
   It's okay to say this though:
@@ -481,14 +489,14 @@ Avoid extraneous whitespace in the following situations:
 - Immediately inside parentheses, brackets or braces. :
 
 ```python
-Yes: spam(ham[1], {eggs: 2})
-No:  spam( ham[ 1 ], { eggs: 2 } )
+正确示例： spam(ham[1], {eggs: 2})
+错误示例：  spam( ham[ 1 ], { eggs: 2 } )
 ```
 - Immediately before a comma, semicolon, or colon:
 
 ```python
-Yes: if x == 4: print x, y; x, y = y, x
-No:  if x == 4 : print x , y ; x , y = y , x
+正确示例： if x == 4: print x, y; x, y = y, x
+错误示例：  if x == 4 : print x , y ; x , y = y , x
 ```
 
 - However, in a slice the colon acts like a binary operator, and
@@ -497,7 +505,7 @@ No:  if x == 4 : print x , y ; x , y = y , x
   colons must have the same amount of spacing applied.  Exception:
   when a slice parameter is omitted, the space is omitted.
 
-Yes:
+正确示例：
 ```python
 ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
 ham[lower:upper], ham[lower:upper:], ham[lower::step]
@@ -506,7 +514,7 @@ ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
 ham[lower + offset : upper + offset]
 ```
 
-No:
+错误示例：
 ```python
 ham[lower + offset:upper + offset]
 ham[1: 9], ham[1 :9], ham[1:9 :3]
@@ -518,20 +526,20 @@ ham[ : upper]
   list of a function call:
 
 ```python
-Yes: spam(1)
-No:  spam (1)
+正确示例： spam(1)
+错误示例：  spam (1)
 ```
 
 - Immediately before the open parenthesis that starts an indexing or slicing:
 
 ```python
-Yes: dct['key'] = lst[index]
-No:  dct ['key'] = lst [index]
+正确示例： dct['key'] = lst[index]
+错误示例：  dct ['key'] = lst [index]
 ```
 - More than one space around an assignment (or other) operator to
   align it with another.
 
-Yes:
+正确示例：
 
 ```python
 x = 1
@@ -539,7 +547,7 @@ y = 2
 long_variable = 3
 ```
 
-No:
+错误示例：
 
 ```python
 x             = 1
@@ -564,7 +572,7 @@ long_variable = 3
 
 - If operators with different priorities are used, consider adding whitespace around the operators with the lowest priority(ies). Use your own judgment; however, never use more than one space, and always have the same amount of whitespace on both sides of a binary operator.
 
-Yes:
+正确示例：
 
 ```python
 i = i + 1
@@ -574,7 +582,7 @@ hypot2 = x*x + y*y
 c = (a+b) * (a-b)
 ```
 
-No:
+错误示例：
 
 ```python
 i=i+1
@@ -587,14 +595,14 @@ c = (a + b) * (a - b)
 - Don't use spaces around the ``=`` sign when used to indicate a
   keyword argument or a default parameter value.
 
-Yes:
+正确示例：
 
 ```python
 def complex(real, imag=0.0):
     return magic(r=real, i=imag)
 ```
 
-No:
+错误示例：
 
 ```python
 def complex(real, imag = 0.0):
@@ -605,14 +613,14 @@ def complex(real, imag = 0.0):
   always have spaces around the ``->`` arrow if present.  (See
   [Function Annotations](https://www.python.org/dev/peps/pep-0008/#function-annotations) below for more about function annotations.)
 
-Yes:
+正确示例：
 
 ```python
       def munge(input: AnyStr): ...
       def munge() -> AnyStr: ...
 ```
 
-No:
+错误示例：
 
 ```python
 def munge(input:AnyStr): ...
@@ -621,14 +629,14 @@ def munge()->PosInt: ...
 
 - When combining an argument annotation with a default value, use spaces around the ``=`` sign (but only for those arguments that have both an annotation and a default).
 
-Yes:
+正确示例：
 
 ```python
 def munge(sep: AnyStr = None): ...
 def munge(input: AnyStr, sep: AnyStr = None, limit=1000): ...
 ```
 
-No:
+错误示例：
 
 ```python
 def munge(input: AnyStr=None): ...
@@ -638,7 +646,7 @@ def munge(input: AnyStr, limit = 1000): ...
 - Compound statements (multiple statements on the same line) are
   generally discouraged.
 
-Yes:
+正确示例：
 
 ```python
 if foo == 'blah':
@@ -1071,13 +1079,13 @@ functionality from submodules.
 
 - Use ``is not`` operator rather than ``not ... is``.  While both expressions are functionally identical, the former is more readable and preferred.
 
-Yes:
+正确示例：
 
 ```python
 if foo is not None:
 ```
 
-No:
+错误示例：
 
 ```python
 if not foo is None:
@@ -1091,12 +1099,12 @@ To minimize the effort involved, the ``functools.total_ordering()`` decorator pr
 
 - Always use a def statement instead of an assignment statement that binds a lambda expression directly to an identifier.
 
-Yes:
+正确示例：
 
 ```python
 def f(x): return 2*x
 ```
-No:
+错误示例：
 
 ```python
 f = lambda x: 2*x
@@ -1174,7 +1182,7 @@ except Exception as exc:
   to the absolute minimum amount of code necessary.  Again, this
   avoids masking bugs.
 
-Yes:
+正确示例：
 
 ```python
 try:
@@ -1185,7 +1193,7 @@ else:
     return handle_value(value)
 ```
 
-No:
+错误示例：
 
 ```python
 try:
@@ -1204,14 +1212,14 @@ except KeyError:
   whenever they do something other than acquire and release resources.
   For example:
 
-Yes:
+正确示例：
 
 ```python
 with conn.begin_transaction():
     do_stuff_in_transaction(conn)
 ```
 
-No:
+错误示例：
 
 ```python
 with conn:
@@ -1230,7 +1238,7 @@ with conn:
   None``, and an explicit return statement should be present at the
   end of the function (if reachable).
 
-Yes:
+正确示例：
 
 ```python
 def foo(x):
@@ -1245,7 +1253,7 @@ def bar(x):
     return math.sqrt(x)
 ```
 
-No:
+错误示例：
 
 ```python
 def foo(x):
@@ -1271,16 +1279,16 @@ def bar(x):
   example:
 
 ```python
-Yes: if foo.startswith('bar'):
-No:  if foo[:3] == 'bar':
+正确示例： if foo.startswith('bar'):
+错误示例：  if foo[:3] == 'bar':
 ```
 
 - Object type comparisons should always use isinstance() instead of
   comparing types directly. :
 
 ```python
-Yes: if isinstance(obj, int):
-No:  if type(obj) is type(1):
+正确示例： if isinstance(obj, int):
+错误示例：  if type(obj) is type(1):
 ```
 
   When checking if an object is a string, keep in mind that it might
@@ -1299,10 +1307,10 @@ if isinstance(obj, basestring):
   sequences are false. :
 
 ```python
-Yes: if not seq:
+正确示例： if not seq:
     if seq:
 
-No: if len(seq):
+错误示例： if len(seq):
     if not len(seq):
 ```
 
@@ -1313,8 +1321,8 @@ No: if len(seq):
 - Don't compare boolean values to True or False using ``==``. :
 
 ```python
-Yes:   if greeting:
-No:    if greeting == True:
+正确示例：   if greeting:
+错误示例：    if greeting == True:
 Worse: if greeting is True:
 ```
 
