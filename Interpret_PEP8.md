@@ -71,37 +71,33 @@ conflicts, such project-specific guides take precedence for that project.<br>
 ## 一昧地保持一致是愚蠢的
 **A Foolish Consistency is the Hobgoblin of Little Minds**
 
-One of Guido's key insights is that code is read much more often than
-it is written.  The guidelines provided here are intended to improve
-the readability of code and make it consistent across the wide
-spectrum of Python code.  As [PEP 20](https://www.python.org/dev/peps/pep-0020) says, "Readability counts".
+One of Guido's key insights is that code is read much more often than it is written.  The guidelines provided here are intended to improve the readability of code and make it consistent across the wide spectrum of Python code. As [PEP 20](https://www.python.org/dev/peps/pep-0020) says, "Readability counts".<br>
+> Guido的一个关键见解就是，我们需要读代码的次数远多于需要写代码的次数。 因此，给出这份指南旨在提高代码的可读性并使大多数Python代码能保持一致（的风格）。正如PEP20中说到的那样，可读性是非常重要的。
 
-A style guide is about consistency.  Consistency with this style guide
-is important.  Consistency within a project is more important.
-Consistency within one module or function is the most important.
+A style guide is about consistency.  Consistency with this style guide is important.  Consistency within a project is more important. Consistency within one module or function is the most important.<br>
+> 一致性对于一份风格指南来说是很重要的，对于一个项目来说就更重要了，对于一个模块或函数来说更甚。
 
-However, know when to be inconsistent -- sometimes style guide
-recommendations just aren't applicable.  When in doubt, use your best
-judgment.  Look at other examples and decide what looks best.  And
-don't hesitate to ask!
+However, know when to be inconsistent -- sometimes style guide recommendations just aren't applicable. When in doubt, use your best judgment. Look at other examples and decide what looks best. And don't hesitate to ask!<br>
+> 然而，我们必须知道什么时候需要“不一致” -- 有些情况下，风格指南给出的写法并不适用。 遇到这些情况时，就需要运用你的判断力来解决。对比其他例子来判断怎样写最好。千万不要介意（向同事/负责人）提问题。
 
 In particular: do not break backwards compatibility just to comply with
-this PEP!
+this PEP!<br>
+> 特别地，编写代码时不应该为了遵循这份指南而破环代码的[向后兼容性](https://zh.wikipedia.org/wiki/%E5%90%91%E4%B8%8B%E5%85%BC%E5%AE%B9)（也称“向下兼容性，这里可以理解为较高版本的程序依然能跑使用较低版本的程序编写的代码”）。
 
-Some other good reasons to ignore a particular guideline:
+Some other good reasons to ignore a particular guideline:<br>
+> 这里给出一些忽略某份风格指南的典型理由：
 
-1. When applying the guideline would make the code less readable, even
-   for someone who is used to reading code that follows this PEP.
+1. When applying the guideline would make the code less readable, even for someone who is used to reading code that follows this PEP.<br>
+> 应用该指南使得代码的可读性变差，就连习惯按照该指南阅读代码的人都觉得难以阅读。
 
-2. To be consistent with surrounding code that also breaks it (maybe
-   for historic reasons) -- although this is also an opportunity to
-   clean up someone else's mess (in true XP style).
+2. To be consistent with surrounding code that also breaks it (maybe for historic reasons) -- although this is also an opportunity to clean up someone else's mess (in true XP style).<br>
+> 为了和其他不遵循该指南的代码（可能是历史遗留的原因）保持一致 -- 尽管这会是一个整理代码的好机会。事实上，Windows XP，或者说微软的OS，就特别强调维持软件的向下兼容性。即后续的系统更新不会使得在旧版本中开发的软件变得无法使用。为了实现这个目标，有时微软甚至不惜支持使用非官方乃至误用的 API 的软件[[Windows API#历史]](https://zh.wikipedia.org/wiki/Windows_API#.E6.AD.B7.E5.8F.B2)。
 
-3. Because the code in question predates the introduction of the
-   guideline and there is no other reason to be modifying that code.
+3. Because the code in question predates the introduction of the guideline and there is no other reason to be modifying that code.<br>
+> 问题代码的历史比较久远（早于引入该指南的时间），而且没有其他理由要修改该代码。
 
-4. When the code needs to remain compatible with older versions of
-   Python that don't support the feature recommended by the style guide.
+4. When the code needs to remain compatible with older versions of Python that don't support the feature recommended by the style guide.<br>
+> 当代码需要与旧版本的 Python 保持兼容，而旧版 Python 又不支持该指南中推荐的特性的时候。
 
 
 ## 代码排版
