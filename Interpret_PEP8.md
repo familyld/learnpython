@@ -13,7 +13,7 @@
     - [缩进](#缩进)
     - [使用Tab还是空格？](#使用tab还是空格？)
     - [每行最多字符数](#每行最多字符数)
-    - [换行应在二元操作符前还是后？](#换行应在二元操作符前还是后？)
+    - [换行应在二元运算符前还是后？](#换行应在二元运算符前还是后？)
     - [空行](#空行)
     - [源文件编码](#源文件编码)
     - [导入](#导入)
@@ -182,7 +182,7 @@ if (this_is_one_thing
 ```
 
 (Also see the discussion of whether to break before or after binary operators below.)<br>
-> （这里还涉及到了应该在二元操作符前进行换行还是在其后进行换行的问题，可以参看本文的后续内容。）
+> （这里还涉及到了应该在二元运算符前进行换行还是在其后进行换行的问题，可以参看本文的后续内容。）
 
 The closing brace/bracket/parenthesis on multi-line constructs may
 either line up under the first non-whitespace character of the last
@@ -278,10 +278,11 @@ Another such case is with ``assert`` statements.<br>
 Make sure to indent the continued line appropriately.<br>
 > 要确保续行有适当的缩进。
 
-### 换行应在二元操作符前还是后？
+### 换行应在二元运算符前还是后？
 **Should a line break before or after a binary operator?**
 
-For decades the recommended style was to break after binary operators. But this can hurt readability in two ways: the operators tend to get scattered across different columns on the screen, and each operator is moved away from its operand and onto the previous line. Here, the eye has to do extra work to tell which items are added and which are subtracted:
+For decades the recommended style was to break after binary operators. But this can hurt readability in two ways: the operators tend to get scattered across different columns on the screen, and each operator is moved away from its operand and onto the previous line. Here, the eye has to do extra work to tell which items are added and which are subtracted:<br>
+> 数十年来，推荐的代码风格都是在二元运算符之后进行换行，但这样做会影响代码的可读性。理由有两个：一是，运算符被分散到了屏幕上的不同列（这里的意思是，因为每行代码长度不同，所以处于不同行行末的运算符会处在不同列）；二是，运算符和运算对象被分隔开，运算符位于运算对象的上一行。 这二者都会对阅读代码构成视觉障碍，使得我们的眼睛需要做一些额外的工作。
 
 ```python
 # 错误示例： operators sit far away from their operands
@@ -292,9 +293,11 @@ income = (gross_wages +
           student_loan_interest)
 ```
 
-To solve this readability problem, mathematicians and their publishers follow the opposite convention. Donald Knuth explains the traditional rule in his Computers and Typesetting series: "Although formulas within a paragraph always break after binary operations and relations, displayed formulas always break before binary operations" [[3]](https://www.python.org/dev/peps/pep-0008/#id10) .
+To solve this readability problem, mathematicians and their publishers follow the opposite convention. Donald Knuth explains the traditional rule in his Computers and Typesetting series: "Although formulas within a paragraph always break after binary operations and relations, displayed formulas always break before binary operations" [[3]](https://www.python.org/dev/peps/pep-0008/#id10) .<br>
+> 为了解决可读性问题，数学家和他们的出版商遵循相反的约定。Donald Knuth曾解释过：“尽管段内部的公式总是在运算符后换行，表达式总是在运算符前换行的。”（这两者的区别也可以理解为是处于文本段内还是独占一行）
 
-Following the tradition from mathematics usually results in more readable code:
+Following the tradition from mathematics usually results in more readable code:<br>
+> 遵循数学传统来编写往往能令代码的可读性更加：
 
 ```python
 # 正确示例： easy to match operators with operands
@@ -305,28 +308,26 @@ income = (gross_wages
           - student_loan_interest)
 ```
 
-In Python code, it is permissible to break before or after a binary operator, as long as the convention is consistent locally. For new code Knuth's style is suggested.
+In Python code, it is permissible to break before or after a binary operator, as long as the convention is consistent locally. For new code Knuth's style is suggested.<br>
+> 在Python代码中，在二院运算符前或者后换行都是被允许的，只要在这个局部中保持一致即可。但对于新编写的代码来说，更推荐采用Knuth的风格（在运算符前进行断行）。
 
 ### 空行
 **Blank Lines**
 
-Surround top-level function and class definitions with two blank
-lines.
+Surround top-level function and class definitions with two blank lines.<br>
+> 使用2个空行来分隔最高级的函数(可以理解为处于类外部，且不处于任意函数内部的函数)和类定义。
 
-Method definitions inside a class are surrounded by a single blank
-line.
+Method definitions inside a class are surrounded by a single blank line.<br>
+> 使用1个空行来分隔类中的方法定义。
 
-Extra blank lines may be used (sparingly) to separate groups of
-related functions.  Blank lines may be omitted between a bunch of
-related one-liners (e.g. a set of dummy implementations).
+Extra blank lines may be used (sparingly) to separate groups of related functions.  Blank lines may be omitted between a bunch of related one-liners (e.g. a set of dummy implementations).<br>
+> 可以使用额外的空行来分隔一组相关的函数，但不要滥用。在一系列相关的单行代码之间，空行是可以被省略的，比如一组哑元实现（或者说是虚拟实现，一般指没有实际意义，只是为了版本兼容而存在的代码）。
 
-Use blank lines in functions, sparingly, to indicate logical sections.
+Use blank lines in functions, sparingly, to indicate logical sections.<br>
+> 可以在函数内使用空行使代码逻辑更清晰，但不要滥用。
 
-Python accepts the control-L (i.e. ^L) form feed character as
-whitespace; Many tools treat these characters as page separators, so
-you may use them to separate pages of related sections of your file.
-Note, some editors and web-based code viewers may not recognize
-control-L as a form feed and will show another glyph in its place.
+Python accepts the control-L (i.e. ^L) form feed character as whitespace; Many tools treat these characters as page separators, so you may use them to separate pages of related sections of your file. Note, some editors and web-based code viewers may not recognize control-L as a form feed and will show another glyph in its place.<br>
+> Python支持control-L（如:^L）换页符作为空格；许多工具将这些符号作为分页符，因此你可以使用这些符号来进行分页或者划分文件中的相关区域。注意，一些编辑器和基于web的代码预览器可能不会将control-L识别为分页符，而是把它显示为其他符号。
 
 
 ### 源文件编码
