@@ -488,26 +488,31 @@ For triple-quoted strings, always use double quote characters to be consistent w
 ### 不可容忍的写法
 **Pet Peeves**
 
-Avoid extraneous whitespace in the following situations:
+Avoid extraneous whitespace in the following situations:<br>
+> 下列情况中应避免使用多余的空格：
 
-- Immediately inside parentheses, brackets or braces. :
-
-```python
-正确示例： spam(ham[1], {eggs: 2})
-错误示例：  spam( ham[ 1 ], { eggs: 2 } )
-```
-- Immediately before a comma, semicolon, or colon:
+- Immediately inside parentheses, brackets or braces. :<br>
+> 紧靠着括号的内部：
 
 ```python
-正确示例： if x == 4: print x, y; x, y = y, x
-错误示例：  if x == 4 : print x , y ; x , y = y , x
+# 正确示例
+spam(ham[1], {eggs: 2})
+# 错误示例
+spam( ham[ 1 ], { eggs: 2 } )
 ```
 
-- However, in a slice the colon acts like a binary operator, and
-  should have equal amounts on either side (treating it as the
-  operator with the lowest priority).  In an extended slice, both
-  colons must have the same amount of spacing applied.  Exception:
-  when a slice parameter is omitted, the space is omitted.
+- Immediately before a comma, semicolon, or colon:<br>
+> 在逗号，分号，引号前面：
+
+```python
+# 正确示例
+if x == 4: print x, y; x, y = y, x
+# 错误示例
+if x == 4 : print x , y ; x , y = y , x
+```
+
+- However, in a slice the colon acts like a binary operator, and should have equal amounts on either side (treating it as the operator with the lowest priority).  In an extended slice, both colons must have the same amount of spacing applied.  Exception: when a slice parameter is omitted, the space is omitted.<br>
+> 但是，在切片中，冒号扮演的角色类似于二元运算符，因此两侧（的语句）应被同等对待（这里可以把冒号看作一种最低优先级的运算）。在切片中，冒号的左右两侧空格数应该相等。特别地，当切片参数省略时，该侧的空格也被省略。
 
 正确示例：
 ```python
@@ -526,22 +531,27 @@ ham[lower : : upper]
 ham[ : upper]
 ```
 
-- Immediately before the open parenthesis that starts the argument
-  list of a function call:
+- Immediately before the open parenthesis that starts the argument list of a function call:<br>
+> 调用函数时参数列表的左括号前：
 
 ```python
-正确示例： spam(1)
-错误示例：  spam (1)
+# 正确示例：
+spam(1)
+# 错误示例：
+spam (1)
 ```
 
-- Immediately before the open parenthesis that starts an indexing or slicing:
+- Immediately before the open parenthesis that starts an indexing or slicing:<br>
+> 索引或切片的左括号前：
 
 ```python
-正确示例： dct['key'] = lst[index]
-错误示例：  dct ['key'] = lst [index]
+# 正确示例：
+dct['key'] = lst[index]
+# 错误示例：
+dct ['key'] = lst [index]
 ```
-- More than one space around an assignment (or other) operator to
-  align it with another.
+- More than one space around an assignment (or other) operator to align it with another.<br>
+> 运算符（比方说赋值运算符等）的两侧不应多于一个空格。
 
 正确示例：
 
@@ -562,19 +572,14 @@ long_variable = 3
 ### 其他建议
 **Other Recommendations**
 
-- Avoid trailing whitespace anywhere.  Because it's usually invisible,
-  it can be confusing: e.g. a backslash followed by a space and a
-  newline does not count as a line continuation marker.  Some editors
-  don't preserve it and many projects (like CPython itself) have
-  pre-commit hooks that reject it.
+- Avoid trailing whitespace anywhere.  Because it's usually invisible, it can be confusing: e.g. a backslash followed by a space and a newline does not count as a line continuation marker.  Some editors don't preserve it and many projects (like CPython itself) have pre-commit hooks that reject it.<br>
+> 要避免在结尾处使用空格。因为这种情况下，空格通常是不可见的，而且容易产生歧义：比方说在反斜杠后使用了空格，这样新的一行将不被视为续行。 有些编辑器会把结尾处的空格去除掉，而且很多项目（比方说CPython）的预提交钩子不接受这种写法。
 
-- Always surround these binary operators with a single space on either
-  side: assignment (``=``), augmented assignment (``+=``, ``-=``
-  etc.), comparisons (``==``, ``<``, ``>``, ``!=``, ``<>``, ``<=``,
-  ``>=``, ``in``, ``not in``, ``is``, ``is not``), Booleans (``and``,
-  ``or``, ``not``).
+- Always surround these binary operators with a single space on either side: assignment (``=``), augmented assignment (``+=``, ``-=`` etc.), comparisons (``==``, ``<``, ``>``, ``!=``, ``<>``, ``<=``, ``>=``, ``in``, ``not in``, ``is``, ``is not``), Booleans (``and``, ``or``, ``not``).<br>
+> 总是在这些二元操作符的两侧加入一个空格：赋值(=)，增量赋值(+=, -= etc.)，比较(==, <, >, !=, <>, <=, >=, in, not in, is, is not)，布尔运算(and, or, not)。
 
-- If operators with different priorities are used, consider adding whitespace around the operators with the lowest priority(ies). Use your own judgment; however, never use more than one space, and always have the same amount of whitespace on both sides of a binary operator.
+- If operators with different priorities are used, consider adding whitespace around the operators with the lowest priority(ies). Use your own judgment; however, never use more than one space, and always have the same amount of whitespace on both sides of a binary operator.<br>
+> 在不同优先级之间，考虑在更低优先级的操作符两侧插入空格。用你自己的判断力；但不要使用超过一个空格，并且在二元操作符的两侧有相同的空格数。
 
 正确示例：
 
@@ -596,8 +601,8 @@ hypot2 = x * x + y * y
 c = (a + b) * (a - b)
 ```
 
-- Don't use spaces around the ``=`` sign when used to indicate a
-  keyword argument or a default parameter value.
+- Don't use spaces around the ``=`` sign when used to indicate a keyword argument or a default parameter value.<br>
+> 在指示关键字参数或默认参数的值时，等号两侧不要使用空格。
 
 正确示例：
 
@@ -613,25 +618,39 @@ def complex(real, imag = 0.0):
     return magic(r = real, i = imag)
 ```
 
-- Function annotations should use the normal rules for colons and
-  always have spaces around the ``->`` arrow if present.  (See
-  [Function Annotations](https://www.python.org/dev/peps/pep-0008/#function-annotations) below for more about function annotations.)
+- Function annotations should use the normal rules for colons and always have spaces around the ``->`` arrow if present. (See [Function Annotations](https://www.python.org/dev/peps/pep-0008/#function-annotations) below for more about function annotations.)<br>
+> 函数注解（可参照cnblog上[python开发_function annotations](http://www.cnblogs.com/hongten/p/hongten_python_function_annotation.html)一文，是Python3中一种为函数添加注释的特殊写法，这种写法中参数注释用冒号指示，返回值注释用右箭头指示）的冒号仅右侧使用一个空格，而右箭头则两侧都应有一个空格。
 
 正确示例：
 
 ```python
-      def munge(input: AnyStr): ...
-      def munge() -> AnyStr: ...
+def munge(input: 'AnyStr'):
+    # TODO:
+def munge() -> 'PosInt':
+    # TODO:
 ```
 
 错误示例：
 
 ```python
-def munge(input:AnyStr): ...
-def munge()->PosInt: ...
+def munge(input:'AnyStr'):
+    # TODO:
+def munge()->'PosInt':
+    # TODO:
 ```
+> 解析一下，上面实例中第一个def的input这个参数的注释是AnyStr，而第二个def中右箭头所指的是返回值的注释，这里PosInt指该函数的返回值是一个正整数。特别地，除了用字符串作注解，也可以用类型作为注解，比方说`def munge(input: str)`。如果想查看一个函数的注解，可以使用`print('Annotations:', munge.__annotations__)`语句。效果：
 
-- When combining an argument annotation with a default value, use spaces around the ``=`` sign (but only for those arguments that have both an annotation and a default).
+```
+>>> def munge(in1: 'AnyStr', in2: int) -> 'None':
+...     print("Annotations:", munge.__annotations__)
+...     print("Arguments:", in1, in2)
+...
+>>> munge('Hello',123)
+Annotations: {'in1': 'AnyStr', 'return': 'None', 'in2': <class 'int'>}
+Arguments: Hello 123
+```
+- When combining an argument annotation with a default value, use spaces around the ``=`` sign (but only for those arguments that have both an annotation and a default).<br>
+> 当且仅当需要为默认参数添加函数注解时，赋值的等号两侧各添加一个空格。
 
 正确示例：
 
@@ -647,8 +666,8 @@ def munge(input: AnyStr=None): ...
 def munge(input: AnyStr, limit = 1000): ...
 ```
 
-- Compound statements (multiple statements on the same line) are
-  generally discouraged.
+- Compound statements (multiple statements on the same line) are generally discouraged.<br>
+> 不推荐使用符合语句（在一行中编写多个表达式）。
 
 正确示例：
 
@@ -660,16 +679,17 @@ do_two()
 do_three()
 ```
 
-Rather not:
+尽量避免:
 
 ```python
 if foo == 'blah': do_blah_thing()
 do_one(); do_two(); do_three()
 ```
 
-- While sometimes it's okay to put an if/for/while with a small body on the same line, never do this for multi-clause statements.  Also avoid folding such long lines!
+- While sometimes it's okay to put an if/for/while with a small body on the same line, never do this for multi-clause statements.  Also avoid folding such long lines!<br>
+> 有时候如果if/for/while的主体很短（且只有一句），可以选择放在同一行。但是在主体是多条语句的情况下就不应该这样写。同时也要注意，多条短表达式不要折叠起来（放在同一行）写。
 
-Rather not:
+尽量避免:
 
 ```python
 if foo == 'blah': do_blah_thing()
@@ -677,7 +697,7 @@ for x in lst: total += x
 while t < 10: t = delay()
 ```
 
-Definitely not:
+坚决不要:
 
 ```python
 if foo == 'blah': do_blah_thing()
