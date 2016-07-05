@@ -717,24 +717,25 @@ if foo == 'blah': one(); two(); three()
 
 Comments that contradict the code are worse than no comments.  Always
 make a priority of keeping the comments up-to-date when the code
-changes!
+changes!<br>
+> 写与代码冲突的注释还不如不写。谨记！在更新代码时也要注意对注释做出相应的更新。
 
-Comments should be complete sentences.  If a comment is a phrase or
-sentence, its first word should be capitalized, unless it is an
-identifier that begins with a lower case letter (never alter the case
-of identifiers!).
+Comments should be complete sentences.  If a comment is a phrase or sentence, its first word should be capitalized, unless it is an identifier that begins with a lower case letter (never alter the case of identifiers!).<br>
+> 注释应当是个完整的句子。如果注释是短语或者句子，则第一个单词的首字母应当大写。有一种情况例外，就是开头是小写的标识符（比方说变量名），永远不要改变标识符的大小写（否则注释和代码就对不上了）。
 
-If a comment is short, the period at the end can be omitted.  Block
-comments generally consist of one or more paragraphs built out of
-complete sentences, and each sentence should end in a period.
+If a comment is short, the period at the end can be omitted.  Block comments generally consist of one or more paragraphs built out of complete sentences, and each sentence should end in a period.<br>
+> 如果注释很短，末尾的句号可以省略。而块注释通常由一个或多个包含完整句子的段落组成，这里面的每个句子都应该使用句号作为结束。
 
-You should use two spaces after a sentence-ending period.
+You should use two spaces after a sentence-ending period.<br>
+> 在句子结束的句号后面应该使用两个空格。
 
-When writing English, follow Strunk and White.
+When writing English, follow Strunk and White.<br>
+> 在写英文注释时，应当遵循《Strunk and White》（注：这是一本英文写作小册子，也叫作《英文写作指南》，详细介绍可参考[维基百科](https://zh.wikipedia.org/wiki/%E8%8B%B1%E6%96%87%E5%86%99%E4%BD%9C%E6%8C%87%E5%8D%97)）。
 
 Python coders from non-English speaking countries: please write your
 comments in English, unless you are 120% sure that the code will never
-be read by people who don't speak your language.
+be read by people who don't speak your language.<br>
+> 来自非英语国家的程序员也请使用英文来编写注释，除非你能120%地保证你的代码不会被读不懂你的语言的人阅读。
 
 ### 块注释
 **Block Comments**
@@ -742,28 +743,31 @@ be read by people who don't speak your language.
 Block comments generally apply to some (or all) code that follows
 them, and are indented to the same level as that code.  Each line of a
 block comment starts with a ``#`` and a single space (unless it is
-indented text inside the comment).
+indented text inside the comment).<br>
+> 块注释通常用于说明后续的代码，并且与它们拥有相同的缩进级别。块注释的每一行以\#号开始，并且跟随这一个空格（除非这一行是注释中本来就有着缩进的文本，此时会多于一个空格）。
 
 Paragraphs inside a block comment are separated by a line containing a
-single ``#``.
+single ``#``.<br>
+> 块注释中的段落之间用一个空行隔开，这个空行只包含开头的一个\#号。
 
 ### 行内注释
 **Inline Comments**
 
-Use inline comments sparingly.
+Use inline comments sparingly.<br>
+> 尽量少使用行内注释。
 
-An inline comment is a comment on the same line as a statement.
-Inline comments should be separated by at least two spaces from the
-statement.  They should start with a # and a single space.
+An inline comment is a comment on the same line as a statement. Inline comments should be separated by at least two spaces from the statement. They should start with a # and a single space.<br>
+> 行内注释和语句处于同一行中，与语句之间最少应使用两个空格进行分割，并且以\#号和一个空格作为开始。
 
-Inline comments are unnecessary and in fact distracting if they state
-the obvious.  Don't do this:
+Inline comments are unnecessary and in fact distracting if they state the obvious. Don't do this:<br>
+> 如果一个行内注释的描述是显而易见的，则该注释毫无意义并且容易转移读者的注意力。 千万不要写这样的注释：
 
 ```python
 x = x + 1                 # Increment x
 ```
 
-But sometimes, this is useful:
+But sometimes, this is useful:<br>
+> 但有时，这样写是有效的：
 
 ```python
 x = x + 1                 # Compensate for border
@@ -772,15 +776,14 @@ x = x + 1                 # Compensate for border
 ### 文档字符串
 **Documentation Strings**
 
-Conventions for writing good documentation strings
-(a.k.a. "docstrings") are immortalized in [PEP 257](https://www.python.org/dev/peps/pep-0257).
+Conventions for writing good documentation strings (a.k.a. "docstrings") are immortalized in [PEP 257](https://www.python.org/dev/peps/pep-0257).<br>
+> PEP 257给出了关于编写良好的文档字符串的约定。
 
-- Write docstrings for all public modules, functions, classes, and
-  methods.  Docstrings are not necessary for non-public methods, but
-  you should have a comment that describes what the method does.  This
-  comment should appear after the ``def`` line.
+- Write docstrings for all public modules, functions, classes, and methods. Docstrings are not necessary for non-public methods, but you should have a comment that describes what the method does.  This comment should appear after the ``def`` line.<br>
+> 我们需要为所有公共的模块，函数，类，以及方法编写文档字符串。对于非公共的方法来说，没有编写文档字符串的必要，但依然要为这些方法编写注释，已表明它们的用途。 这些主食应放在方法声明（def所处的行）的下面。
 
-- [PEP 257](https://www.python.org/dev/peps/pep-0257) describes good docstring conventions.  Note that most importantly, the ``"""`` that ends a multiline docstring should be on a line by itself, e.g.:
+- [PEP 257](https://www.python.org/dev/peps/pep-0257) describes good docstring conventions.  Note that most importantly, the ``"""`` that ends a multiline docstring should be on a line by itself, e.g.:<br>
+> PEP 257给出了编写良好的文档字符串的约定。 注意最重要的一点是， 多行文档字符串结尾的三引号`"""`应单独成行。
 
 ```python
 """Return a foobang
@@ -788,7 +791,9 @@ Conventions for writing good documentation strings
 Optional plotz says to frobnicate the bizbaz first.
 """
 ```
-- For one liner docstrings, please keep the closing ``"""`` on the same line.
+
+- For one liner docstrings, please keep the closing ``"""`` on the same line.<br>
+> 对于只有一行的文档字符串来说，结尾的三引号`"""`应当放在同一行中。
 
 ## 命名约定
 **Naming Conventions**
