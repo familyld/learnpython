@@ -798,21 +798,19 @@ Optional plotz says to frobnicate the bizbaz first.
 ## 命名约定
 **Naming Conventions**
 
-The naming conventions of Python's library are a bit of a mess, so we'll never get this completely consistent -- nevertheless, here are
-the currently recommended naming standards.  New modules and packages (including third party frameworks) should be written to these standards, but where an existing library has a different style, internal consistency is preferred.
+The naming conventions of Python's library are a bit of a mess, so we'll never get this completely consistent -- nevertheless, here are the currently recommended naming standards.  New modules and packages (including third party frameworks) should be written to these standards, but where an existing library has a different style, internal consistency is preferred.<br>
+> Python库的命名约定比较混乱，因此我们很难保持完全一致的 -- 但是，这里给出一些推荐的命名标准。新的模块和包（包括第三方框架）应当按照这些标准来命名。而对于已存在的风格不同的库，保持内部一致性才是最优先考虑的。
 
 ### 覆盖原则
 **Overriding Principle**
 
-Names that are visible to the user as public parts of the API should
-follow conventions that reflect usage rather than implementation.
+Names that are visible to the user as public parts of the API should follow conventions that reflect usage rather than implementation.<br>
+>
 
 ### 描述：命名风格
 **Descriptive: Naming Styles**
 
-There are a lot of different naming styles.  It helps to be able to
-recognize what naming style is being used, independently from what
-they are used for.
+There are a lot of different naming styles.  It helps to be able to recognize what naming style is being used, independently from what they are used for.
 
 The following naming styles are commonly distinguished:
 
@@ -822,51 +820,29 @@ The following naming styles are commonly distinguished:
 - ``lower_case_with_underscores``
 - ``UPPERCASE``
 - ``UPPER_CASE_WITH_UNDERSCORES``
-- ``CapitalizedWords`` (or CapWords, or CamelCase -- so named because
-  of the bumpy look of its letters [[3]](https://www.python.org/dev/peps/pep-0008/#id11)).  This is also sometimes known
-  as StudlyCaps.
+- ``CapitalizedWords`` (or CapWords, or CamelCase -- so named because of the bumpy look of its letters [[3]](https://www.python.org/dev/peps/pep-0008/#id11)).  This is also sometimes known as StudlyCaps.
 
-  Note: When using abbreviations in CapWords, capitalize all the
-  letters of the abbreviation.  Thus HTTPServerError is better than
-  HttpServerError.
-- ``mixedCase`` (differs from CapitalizedWords by initial lowercase
-  character!)
+Note: When using abbreviations in CapWords, capitalize all the letters of the abbreviation.  Thus HTTPServerError is better than HttpServerError.
+
+- ``mixedCase`` (differs from CapitalizedWords by initial lowercase character!)
 - ``Capitalized_Words_With_Underscores`` (ugly!)
 
-There's also the style of using a short unique prefix to group related
-names together.  This is not used much in Python, but it is mentioned
-for completeness.  For example, the ``os.stat()`` function returns a
-tuple whose items traditionally have names like ``st_mode``,
-``st_size``, ``st_mtime`` and so on.  (This is done to emphasize the
-correspondence with the fields of the POSIX system call struct, which
-helps programmers familiar with that.)
+There's also the style of using a short unique prefix to group related names together.  This is not used much in Python, but it is mentioned for completeness.  For example, the ``os.stat()`` function returns a tuple whose items traditionally have names like ``st_mode``, ``st_size``, ``st_mtime`` and so on.  (This is done to emphasize the correspondence with the fields of the POSIX system call struct, which helps programmers familiar with that.)
 
-The X11 library uses a leading X for all its public functions.  In
-Python, this style is generally deemed unnecessary because attribute
-and method names are prefixed with an object, and function names are
-prefixed with a module name.
+The X11 library uses a leading X for all its public functions.  In Python, this style is generally deemed unnecessary because attribute and method names are prefixed with an object, and function names are prefixed with a module name.
 
-In addition, the following special forms using leading or trailing
-underscores are recognized (these can generally be combined with any
-case convention):
+In addition, the following special forms using leading or trailing underscores are recognized (these can generally be combined with any case convention):
 
-- ``_single_leading_underscore``: weak "internal use" indicator.
-  E.g. ``from M import *`` does not import objects whose name starts
-  with an underscore.
+- ``_single_leading_underscore``: weak "internal use" indicator. E.g. ``from M import *`` does not import objects whose name starts with an underscore.
+- ``single_trailing_underscore_``: used by convention to avoid conflicts with Python keyword, e.g. :
 
-- ``single_trailing_underscore_``: used by convention to avoid
-  conflicts with Python keyword, e.g. :
+```python
+Tkinter.Toplevel(master, class_='ClassName')
+```
 
-      Tkinter.Toplevel(master, class_='ClassName')
+- ``__double_leading_underscore``: when naming a class attribute, invokes name mangling (inside class FooBar, ``__boo`` becomes ``_FooBar__boo``; see below).
 
-- ``__double_leading_underscore``: when naming a class attribute,
-  invokes name mangling (inside class FooBar, ``__boo`` becomes
-  ``_FooBar__boo``; see below).
-
-- ``__double_leading_and_trailing_underscore__``: "magic" objects or
-  attributes that live in user-controlled namespaces.
-  E.g. ``__init__``, ``__import__`` or ``__file__``.  Never invent
-  such names; only use them as documented.
+- ``__double_leading_and_trailing_underscore__``: "magic" objects or attributes that live in user-controlled namespaces. E.g. ``__init__``, ``__import__`` or ``__file__``.  Never invent such names; only use them as documented.
 
 ### 规范：命名约定
 **Prescriptive: Naming Conventions**

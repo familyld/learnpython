@@ -12,6 +12,8 @@
 
 Python基本语法及入门学习的笔记记录在[My_Python_Notebook](https://github.com/familyld/learnpython/blob/master/My_Python_Notebook.md)中，主要以廖雪峰的[Python3入门教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000)作为指导，并加入自己实际编写程序时的一些感想。
 
+在[Interpret_PEP8](https://github.com/familyld/learnpython/blob/master/Interpret_PEP8.md#a-foolish-consistency-is-the-hobgoblin-of-little-minds)中，我对Python的编程规范PEP8进行了中英对照的翻译，并加入了一些自己的见解和代码解析。
+
 ## 细节
 
 ### Python中直接赋值，浅拷贝，深拷贝有什么区别？
