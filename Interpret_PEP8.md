@@ -334,67 +334,72 @@ Python accepts the control-L (i.e. ^L) form feed character as whitespace; Many t
 **Source File Encoding**
 
 Code in the core Python distribution should always use UTF-8 (or ASCII
-in Python 2).
+in Python 2).<br>
+> Python核心发行版中的代码应该一直使用UTF-8（Python 2中则使用ASCII）。
 
 Files using ASCII (in Python 2) or UTF-8 (in Python 3) should not have
-an encoding declaration.
+an encoding declaration.<br>
+> 使用ASCII（在Python 2中）或者UTF-8（在Python 3中）的文件不应该添加编码声明。
 
-In the standard library, non-default encodings should be used only for
-test purposes or when a comment or docstring needs to mention an author
-name that contains non-ASCII characters; otherwise, using ``\x``,
-``\u``, ``\U``, or ``\N`` escapes is the preferred way to include
-non-ASCII data in string literals.
+In the standard library, non-default encodings should be used only for test purposes or when a comment or docstring needs to mention an author name that contains non-ASCII characters; otherwise, using ``\x``, ``\u``, ``\U``, or ``\N`` escapes is the preferred way to include non-ASCII data in string literals.<br>
+> 在标准库中，只有用作测试目的，或者注释或文档字符串需要提及作者名字而不得不使用非ASCII字符时，才能使用非默认的编码。否则，在字符串文字中包括非ASCII数据时，推荐使用\x, \u, \U或\N等转义符来表示。
 
-For Python 3.0 and beyond, the following policy is prescribed for the
-standard library (see [PEP 3131](https://www.python.org/dev/peps/pep-3131)): All identifiers in the Python
-standard library MUST use ASCII-only identifiers, and SHOULD use
-English words wherever feasible (in many cases, abbreviations and
-technical terms are used which aren't English). In addition, string
-literals and comments must also be in ASCII. The only exceptions are
-(a) test cases testing the non-ASCII features, and
-(b) names of authors. Authors whose names are not based on the
-latin alphabet MUST provide a latin transliteration of their
-names.
+For Python 3.0 and beyond, the following policy is prescribed for the standard library (see [PEP 3131](https://www.python.org/dev/peps/pep-3131)): All identifiers in the Python standard library MUST use ASCII-only identifiers, and SHOULD use English words wherever feasible (in many cases, abbreviations and technical terms are used which aren't English). In addition, string literals and comments must also be in ASCII. The only exceptions are：<br>
+> 对于Python 3.0及其以后的版本，标准库需遵循以下原则（参见PEP 3131）：Python标准库中的所有标识符都必须只采用ASCII编码的标识符，在可行的条件下也应当使用英文词（很多情况下，使用的缩写和技术术语词都不是英文）。此外，字符串文字和注释也应该只包括ASCII编码。只有两种情况例外：
 
-Open source projects with a global audience are encouraged to adopt a
-similar policy.
+- (a) test cases testing the non-ASCII features<br>
+> 测试情况下为了测试非ASCII编码的特性
+
+- (b) names of authors. Authors whose names are not based on the latin alphabet MUST provide a latin transliteration of their names.<br>
+> 作者名字。但即使作者名字不是由拉丁字母组成，也必须为其提供一个拉丁音译名。
+
+Open source projects with a global audience are encouraged to adopt a similar policy.<br>
+> 鼓励面向全世界的开源项目都采用类似的原则。
 
 
 ### 导入
 **Imports**
 
-- Imports should usually be on separate lines, e.g.:
+- Imports should usually be on separate lines, e.g.:<br>
+> 导入应该分开多行写，而不是都写在一行，例如：
 
 ```python
-正确示例： import os
-     import sys
+# 正确示例：
+import os
+import sys
 
-错误示例：  import sys, os
+# 错误示例：
+import sys, os
 ```
 
-  It's okay to say this though:
+It's okay to say this though:<br>
+> 这样写也是可以的：
 
 ```python
 from subprocess import Popen, PIPE
 ```
 
-- Imports are always put at the top of the file, just after any module
-  comments and docstrings, and before module globals and constants.
+- Imports are always put at the top of the file, just after any module comments and docstrings, and before module globals and constants.<br>
+> 导入应该写在代码文件的开头，位于模块注释和文档字符串之后，模块全局变量和常量声明之前。
 
-  Imports should be grouped in the following order:
+Imports should be grouped in the following order:<br>
+> 导入应该按照下面的顺序分组来写：
 
-  1. standard library imports
-  2. related third party imports
-  3. local application/library specific imports
+1. standard library imports<br>
+> 标准库导入
+2. related third party imports<br>
+> 相关第三方导入
+3. local application/library specific imports<br>
+> 本地应用/库的特定导入
 
-  You should put a blank line between each group of imports.
+You should put a blank line between each group of imports.<br>
+> 不同组的导入之间用空行隔开。
 
-  Put any relevant ``__all__`` specification after the imports.
+Put any relevant ``__all__`` specification after the imports.<br>
+> 将任何相关的__all__说明放在导入之后。
 
-- Absolute imports are recommended, as they are usually more readable
-  and tend to be better behaved (or at least give better error
-  messages) if the import system is incorrectly configured (such as
-  when a directory inside a package ends up on ``sys.path``):
+- Absolute imports are recommended, as they are usually more readable and tend to be better behaved (or at least give better error messages) if the import system is incorrectly configured (such as when a directory inside a package ends up on ``sys.path``):<br>
+> 推荐使用绝对导入，因为这样通常更易读，而且在导入系统配置不当（比如包中的路径以sys.path结束）的情况下，也会有更好的表现（或者至少会给出更准确的错误信息）：
 
 ```python
 import mypkg.sibling
@@ -402,53 +407,54 @@ from mypkg import sibling
 from mypkg.sibling import example
 ```
 
-However, explicit relative imports are an acceptable alternative to absolute imports, especially when dealing with complex package layouts where using absolute imports would be unnecessarily verbose:
+However, explicit relative imports are an acceptable alternative to absolute imports, especially when dealing with complex package layouts where using absolute imports would be unnecessarily verbose:<br>
+> 然而，除了绝对导入，显式的相对导入也是一种可以接受的替代方式。特别是在处理复杂的包布局时，采用绝对导入会显得啰嗦。
 
 ```python
 from . import sibling
 from .sibling import example
 ```
 
-Standard library code should avoid complex package layouts and always use absolute imports.
+Standard library code should avoid complex package layouts and always use absolute imports.<br>
+> 标准库代码应当避免复杂的包布局并一致地采用绝对导入。
 
-Implicit relative imports should *never* be used and have been removed in Python 3.
+Implicit relative imports should *never* be used and have been removed in Python 3.<br>
+> 隐式的相对导入应该永不使用，并且在Python 3中这种方式已经被去掉了。
 
-- When importing a class from a class-containing module, it's usually
-  okay to spell this:
+- When importing a class from a class-containing module, it's usually okay to spell this:<br>
+> 当从一个包括类的模块中导入一个类时，通常可以这样写：
 
 ```python
 from myclass import MyClass
 from foo.bar.yourclass import YourClass
 ```
 
-  If this spelling causes local name clashes, then spell them :
+If this spelling causes local name clashes, then spell them :<br>
+> 如果和本地命名的拼写产生了冲突，应当直接导入模块：
 
 ```python
 import myclass
 import foo.bar.yourclass
 ```
 
-and use "myclass.MyClass" and "foo.bar.yourclass.YourClass".
+and use "myclass.MyClass" and "foo.bar.yourclass.YourClass".<br>
+> 然后使用”myclass.MyClass”和”foo.bar.yourclass.YourClass”.
 
 
-- Wildcard imports (``from <module> import *``) should be avoided, as
-  they make it unclear which names are present in the namespace,
-  confusing both readers and many automated tools. There is one
-  defensible use case for a wildcard import, which is to republish an
-  internal interface as part of a public API (for example, overwriting
-  a pure Python implementation of an interface with the definitions
-  from an optional accelerator module and exactly which definitions
-  will be overwritten isn't known in advance).
+- Wildcard imports (`from < module > import *`) should be avoided, as they make it unclear which names are present in the namespace, confusing both readers and many automated tools. There is one defensible use case for a wildcard import, which is to republish an internal interface as part of a public API (for example, overwriting a pure Python implementation of an interface with the definitions from an optional accelerator module and exactly which definitions will be overwritten isn't known in advance).<br>
+> 避免使用通配符进行导入，因为这样会造成在当前命名空间出现的命名含义不清晰，给读者和许多自动化工具造成困扰。有一个适合使用通配符进行导入的情形，即将一个内部接口重新发布成公共API的一部分（比如，使用可选的加速模块中的定义去覆盖纯Python实现的接口，这种情况下，哪些定义会被覆盖是不被提前知晓的）。
 
-  When republishing names this way, the guidelines below regarding
-  public and internal interfaces still apply.
+When republishing names this way, the guidelines below regarding public and internal interfaces still apply.<br>
+> 当使用这种方式重新发布命名时，指南后面关于公共和内部接口的部分仍然适用。
 
 ### 模块级的名称
 **Module level dunder names**
 
-Module level "dunders" (i.e. names with two leading and two trailing underscores) such as __all__ , __author__ , __version__ , etc. should be placed after the module docstring but before any import statements except from __future__ imports. Python mandates that future-imports must appear in the module before any other code except docstrings.
+Module level "dunders" (i.e. names with two leading and two trailing underscores) such as `__all__` , `__author__` , `__version__` , etc. should be placed after the module docstring but before any import statements except `from __future__ imports`. Python mandates that future-imports must appear in the module before any other code except docstrings.<br>
+> 模块级的"dunders"(指double underline，在名字前后都有两个下划线)的命名应该放在模块的文档字符串之后，导入语句（除`from __future__ imports`之外）之前。Python要求future-imports必须出现在模块除文档字符串外的任何代码之前。
 
-For example:
+For example:<br>
+> 比方说：
 
 ```python
 """This is the example module.
