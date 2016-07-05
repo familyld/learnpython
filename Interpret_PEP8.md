@@ -805,44 +805,76 @@ The naming conventions of Python's library are a bit of a mess, so we'll never g
 **Overriding Principle**
 
 Names that are visible to the user as public parts of the API should follow conventions that reflect usage rather than implementation.<br>
->
+> API里对用户可见的公共的命名应当注重反映用途而非实现方式。
 
 ### 描述：命名风格
 **Descriptive: Naming Styles**
 
-There are a lot of different naming styles.  It helps to be able to recognize what naming style is being used, independently from what they are used for.
+There are a lot of different naming styles.  It helps to be able to recognize what naming style is being used, independently from what they are used for.<br>
+> 有很多种不同的命名风格。这将有助于我们独立于用途来辨认不同的命名风格。
 
-The following naming styles are commonly distinguished:
+The following naming styles are commonly distinguished:<br>
+> 下面这些命名风格都是有区别的：
 
-- ``b`` (single lowercase letter)
-- ``B`` (single uppercase letter)
-- ``lowercase``
-- ``lower_case_with_underscores``
-- ``UPPERCASE``
-- ``UPPER_CASE_WITH_UNDERSCORES``
-- ``CapitalizedWords`` (or CapWords, or CamelCase -- so named because of the bumpy look of its letters [[3]](https://www.python.org/dev/peps/pep-0008/#id11)).  This is also sometimes known as StudlyCaps.
+- ``b`` (single lowercase letter)<br>
+> 单个小写字母
 
-Note: When using abbreviations in CapWords, capitalize all the letters of the abbreviation.  Thus HTTPServerError is better than HttpServerError.
+- ``B`` (single uppercase letter)<br>
+> 单个大写字母
 
-- ``mixedCase`` (differs from CapitalizedWords by initial lowercase character!)
-- ``Capitalized_Words_With_Underscores`` (ugly!)
+- ``lowercase``<br>
+> 全小写的单词
 
-There's also the style of using a short unique prefix to group related names together.  This is not used much in Python, but it is mentioned for completeness.  For example, the ``os.stat()`` function returns a tuple whose items traditionally have names like ``st_mode``, ``st_size``, ``st_mtime`` and so on.  (This is done to emphasize the correspondence with the fields of the POSIX system call struct, which helps programmers familiar with that.)
+- ``lower_case_with_underscores``<br>
+> 全小写并用下划线连接的短语
 
-The X11 library uses a leading X for all its public functions.  In Python, this style is generally deemed unnecessary because attribute and method names are prefixed with an object, and function names are prefixed with a module name.
+- ``UPPERCASE``<br>
+> 全大写的单词
 
-In addition, the following special forms using leading or trailing underscores are recognized (these can generally be combined with any case convention):
+- ``UPPER_CASE_WITH_UNDERSCORES``<br>
+> 全大写并用下划线连接的短语
 
-- ``_single_leading_underscore``: weak "internal use" indicator. E.g. ``from M import *`` does not import objects whose name starts with an underscore.
-- ``single_trailing_underscore_``: used by convention to avoid conflicts with Python keyword, e.g. :
+- ``CapitalizedWords`` (or CapWords, or CamelCase -- so named because of the bumpy look of its letters [[3]](https://www.python.org/dev/peps/pep-0008/#id11)).  This is also sometimes known as StudlyCaps. Note: When using abbreviations in CapWords, capitalize all the letters of the abbreviation.  Thus HTTPServerError is better than HttpServerError.<br>
+> 单词间紧密连接，采用单词首字母大小的方式进行区分的写法又称CapWords，或CamelCase（驼峰命名法），因为这样看上去字母是凹凸不平的。有时也称作StudlyCaps。当CapWords中包含缩写词时，该单词的所有字母都应该用大写表示。所以HTTPServerError这个命名要比HttpServerError更好。
+
+- ``mixedCase`` (differs from CapitalizedWords by initial lowercase character!)<br>
+> 混合大小写，这种风格和CapWords是不同的，它的首字母是小写字母！
+
+- ``Capitalized_Words_With_Underscores`` (ugly!)<br>
+> 用下划线连接的CapWords（这种写法非常丑陋！不推荐使用！）
+
+There's also the style of using a short unique prefix to group related names together.  This is not used much in Python, but it is mentioned for completeness.  For example, the ``os.stat()`` function returns a tuple whose items traditionally have names like ``st_mode``, ``st_size``, ``st_mtime`` and so on.  (This is done to emphasize the correspondence with the fields of the POSIX system call struct, which helps programmers familiar with that.)<br>
+> 也有一种命名风格是采用一个短的唯一的前缀对相关的名字进行分组。 这种风格在Python中不常用，这里仅为了内容的完整性而提及。举个例子，os模块的stat函数返回的元组中就包含这种风格命名的名字（这样做是为了强调该命名与POSIX系统字段的一致性，有助于帮助程序员熟悉这一点）。如下：
+
+```python
+>>> import os
+>>> os.stat('F:\\')
+os.stat_result(st_mode=16895, st_ino=1407374883553285, st_dev=1791446800, st_nlink=1, st_uid=0,
+               st_gid=0, st_size=49152, st_atime=1467099074, st_mtime=1467099074, st_ctime=1189206937
+)
+```
+
+The X11 library uses a leading X for all its public functions.  In Python, this style is generally deemed unnecessary because attribute and method names are prefixed with an object, and function names are prefixed with a module name.<br>
+> X11库的所有公共函数都用X打头。 但在Python中这种风格被认为是不重要的，因为属性和方法名都有一个对象名作为前缀，而函数名则有一个模块名作为前缀（这些信息已经足够表明所属）。
+
+In addition, the following special forms using leading or trailing underscores are recognized (these can generally be combined with any case convention):<br>
+> 此外，下面这些采用前导或尾随下划线的特殊格式可以和其他风格组合使用。
+
+- ``_single_leading_underscore``: weak "internal use" indicator. E.g. ``from M import *`` does not import objects whose name starts with an underscore.<br>
+> 单个前导下划线：表示仅供（模块）内部使用。比方说，使用通配符导入一个模块时就不会导入这种对象。
+
+- ``single_trailing_underscore_``: used by convention to avoid conflicts with Python keyword, e.g. :<br>
+> 单个尾随下划线：通常用于避免和Python关键字冲突，比如：
 
 ```python
 Tkinter.Toplevel(master, class_='ClassName')
 ```
 
-- ``__double_leading_underscore``: when naming a class attribute, invokes name mangling (inside class FooBar, ``__boo`` becomes ``_FooBar__boo``; see below).
+- ``__double_leading_underscore``: when naming a class attribute, invokes name mangling (inside class FooBar, ``__boo`` becomes ``_FooBar__boo``; see below).<br>
+> 双前导下划线：用于命名类属性，调用时这个命名会被改变（在类FooBar中，类属性``__boo``会变成``_FooBar__boo``，详见下文）。
 
-- ``__double_leading_and_trailing_underscore__``: "magic" objects or attributes that live in user-controlled namespaces. E.g. ``__init__``, ``__import__`` or ``__file__``.  Never invent such names; only use them as documented.
+- ``__double_leading_and_trailing_underscore__``: "magic" objects or attributes that live in user-controlled namespaces. E.g. ``__init__``, ``__import__`` or ``__file__``.  Never invent such names; only use them as documented.<br>
+> 双前导及双尾随下划线：魔术对象或属性，仅用于用户控制的命名空间内。比方说``__init__``，``__import__``，和``__file__``等等。 永远不要自己创造这样的命名。这些命名应仅用于记录。
 
 ### 规范：命名约定
 **Prescriptive: Naming Conventions**
