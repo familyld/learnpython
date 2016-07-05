@@ -475,14 +475,11 @@ import sys
 ## 字符串的引号
 **String Quotes**
 
-In Python, single-quoted strings and double-quoted strings are the
-same.  This PEP does not make a recommendation for this.  Pick a rule
-and stick to it.  When a string contains single or double quote
-characters, however, use the other one to avoid backslashes in the
-string. It improves readability.
+In Python, single-quoted strings and double-quoted strings are the same. This PEP does not make a recommendation for this. Pick a rule and stick to it.  When a string contains single or double quote characters, however, use the other one to avoid backslashes in the string. It improves readability.<br>
+> 在 Python 里面，单引号字符串和双引号字符串是等同的。这份指南没有给出（关于使用哪种引号的）建议。选择一种方式并一致地使用就可以了。当一个字符串包含单引号或者双引号字符时，用（两者中的）另外一种来包裹字符串，而不是使用反斜杠对字符串中的引号进行转义，这样可以提高代码的可读性。
 
-For triple-quoted strings, always use double quote characters to be
-consistent with the docstring convention in [PEP 257](https://www.python.org/dev/peps/pep-0257).
+For triple-quoted strings, always use double quote characters to be consistent with the docstring convention in [PEP 257](https://www.python.org/dev/peps/pep-0257).<br>
+> 对于三引号字符串，总是使用双引号字符，以跟PEP 257中对文档字符串的约定保持一致（这段话的意思是，三引号字符串应一致地使用`"""something"""`的方式，而不是`'''something'''`）。
 
 
 ## 表达式和语句中的空格
