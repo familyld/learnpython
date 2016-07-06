@@ -1060,17 +1060,23 @@ With this in mind, here are the Pythonic guidelines:<br>
 ### 公共接口和内部接口
 **Public and internal interfaces**
 
-Any backwards compatibility guarantees apply only to public interfaces. Accordingly, it is important that users be able to clearly distinguish between public and internal interfaces.
+Any backwards compatibility guarantees apply only to public interfaces. Accordingly, it is important that users be able to clearly distinguish between public and internal interfaces.<br>
+> 只保证公共接口的向后兼容性。因此，对于用户来说，能清晰地分辨出公共接口和内部接口是非常重要的。
 
-Documented interfaces are considered public, unless the documentation explicitly declares them to be provisional or internal interfaces exempt from the usual backwards compatibility guarantees. All undocumented interfaces should be assumed to be internal.
+Documented interfaces are considered public, unless the documentation explicitly declares them to be provisional or internal interfaces exempt from the usual backwards compatibility guarantees. All undocumented interfaces should be assumed to be internal.<br>
+> 文档化的接口一般都是公共的，除非文档中指出这是不受向后兼容性保障的临时接口或内部接口。所有没有文档化的接口都应当认为是仅供模块内部使用的。
 
-To better support introspection, modules should explicitly declare the names in their public API using the ``__all__`` attribute. Setting ``__all__`` to an empty list indicates that the module has no public API.
+To better support introspection, modules should explicitly declare the names in their public API using the ``__all__`` attribute. Setting ``__all__`` to an empty list indicates that the module has no public API.<br>
+> 为了便于回顾，模块中应当使用``__all__``属性来显式地指示所有公共API。如果``__all__``被设置为空列表，则表明该模块没有任何公共API。
 
-Even with ``__all__`` set appropriately, internal interfaces (packages, modules, classes, functions, attributes or other names) should still be prefixed with a single leading underscore.
+Even with ``__all__`` set appropriately, internal interfaces (packages, modules, classes, functions, attributes or other names) should still be prefixed with a single leading underscore.<br>
+> 即使已经设置好了``__all__``属性。内部接口（包，模块，类，函数，属性或者其他名字）还是要用一个先导下划线标示。
 
-An interface is also considered internal if any containing namespace (package, module or class) is considered internal.
+An interface is also considered internal if any containing namespace (package, module or class) is considered internal.<br>
+> 当一个接口所属的命名空间（包，模块，类）是内部的，则该接口也被认为是内部的。
 
-Imported names should always be considered an implementation detail. Other modules must not rely on indirect access to such imported names unless they are an explicitly documented part of the containing module's API, such as ``os.path`` or a package's ``__init__`` module that exposes functionality from submodules.
+Imported names should always be considered an implementation detail. Other modules must not rely on indirect access to such imported names unless they are an explicitly documented part of the containing module's API, such as ``os.path`` or a package's ``__init__`` module that exposes functionality from submodules.<br>
+> 导入的名字应当始终被视为一个实现细节。其他模块不能使用这些导入名（对导入的模块/函数/etc）进行间接的访问，除非这些导入名在其模块API的文档中有明确的说明。比方说``os.path``或是包中用于暴露子模块功能的``__init__``模块。
 
 
 ## 编程建议
