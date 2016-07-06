@@ -1008,38 +1008,53 @@ Constants are usually defined on a module level and written in all capital lette
 #### 继承的设计
 **Designing for inheritance**
 
-Always decide whether a class's methods and instance variables (collectively: "attributes") should be public or non-public.  If in doubt, choose non-public; it's easier to make it public later than to make a public attribute non-public.
+Always decide whether a class's methods and instance variables (collectively: "attributes") should be public or non-public.  If in doubt, choose non-public; it's easier to make it public later than to make a public attribute non-public.<br>
+> 设计时应考虑类的方法和实例变量（这二者统称为类的属性）是否公开。如果不能确定，那就先按非公共的方式进行编写，因为从非公共改为公共要更简单一些。
 
-Public attributes are those that you expect unrelated clients of your class to use, with your commitment to avoid backward incompatible changes.  Non-public attributes are those that are not intended to be used by third parties; you make no guarantees that non-public attributes won't change or even be removed.
+Public attributes are those that you expect unrelated clients of your class to use, with your commitment to avoid backward incompatible changes.  Non-public attributes are those that are not intended to be used by third parties; you make no guarantees that non-public attributes won't change or even be removed.<br>
+> 公共属性指的是你希望所有使用你的类的人都能使用的属性，并且你应当保证这些属性的向后兼容。非公共属性则是哪些你不希望第三方使用的属性，这些属性没有任何保证，（在新版本中）可能会被更改甚至移除。
 
-We don't use the term "private" here, since no attribute is really private in Python (without a generally unnecessary amount of work).
+We don't use the term "private" here, since no attribute is really private in Python (without a generally unnecessary amount of work).<br>
+> 这里我们不使用“私有”这个术语，因为在Python中没有属性是真正私有的。
 
-Another category of attributes are those that are part of the "subclass API" (often called "protected" in other languages).  Some classes are designed to be inherited from, either to extend or modify aspects of the class's behavior.  When designing such a class, take care to make explicit decisions about which attributes are public, which are part of the subclass API, and which are truly only to be used by your base class.
+Another category of attributes are those that are part of the "subclass API" (often called "protected" in other languages).  Some classes are designed to be inherited from, either to extend or modify aspects of the class's behavior.  When designing such a class, take care to make explicit decisions about which attributes are public, which are part of the subclass API, and which are truly only to be used by your base class.<br>
+> 除了公共和非公共属性之外，还有一类属性称为子类API，这类属性在基类中定义，供子类调用（在其它编程语言中一般称为“受保护的（属性）”）。有一些类设计出来是用于被继承的，（子类）可以在基类的基础上进行功能上的扩展和修改。 当设计这样的类时，注意要明确好哪些属性是公共的，哪些属性是子类API，以及哪些属性是仅限于在这个基类中使用的。
 
-With this in mind, here are the Pythonic guidelines:
+With this in mind, here are the Pythonic guidelines:<br>
+> 理解上面的内容后，这里给出一些Python编程指南：
 
-- Public attributes should have no leading underscores.
+- Public attributes should have no leading underscores.<br>
+> 公共属性不应使用前导下划线。
 
-- If your public attribute name collides with a reserved keyword, append a single trailing underscore to your attribute name.  This is preferable to an abbreviation or corrupted spelling.  (However, notwithstanding this rule, 'cls' is the preferred spelling for any variable or argument which is known to be a class, especially the first argument to a class method.)
+- If your public attribute name collides with a reserved keyword, append a single trailing underscore to your attribute name.  This is preferable to an abbreviation or corrupted spelling.  (However, notwithstanding this rule, 'cls' is the preferred spelling for any variable or argument which is known to be a class, especially the first argument to a class method.)<br>
+> 如果公有属性名和保留关键字冲突，可以使用添加一个尾随下划线。这比缩写和简写的做法更优。（特别地，当变量或参数是一个类时，使用简写的cls代替class也是很常见的，类方法的第一个参数就是cls。）
 
-    Note 1: See the argument name recommendation above for class methods.
+    Note 1: See the argument name recommendation above for class methods.<br>
+> 关于这点可以参见上文中函数和方法的参数这一小节中对参数命名的约定。
 
 - For simple public data attributes, it is best to expose just the attribute name, without complicated accessor/mutator methods.  Keep in mind that Python provides an easy path to future enhancement, should you find that a simple data attribute needs to grow functional behavior.  In that case, use properties to hide functional implementation behind simple data attribute access syntax.<br>
-> 阿飞
+> 对于简单的公共属性，最好是直接公开属性名，不要使用复杂的访问/修改方法。值得注意，Python提供了一种非常方便的进一步增强功能的方法（这里指的应该是装饰器）。这种情况下，可以使用@property来把函数实现隐藏在简单的公共属性后面（这个装饰器允许把方法作为实例变量调用，利用对应的setter和getter方法来编写调用这个实例变量的增强功能，这样外部访问的时候，看起来就像是在访问一个普通的公共实例变量，真正复杂的实现被隐藏起来了）。
 
-    Note 1: Properties only work on new-style classes.
+    Note 1: Properties only work on new-style classes.<br>
+> Note 1：property只对采用新型风格的类有效（是否指Pythohn2.x以后的版本？这点待验证）
 
-    Note 2: Try to keep the functional behavior side-effect free, although side-effects such as caching are generally fine.
+    Note 2: Try to keep the functional behavior side-effect free, although side-effects such as caching are generally fine.<br>
+> Note 2：实现功能时应尽量避免带来的副作用，尽管像缓存之类的副作用通常是无伤大雅的。
 
-    Note 3: Avoid using properties for computationally expensive operations; the attribute notation makes the caller believe that access is (relatively) cheap.
+    Note 3: Avoid using properties for computationally expensive operations; the attribute notation makes the caller believe that access is (relatively) cheap.<br>
+> 避免对计算开销大的操作使用property；属性标记会让调用者认为这是一个开销（相对）较低的操作。
 
-- If your class is intended to be subclassed, and you have attributes that you do not want subclasses to use, consider naming them with double leading underscores and no trailing underscores.  This invokes Python's name mangling algorithm, where the name of the class is mangled into the attribute name.  This helps avoid attribute name collisions should subclasses inadvertently contain attributes with the same name.
+- If your class is intended to be subclassed, and you have attributes that you do not want subclasses to use, consider naming them with double leading underscores and no trailing underscores.  This invokes Python's name mangling algorithm, where the name of the class is mangled into the attribute name.  This helps avoid attribute name collisions should subclasses inadvertently contain attributes with the same name.<br>
+> 如果你设计的类用于被继承，并且你希望一些属性不会被子类使用，可以在命名时采取双前导下划线的方式。当该属性调用时会自动触发Python的命名重整，把类型放在属性名前面。这样即使我们无意中在子类使用了相同的名称，也可以避免属性名的冲突。
 
-    Note 1: Note that only the simple class name is used in the mangled name, so if a subclass chooses both the same class name and attribute name, you can still get name collisions.
+    Note 1: Note that only the simple class name is used in the mangled name, so if a subclass chooses both the same class name and attribute name, you can still get name collisions.<br>
+> 注意，命名重整只是简单地利用了类名，所以如果子类类名和基类类名也相同时，还是会构成命名冲突。
 
-    Note 2: Name mangling can make certain uses, such as debugging and ``__getattr__()``, less convenient.  However the name mangling algorithm is well documented and easy to perform manually.
+    Note 2: Name mangling can make certain uses, such as debugging and ``__getattr__()``, less convenient.  However the name mangling algorithm is well documented and easy to perform manually.<br>
+> 命名重整是有特定的用法，比方说调试和使用``__getattr__()``时就不太方便。但对文档化和手动执行有帮助。
 
-    Note 3: Not everyone likes name mangling. Try to balance the  need to avoid accidental name clashes with potential use by advanced callers.
+    Note 3: Not everyone likes name mangling. Try to balance the  need to avoid accidental name clashes with potential use by advanced callers.<br>
+> 不是所有人都喜欢命名重整，所以要平衡好避免命名冲突和被高级调用者调用这二者的需求。
 
 
 ### 公共接口和内部接口
