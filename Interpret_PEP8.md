@@ -30,15 +30,15 @@
     - [覆盖原则](#覆盖原则)
     - [描述：命名风格](#描述：命名风格)
     - [规范：命名约定](#规范：命名约定)
-        - [要避免的命名](#要避免的命名)
+        - [应当避免的命名](#应当避免的命名)
         - [包名和模块名](#包名和模块名)
         - [类名](#类名)
         - [异常名](#异常名)
         - [全局变量名](#全局变量名)
         - [函数名](#函数名)
-        - [函数和方法参数](#函数和方法参数)
+        - [函数和方法的参数](#函数和方法的参数)
         - [方法名和实例变量](#方法名和实例变量)
-        - [常数](#常数)
+        - [常量](#常量)
         - [继承的设计](#继承的设计)
     - [公共接口和内部接口](#公共接口和内部接口)
 - [编程建议](#编程建议)
@@ -874,219 +874,188 @@ Tkinter.Toplevel(master, class_='ClassName')
 > 双前导下划线：用于命名类属性，调用时这个命名会被改变（在类FooBar中，类属性``__boo``会变成``_FooBar__boo``，详见下文）。
 
 - ``__double_leading_and_trailing_underscore__``: "magic" objects or attributes that live in user-controlled namespaces. E.g. ``__init__``, ``__import__`` or ``__file__``.  Never invent such names; only use them as documented.<br>
-> 双前导及双尾随下划线：魔术对象或属性，仅用于用户控制的命名空间内。比方说``__init__``，``__import__``，和``__file__``等等。 永远不要自己创造这样的命名。这些命名应仅用于记录。
+> 双前导及双尾随下划线：魔术对象或属性，仅用于用户控制的命名空间内。比方说``__init__``，``__import__``，和``__file__``等等。 永远不要自己创造这样的命名。这些命名应仅用于文档化。
 
 ### 规范：命名约定
 **Prescriptive: Naming Conventions**
 
-#### 要避免的命名
+#### 应当避免的命名
 **Names to Avoid**
 
-Never use the characters 'l' (lowercase letter el), 'O' (uppercase
-letter oh), or 'I' (uppercase letter eye) as single character variable
-names.
+Never use the characters 'l' (lowercase letter el), 'O' (uppercase letter oh), or 'I' (uppercase letter eye) as single character variable names.<br>
+> 永远不要单独用小写字母l，大写字母O，大写字母I作为变量名。
 
-In some fonts, these characters are indistinguishable from the
-numerals one and zero.  When tempted to use 'l', use 'L' instead.
+In some fonts, these characters are indistinguishable from the numerals one and zero.  When tempted to use 'l', use 'L' instead.<br>
+>  在一些字体中，它们很难和数字的1和0区分开。但需要（单独）使用小写字母l时，可以尝试用大写的L代替。
 
 #### 包名和模块名
 **Package and Module Names**
 
-Modules should have short, all-lowercase names.  Underscores can be
-used in the module name if it improves readability.  Python packages
-should also have short, all-lowercase names, although the use of
-underscores is discouraged.
+Modules should have short, all-lowercase names.  Underscores can be used in the module name if it improves readability.  Python packages should also have short, all-lowercase names, although the use of
+underscores is discouraged.<br>
+> 模块名（也即文件名）应该使用短且全小写的名字。如果使用下划线可以提高可读性，则下划线也可以用。Python的包名同样应当使用短且全小写的名字，但包名中不推荐使用下划线。
 
-When an extension module written in C or C++ has an accompanying
-Python module that provides a higher level (e.g. more object oriented)
-interface, the C/C++ module has a leading underscore
-(e.g. ``_socket``).
+When an extension module written in C or C++ has an accompanying Python module that provides a higher level (e.g. more object oriented) interface, the C/C++ module has a leading underscore (e.g. ``_socket``).<br>
+> 当使用C或C++编写的扩展模块拥有一个伴随的用于提供更高层次（比方说更加面向对象）的接口时，C或C++编写的模块名应该有一个先导下划线（比方说``_socket``，单个先导下划线前面也解释过了，用于指示仅内部使用，这里由于采用了Python模块作为高层的公共接口，所以C或C++编写的扩展模块就变为对内部使用了）。
 
 #### 类名
 **Class Names**
 
-Class names should normally use the CapWords convention.
+Class names should normally use the CapWords convention.<br>
+> 类名通常使用CapWords风格。
 
-The naming convention for functions may be used instead in cases where
-the interface is documented and used primarily as a callable.
+The naming convention for functions may be used instead in cases where the interface is documented and used primarily as a callable.<br>
+> 如果接口需要文档化并且可以被调用，则有可能采用函数的命名约定进行命名。
 
-Note that there is a separate convention for builtin names: most builtin
-names are single words (or two words run together), with the CapWords
-convention used only for exception names and builtin constants.
+Note that there is a separate convention for builtin names: most builtin names are single words (or two words run together), with the CapWords convention used only for exception names and builtin constants.<br>
+> 注意，对于内置命名有单独的一个约定：绝大部分内置的命名都是单个单词（或者两个单词拼接在一起）。CapWords风格只用于异常名和内置常量。
 
 #### 异常名
 **Exception Names**
 
-Because exceptions should be classes, the class naming convention
-applies here.  However, you should use the suffix "Error" on your
-exception names (if the exception actually is an error).
+Because exceptions should be classes, the class naming convention applies here.  However, you should use the suffix "Error" on your exception names (if the exception actually is an error).<br>
+> 由于异常一般都是通过类来定义的，所以异常名应用的是类名的规则。 注意，当异常确实属于错误时，需要在类名中添加后缀“Error”。
 
 #### 全局变量名
 **Global Variable Names**
 
-(Let's hope that these variables are meant for use inside one module
-only.)  The conventions are about the same as those for functions.
+(Let's hope that these variables are meant for use inside one module only.)  The conventions are about the same as those for functions.<br>
+> （这里讨论的全局变量都仅用于模块内部），全局变量命名的约定和函数命名的约定是相同的。
 
-Modules that are designed for use via ``from M import *`` should use
-the ``__all__`` mechanism to prevent exporting globals, or use the
-older convention of prefixing such globals with an underscore (which
-you might want to do to indicate these globals are "module
-non-public").
+Modules that are designed for use via ``from M import *`` should use the ``__all__`` mechanism to prevent exporting globals, or use the older convention of prefixing such globals with an underscore (which you might want to do to indicate these globals are "module
+non-public").<br>
+> 以``from M import *``的方式进行导入的模块应当使用``__all__``机制来防止导入全局变量。或者采用旧版的约定，给模块中的全局变量增加一个先导下划线（表示该变量是仅限于模块内部全局使用，是非公共的）。
 
 #### 函数名
 **Function Names**
 
-Function names should be lowercase, with words separated by
-underscores as necessary to improve readability.
+Function names should be lowercase, with words separated by underscores as necessary to improve readability.<br>
+> 函数名应该全小写，并且用下划线作为单词之间的分割以提高可读性。
 
-mixedCase is allowed only in contexts where that's already the
-prevailing style (e.g. threading.py), to retain backwards
-compatibility.
+mixedCase is allowed only in contexts where that's already the prevailing style (e.g. threading.py), to retain backwards compatibility.<br>
+> 仅在混合大小写风格已经占主导（比方说threading.py）的环境中，使用混合大小写风格为函数命名，以保持向后兼容性。
 
-#### 函数和方法参数
+#### 函数和方法的参数
 **Function and method arguments**
 
-Always use ``self`` for the first argument to instance methods.
+Always use ``self`` for the first argument to instance methods.<br>
+> 实例方法的第一个参数应当是self。
 
-Always use ``cls`` for the first argument to class methods.
+Always use ``cls`` for the first argument to class methods.<br>
+> 类方法的第一个参数应当是cls。
 
-If a function argument's name clashes with a reserved keyword, it is
-generally better to append a single trailing underscore rather than
-use an abbreviation or spelling corruption.  Thus ``class_`` is better
-than ``clss``.  (Perhaps better is to avoid such clashes by using a
-synonym.)
+If a function argument's name clashes with a reserved keyword, it is generally better to append a single trailing underscore rather than use an abbreviation or spelling corruption.  Thus ``class_`` is better than ``clss``.  (Perhaps better is to avoid such clashes by using a synonym.)<br>
+> 如果函数的参数名和保留关键字冲突，则一般会在参数名后加一个下划线。而不是使用缩写或者移除单词的某些字母进行表示，比方说把class写成clss。采用同义词进行替换的效果可能更好。
+
+> 注：关于实例方法，类方法，静态方法的区别不妨看看[python中类方法、类实例方法、静态方法的使用与区别](http://computer.c.blog.163.com/blog/static/10252448201167112751800/)一文。这里贴出代码简单解析一下：
+
+```python
+class A(object):
+    def foo(self,x):
+    #类实例方法
+        print "executing foo(%s,%s)"%(self,x)
+
+    @classmethod
+    def class_foo(cls,x):
+    #类方法
+        print "executing class_foo(%s,%s)"%(cls,x)
+
+    @staticmethod
+    def static_foo(x):
+    #静态方法
+        print "executing static_foo(%s)"%x
+```
+
+> 调用情况：
+
+```
+a = A()
+a.foo(1)             //print: executing foo(<__main__.A object at 0xb77d67ec>,1)
+
+a.class_foo(1)       //print: executing class_foo(<class '__main__.A'>,1)
+A.class_foo(1)       //print: executing class_foo(<class '__main__.A'>,1)
+
+a.static_foo(1)      //print: executing static_foo(1)
+A.static_foo(1)      //print: executing static_foo(1)
+```
+
+> 类方法使用@classmethod进行标记，静态方法使用@staticmethod进行标记，两种标记都没有的就是类实例方法。类实例方法仅能被实例对象调用，并且包含一个隐含调用参数self，指代调用该方法的实例本身；类方法和静态方法既能被实例对象调用，又能被类对象对用（Python中一切皆对象，所以类本身也是一个对象），它们的区别是：类方法包含一个隐含调用参数cls，指代类对象本身；静态方法无隐含调用参数。
 
 #### 方法名和实例变量
 **Method Names and Instance Variables**
 
-Use the function naming rules: lowercase with words separated by
-underscores as necessary to improve readability.
+Use the function naming rules: lowercase with words separated by underscores as necessary to improve readability.<br>
+> 和函数命名约定一样，方法名和实例变量名都应该全小写，并且用下划线作为单词之间的分割以提高可读性。
 
-Use one leading underscore only for non-public methods and instance
-variables.
+Use one leading underscore only for non-public methods and instance variables.<br>
+> 对于非公共的方法和实例变量，使用一个先导下划线标示。
 
-To avoid name clashes with subclasses, use two leading underscores to
-invoke Python's name mangling rules.
+To avoid name clashes with subclasses, use two leading underscores to invoke Python's name mangling rules.<br>
+> 为了避免和子类（中的方法和变量名）冲突，可以使用两个先导下划线，这样在被调用时会触发Python的命名重整。
 
-Python mangles these names with the class name: if class Foo has an
-attribute named ``__a``, it cannot be accessed by ``Foo.__a``.  (An
-insistent user could still gain access by calling ``Foo._Foo__a``.)
-Generally, double leading underscores should be used only to avoid
-name conflicts with attributes in classes designed to be subclassed.
+Python mangles these names with the class name: if class Foo has an attribute named ``__a``, it cannot be accessed by ``Foo.__a``.  (An insistent user could still gain access by calling ``Foo._Foo__a``.) Generally, double leading underscores should be used only to avoid name conflicts with attributes in classes designed to be subclassed.<br>
+> Python中使用类名进行命名重整：如果Foo类有一个属性``__a``，则调用时不能采用``Foo.__a``的形式（当然，如果硬要访问该属性，可以采用``Foo._Foo__a``的方式获取访问权）。一般来说，双前导下划线仅用于防止基类和子类的属性产生命名冲突。
 
-Note: there is some controversy about the use of __names (see below).
+Note: there is some controversy about the use of __names (see below).<br>
+> 注意：关于__names的使用仍然存在争议，详见下文。
 
-#### 常数
+#### 常量
 **Constants**
 
-Constants are usually defined on a module level and written in all
-capital letters with underscores separating words.  Examples include
-``MAX_OVERFLOW`` and ``TOTAL``.
+Constants are usually defined on a module level and written in all capital letters with underscores separating words.  Examples include ``MAX_OVERFLOW`` and ``TOTAL``.<br>
+> 常量通常是模块级定义的，采用同全大写字母表示，并且使用下划线来划分各个单词。
 
 #### 继承的设计
 **Designing for inheritance**
 
-Always decide whether a class's methods and instance variables
-(collectively: "attributes") should be public or non-public.  If in
-doubt, choose non-public; it's easier to make it public later than to
-make a public attribute non-public.
+Always decide whether a class's methods and instance variables (collectively: "attributes") should be public or non-public.  If in doubt, choose non-public; it's easier to make it public later than to make a public attribute non-public.
 
-Public attributes are those that you expect unrelated clients of your
-class to use, with your commitment to avoid backward incompatible
-changes.  Non-public attributes are those that are not intended to be
-used by third parties; you make no guarantees that non-public
-attributes won't change or even be removed.
+Public attributes are those that you expect unrelated clients of your class to use, with your commitment to avoid backward incompatible changes.  Non-public attributes are those that are not intended to be used by third parties; you make no guarantees that non-public attributes won't change or even be removed.
 
-We don't use the term "private" here, since no attribute is really
-private in Python (without a generally unnecessary amount of work).
+We don't use the term "private" here, since no attribute is really private in Python (without a generally unnecessary amount of work).
 
-Another category of attributes are those that are part of the
-"subclass API" (often called "protected" in other languages).  Some
-classes are designed to be inherited from, either to extend or modify
-aspects of the class's behavior.  When designing such a class, take
-care to make explicit decisions about which attributes are public,
-which are part of the subclass API, and which are truly only to be
-used by your base class.
+Another category of attributes are those that are part of the "subclass API" (often called "protected" in other languages).  Some classes are designed to be inherited from, either to extend or modify aspects of the class's behavior.  When designing such a class, take care to make explicit decisions about which attributes are public, which are part of the subclass API, and which are truly only to be used by your base class.
 
 With this in mind, here are the Pythonic guidelines:
 
 - Public attributes should have no leading underscores.
 
-- If your public attribute name collides with a reserved keyword,
-  append a single trailing underscore to your attribute name.  This is
-  preferable to an abbreviation or corrupted spelling.  (However,
-  notwithstanding this rule, 'cls' is the preferred spelling for any
-  variable or argument which is known to be a class, especially the
-  first argument to a class method.)
+- If your public attribute name collides with a reserved keyword, append a single trailing underscore to your attribute name.  This is preferable to an abbreviation or corrupted spelling.  (However, notwithstanding this rule, 'cls' is the preferred spelling for any variable or argument which is known to be a class, especially the first argument to a class method.)
 
-  Note 1: See the argument name recommendation above for class methods.
+    Note 1: See the argument name recommendation above for class methods.
 
-- For simple public data attributes, it is best to expose just the
-  attribute name, without complicated accessor/mutator methods.  Keep
-  in mind that Python provides an easy path to future enhancement,
-  should you find that a simple data attribute needs to grow
-  functional behavior.  In that case, use properties to hide
-  functional implementation behind simple data attribute access
-  syntax.
+- For simple public data attributes, it is best to expose just the attribute name, without complicated accessor/mutator methods.  Keep in mind that Python provides an easy path to future enhancement, should you find that a simple data attribute needs to grow functional behavior.  In that case, use properties to hide functional implementation behind simple data attribute access syntax.<br>
+> 阿飞
 
-  Note 1: Properties only work on new-style classes.
+    Note 1: Properties only work on new-style classes.
 
-  Note 2: Try to keep the functional behavior side-effect free,
-  although side-effects such as caching are generally fine.
+    Note 2: Try to keep the functional behavior side-effect free, although side-effects such as caching are generally fine.
 
-  Note 3: Avoid using properties for computationally expensive
-  operations; the attribute notation makes the caller believe that
-  access is (relatively) cheap.
+    Note 3: Avoid using properties for computationally expensive operations; the attribute notation makes the caller believe that access is (relatively) cheap.
 
-- If your class is intended to be subclassed, and you have attributes
-  that you do not want subclasses to use, consider naming them with
-  double leading underscores and no trailing underscores.  This
-  invokes Python's name mangling algorithm, where the name of the
-  class is mangled into the attribute name.  This helps avoid
-  attribute name collisions should subclasses inadvertently contain
-  attributes with the same name.
+- If your class is intended to be subclassed, and you have attributes that you do not want subclasses to use, consider naming them with double leading underscores and no trailing underscores.  This invokes Python's name mangling algorithm, where the name of the class is mangled into the attribute name.  This helps avoid attribute name collisions should subclasses inadvertently contain attributes with the same name.
 
-  Note 1: Note that only the simple class name is used in the mangled
-  name, so if a subclass chooses both the same class name and attribute
-  name, you can still get name collisions.
+    Note 1: Note that only the simple class name is used in the mangled name, so if a subclass chooses both the same class name and attribute name, you can still get name collisions.
 
-  Note 2: Name mangling can make certain uses, such as debugging and
-  ``__getattr__()``, less convenient.  However the name mangling
-  algorithm is well documented and easy to perform manually.
+    Note 2: Name mangling can make certain uses, such as debugging and ``__getattr__()``, less convenient.  However the name mangling algorithm is well documented and easy to perform manually.
 
-  Note 3: Not everyone likes name mangling.  Try to balance the
-  need to avoid accidental name clashes with potential use by
-  advanced callers.
+    Note 3: Not everyone likes name mangling. Try to balance the  need to avoid accidental name clashes with potential use by advanced callers.
 
 
 ### 公共接口和内部接口
 **Public and internal interfaces**
 
-Any backwards compatibility guarantees apply only to public interfaces.
-Accordingly, it is important that users be able to clearly distinguish
-between public and internal interfaces.
+Any backwards compatibility guarantees apply only to public interfaces. Accordingly, it is important that users be able to clearly distinguish between public and internal interfaces.
 
-Documented interfaces are considered public, unless the documentation
-explicitly declares them to be provisional or internal interfaces exempt
-from the usual backwards compatibility guarantees. All undocumented
-interfaces should be assumed to be internal.
+Documented interfaces are considered public, unless the documentation explicitly declares them to be provisional or internal interfaces exempt from the usual backwards compatibility guarantees. All undocumented interfaces should be assumed to be internal.
 
-To better support introspection, modules should explicitly declare the
-names in their public API using the ``__all__`` attribute. Setting
-``__all__`` to an empty list indicates that the module has no public API.
+To better support introspection, modules should explicitly declare the names in their public API using the ``__all__`` attribute. Setting ``__all__`` to an empty list indicates that the module has no public API.
 
-Even with ``__all__`` set appropriately, internal interfaces (packages,
-modules, classes, functions, attributes or other names) should still be
-prefixed with a single leading underscore.
+Even with ``__all__`` set appropriately, internal interfaces (packages, modules, classes, functions, attributes or other names) should still be prefixed with a single leading underscore.
 
-An interface is also considered internal if any containing namespace
-(package, module or class) is considered internal.
+An interface is also considered internal if any containing namespace (package, module or class) is considered internal.
 
-Imported names should always be considered an implementation detail.
-Other modules must not rely on indirect access to such imported names
-unless they are an explicitly documented part of the containing module's
-API, such as ``os.path`` or a package's ``__init__`` module that exposes
-functionality from submodules.
+Imported names should always be considered an implementation detail. Other modules must not rely on indirect access to such imported names unless they are an explicitly documented part of the containing module's API, such as ``os.path`` or a package's ``__init__`` module that exposes functionality from submodules.
 
 
 ## 编程建议
