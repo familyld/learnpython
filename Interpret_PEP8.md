@@ -1348,40 +1348,36 @@ With the acceptance of [PEP 484](https://www.python.org/dev/peps/pep-0484), the 
 > 随着PEP 484逐渐被接受，函数注解的风格规范产生了变化。
 
 - In order to be forward compatible, function annotations in Python 3 code should preferably use [PEP 484](https://www.python.org/dev/peps/pep-0484) syntax.  (There are some formatting recommendations for annotations in the previous section.)<br>
->
+> 为了保证向前兼容，Python 3代码中的函数注解应采用PEP 484中推荐的语法（在先前的章节中已经提及到了一些推荐的注解格式）。
 
 - The experimentation with annotation styles that was recommended previously in this PEP is no longer encouraged.<br>
->
+> 在这份PEP早期版本中推荐的函数注解风格试验现在已经不再推荐了。
 
 - However, outside the stdlib, experiments within the rules of [PEP 484](https://www.python.org/dev/peps/pep-0484) are now encouraged.  For example, marking up a large third party library or application with [PEP 484](https://www.python.org/dev/peps/pep-0484) style type annotations, reviewing how easy it was to add those annotations, and observing whether their presence increases code understandabilty.<br>
->
+> 然而，除了标准库之外，在PEP 484规则之内的试验都是被推荐使用的。 比方说，使用PEP 484风格的类型注解来标记大的第三方库或应用，审视加入这些注解的方式是否足够简单，以及它们是否能提高代码的可读性。
 
 - The Python standard library should be conservative in adopting such annotations, but their use is allowed for new code and for big refactorings.<br>
->
+> Python标准库中对是否使用这样的注解是持保守态度的，但是在编写新代码和大的重构时可以采用。
 
-- For code that wants to make a different use of function annotations it is recommended to put a comment of the form:<br>
->
-
-```# type: ignore```
-
+- For code that wants to make a different use of function annotations it is recommended to put a comment of the form: ``# type: ignore``
 near the top of the file; this tells type checker to ignore all annotations.  (More fine-grained ways of disabling complaints from type checkers can be found in [PEP 484](https://www.python.org/dev/peps/pep-0484).)<br>
->
+> 当你想把函数注解用作别的用途时，推荐把``# type: ignore``放到文件开头；这样类型检查器或忽略所有注释（更细致的一种方式是禁用类型检查器的complaint，可以在PEP 484中找到详细的用法）。
 
 - Like linters, type checkers are optional, separate tools.  Python interpreters by default should not issue any messages due to type checking and should not alter their behavior based on annotations.<br>
->
+> 类似于linter（用于检查代码风格/错误的小工具，可以让使用者更方便地发现一些排版错误），类型检查器是一种可选的，独立的工具。Python解释器在默认模式下不应该发出任何类型检查的信息，也不应该修改它们对注释作出的行为。
 
-- Users who don't want to use type checkers are free to ignore them. However, it is expected that users of third party library packages may want to run type checkers over those packages.  For this purpose [PEP 484](https://www.python.org/dev/peps/pep-0484) recommends the use of stub files: .pyi files that are read by the type checker in preference of the corresponding .py files. Stub files can be distributed with a library, or separately (with the library author's permission) through the typeshed repo [[5]](https://www.python.org/dev/peps/pep-0008/#id12)<br>
-> .
+- Users who don't want to use type checkers are free to ignore them. However, it is expected that users of third party library packages may want to run type checkers over those packages.  For this purpose [PEP 484](https://www.python.org/dev/peps/pep-0484) recommends the use of stub files: .pyi files that are read by the type checker in preference of the corresponding .py files. Stub files can be distributed with a library, or separately (with the library author's permission) through the typeshed repo [[5]](https://www.python.org/dev/peps/pep-0008/#id12).<br>
+> 用户可以不使用类型检查器并直接忽略它们。但是，有可能用户使用的第三方库需要用到类型检查器。为了实现这一点，PEP 484中推荐使用存根（stub）文件，也即.pyi文件，这些文件会在对应的.py文件之前被类型检查器读入。 存根文件可以和库一起发布，也可以单独（在得到库的作者允许的情况下）地通过typeshed（Python的librarystub的集合，用于为Python标准库和Python内建，以及第三方软件包。此数据可用于静态分析,类型检查和类型推断）发布。
 
 - For code that needs to be backwards compatible, function annotations can be added in the form of comments. See the relevant section of [PEP 484](https://www.python.org/dev/peps/pep-0484) [[6]](https://www.python.org/dev/peps/pep-0008/#id13) .<br>
->
+> 对于需要保持向后兼容性的代码，函数注解可以用注释的方式添加。可以在PEP 484的相关章节找到具体的说明。
 
 Footnotes<br>
 > 脚注
 
-| [[7]](https://www.python.org/dev/peps/pep-0008/#id3) | Hanging indentation is a type-setting style where all the lines in a paragraph are indented except the first line. In the context of Python, the term is used to describe a style where the opening parenthesis of a parenthesized statement is the last non-whitespace character of the line, with subsequent lines being indented until the closing parenthesis. |
+| [[7]](https://www.python.org/dev/peps/pep-0008/#id3) | Hanging indentation is a type-setting style where all the lines in a paragraph are indented except the first line.<br> In the context of Python, the term is used to describe a style where the opening parenthesis of a parenthesized<br> statement is the last non-whitespace character of the line, with subsequent lines being indented until the<br> closing parenthesis. |
 |:---:|:---|
-| | 悬挂缩进是一种 |
+| | 悬挂缩进是一种段中除首行以外都被缩进的排版风格。在Python中，这个术语用于描述括号语句中，左括号是首行最后<br>一个非空白字符，后续行被统一缩进直到出现右括号（不需另起一行）的风格。 |
 
 
 
