@@ -4,6 +4,8 @@
 
 在使用Python语言编写代码也需要遵循一定的规范，在这篇笔记中，我对Python官方给出的编程规范-PEP8进行了翻译，并加入一些自己的见解。原文来自[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)，作者是Guido van Rossum、Barry Warsaw和Nick Coghlan。在翻译的过程中，我参考了Github上Damnever的中译文版本[PEP8-Style-Guide-for-Python-Code](https://github.com/Damnever/Note/blob/master/note/PEP8-Style-Guide-for-Python-Code.md)，但该译本存在一些翻译错误，并且缺失了PEP8最新版本中的部分内容。
 
+欢迎转载并进一步完善这份译稿，请保留[作者信息](https://github.com/familyld)以及文中所有的引用。
+
 ## 目录
 <!-- MarkdownTOC -->
 
@@ -1400,6 +1402,9 @@ Footnotes<br>
 ## 版权
 **Copyright**
 
-This document has been placed in the public domain.
+This document has been placed in the public domain.<br>
+> 这份文档是公开的。
 
 Source: <https://hg.python.org/peps/file/tip/pep-0008.txt>
+> 源文件：<https://hg.python.org/peps/file/tip/pep-0008.txt>。
+
