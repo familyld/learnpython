@@ -42,7 +42,7 @@
         - [继承的设计](#继承的设计)
     - [公共接口和内部接口](#公共接口和内部接口)
 - [编程建议](#编程建议)
-    - [函数注释](#函数注释)
+    - [函数注解](#函数注解)
 - [参考文献](#参考文献)
 - [版权](#版权)
 
@@ -1082,29 +1082,20 @@ Imported names should always be considered an implementation detail. Other modul
 ## 编程建议
 **Programming Recommendations**
 
-- Code should be written in a way that does not disadvantage other
-  implementations of Python (PyPy, Jython, IronPython, Cython, Psyco,
-  and such).
+- Code should be written in a way that does not disadvantage other implementations of Python (PyPy, Jython, IronPython, Cython, Psyco, and such).<br>
+> 编写的代码要利于其他Python实现（PyPy，Jython，IronPython，Cython，Psyco，诸如此类）。
 
-  For example, do not rely on CPython's efficient implementation of
-  in-place string concatenation for statements in the form ``a += b``
-  or ``a = a + b``.  This optimization is fragile even in CPython (it
-  only works for some types) and isn't present at all in implementations
-  that don't use refcounting.  In performance sensitive parts of the
-  library, the ``''.join()`` form should be used instead.  This will
-  ensure that concatenation occurs in linear time across various
-  implementations.
+    For example, do not rely on CPython's efficient implementation of in-place string concatenation for statements in the form ``a += b`` or ``a = a + b``.  This optimization is fragile even in CPython (it only works for some types) and isn't present at all in implementations that don't use refcounting.  In performance sensitive parts of the library, the ``''.join()`` form should be used instead.  This will ensure that concatenation occurs in linear time across various implementations.<br>
+> 举个例子，不要依赖于CPython对``a += b`` or ``a = a + b``这种方便的字符串拼接实现，即便是用CPython进行解释，优化的效果也极其有限（只对某些类型有效），而且不是所有的Python实现都支持引用计数的。对于性能敏感的代码段，采用``''.join()``形式能保证在不同的Python实现中都可以在线性时间内完成字符串拼接。
 
-- Comparisons to singletons like None should always be done with
-  ``is`` or ``is not``, never the equality operators.
+- Comparisons to singletons like None should always be done with ``is`` or ``is not``, never the equality operators.<br>
+> 和单元素集合（比如None）进行比较时，使用``is``或者``is not``，不要用等号。
 
-  Also, beware of writing ``if x`` when you really mean ``if x is not
-  None`` -- e.g. when testing whether a variable or argument that
-  defaults to None was set to some other value.  The other value might
-  have a type (such as a container) that could be false in a boolean
-  context!
+    Also, beware of writing ``if x`` when you really mean ``if x is not None`` -- e.g. when testing whether a variable or argument that defaults to None was set to some other value.  The other value might have a type (such as a container) that could be false in a boolean context!<br>
+> 同时，还要注意``if x``和``if x is not None``的区别。比方说需要测试一个变量或者默认值为None的参数是否被设置为其他值时，这个其他值有可能属于在布尔环境下会返回false的类型（比如容器），所以这种情况下``if x``返回false并不意味着x是None。
 
-- Use ``is not`` operator rather than ``not ... is``.  While both expressions are functionally identical, the former is more readable and preferred.
+- Use ``is not`` operator rather than ``not ... is``.  While both expressions are functionally identical, the former is more readable and preferred.<br>
+> 使用``is not``要比``not ... is``更好。虽然两种表达方式实现的功能是一致的，但是前者拥有更好的可读性。
 
 正确示例：
 
@@ -1118,13 +1109,17 @@ if foo is not None:
 if not foo is None:
 ```
 
-- When implementing ordering operations with rich comparisons, it is best to implement all six operations (``__eq__``, ``__ne__``, ``__lt__``, ``__le__``, ``__gt__``, ``__ge__``) rather than relying on other code to only exercise a particular comparison.
+- When implementing ordering operations with rich comparisons, it is best to implement all six operations (``__eq__``, ``__ne__``, ``__lt__``, ``__le__``, ``__gt__``, ``__ge__``) rather than relying on other code to only exercise a particular comparison.<br>
+> 在实现富比较排序操作是，最好把六种比较操作全部实现（等于、不等于、小于，小于等于，大于，大于等于），而不是只依赖于某一种特定的比较操作。
 
-To minimize the effort involved, the ``functools.total_ordering()`` decorator provides a tool to generate missing comparison methods.
+To minimize the effort involved, the ``functools.total_ordering()`` decorator provides a tool to generate missing comparison methods.<br>
+> 为了最小化需要完成的工作，Python提供``functools.total_ordering()``装饰器，用于自动生成缺少的比较方法。
 
-[PEP 207](https://www.python.org/dev/peps/pep-0207) indicates that reflexivity rules *are* assumed by Python. Thus, the interpreter may swap ``y > x`` with ``x < y``, ``y >= x`` with ``x <= y``, and may swap the arguments of ``x == y`` and ``x != y``.  The ``sort()`` and ``min()`` operations are guaranteed to use the ``<`` operator and the ``max()`` function uses the ``>`` operator.  However, it is best to implement all six operations so that confusion doesn't arise in other contexts.
+[PEP 207](https://www.python.org/dev/peps/pep-0207) indicates that reflexivity rules *are* assumed by Python. Thus, the interpreter may swap ``y > x`` with ``x < y``, ``y >= x`` with ``x <= y``, and may swap the arguments of ``x == y`` and ``x != y``.  The ``sort()`` and ``min()`` operations are guaranteed to use the ``<`` operator and the ``max()`` function uses the ``>`` operator.  However, it is best to implement all six operations so that confusion doesn't arise in other contexts.<br>
+> PEP 207中提到映射规则是有Python完成的，所以解释器有可能会调换参数的位置。比方说把``y > x`` 替换为 ``x < y``,，把``y >= x``替换为``x <= y``， 甚至可能对``x == y``和``x != y``的参数进行调换。 排序和求最小操作保证使用``<``运算符，求最大操作则使用``>``运算符。但是最好还是把六中操作全部实现以避免在其他环境中引起混淆。
 
-- Always use a def statement instead of an assignment statement that binds a lambda expression directly to an identifier.
+- Always use a def statement instead of an assignment statement that binds a lambda expression directly to an identifier.<br>
+> 总是采用显示的函数定义def，而不是采用隐式的lambda把函数定义直接赋值给标识符。
 
 正确示例：
 
@@ -1137,31 +1132,35 @@ def f(x): return 2*x
 f = lambda x: 2*x
 ```
 
-The first form means that the name of the resulting function object is specifically 'f' instead of the generic '<lambda>'. This is more useful for tracebacks and string representations in general. The use of the assignment statement eliminates the sole benefit a lambda expression can offer over an explicit def statement (i.e. that it can be embedded inside a larger expression)
+The first form means that the name of the resulting function object is specifically 'f' instead of the generic '<lambda>'. This is more useful for tracebacks and string representations in general. The use of the assignment statement eliminates the sole benefit a lambda expression can offer over an explicit def statement (i.e. that it can be embedded inside a larger expression)<br>
+> 第一种形式表示所得函数对象的名字是f，而不是'<lambda>'泛型。通常来说，这对于追踪和字符串表述是很有帮助的。使用lambda唯一的好处就是它可以嵌入到一个很长的表达式当中，这是def语句无法做到的。
 
-- Derive exceptions from ``Exception`` rather than ``BaseException``. Direct inheritance from ``BaseException`` is reserved for exceptions where catching them is almost always the wrong thing to do.
+- Derive exceptions from ``Exception`` rather than ``BaseException``. Direct inheritance from ``BaseException`` is reserved for exceptions where catching them is almost always the wrong thing to do.<br>
+> 异常类应继承自``Exception``类而不是``BaseException``类。直接继承``BaseException``类是一种被保留的用法，仅用于一些特定的异常类型，捕获这些异常基本上都是不应该的（结合下文可以更好地理解，比方说捕获一个由Control-C引起的程序中断异常，一般不会这样做）。
 
-Design exception hierarchies based on the distinctions that code *catching* the exceptions is likely to need, rather than the locations where the exceptions are raised. Aim to answer the question "What went wrong?" programmatically, rather than only stating that "A problem occurred" (see [PEP 3151](https://www.python.org/dev/peps/pep-3151) for an example of this lesson being learned for the builtin exception hierarchy)
+Design exception hierarchies based on the distinctions that code *catching* the exceptions is likely to need, rather than the locations where the exceptions are raised. Aim to answer the question "What went wrong?" programmatically, rather than only stating that "A problem occurred" (see [PEP 3151](https://www.python.org/dev/peps/pep-3151) for an example of this lesson being learned for the builtin exception hierarchy)<br>
+> 要区分开出现异常的代码段和出现异常的位置，设计异常的层级结构时应该基于前者。设计异常的目的是要回答“什么导致了错误”，而不是仅仅指出“程序出错了”。（详细例子参见PEP 3151）
 
-Class naming conventions apply here, although you should add the suffix "Error" to your exception classes if the exception is an error.  Non-error exceptions that are used for non-local flow control or other forms of signaling need no special suffix.
+Class naming conventions apply here, although you should add the suffix "Error" to your exception classes if the exception is an error.  Non-error exceptions that are used for non-local flow control or other forms of signaling need no special suffix.<br>
+> 类的命名约定适用于异常的命名。如果异常类是一个错误，应当为其加上后缀“Error”。但对于哪些不是错误的用于非本地流程或其他形式通知的异常来说，不需要添加特定的后缀。
 
-- Use exception chaining appropriately. In Python 3, "raise X from Y" should be used to indicate explicit replacement without losing the original traceback.
+- Use exception chaining appropriately. In Python 3, "raise X from Y" should be used to indicate explicit replacement without losing the original traceback.<br>
+> 适当地使用异常链。在Python3中，"raise X from Y"应当用于明确表示替换并且保留着原有的回溯。
 
-When deliberately replacing an inner exception (using "raise X" in Python 2 or "raise X from None" in Python 3.3+), ensure that relevant details are transferred to the new exception (such as preserving the attribute name when converting KeyError to AttributeError, or embedding the text of the original exception in the new exception message).
+When deliberately replacing an inner exception (using "raise X" in Python 2 or "raise X from None" in Python 3.3+), ensure that relevant details are transferred to the new exception (such as preserving the attribute name when converting KeyError to AttributeError, or embedding the text of the original exception in the new exception message).<br>
+> 在替换内部异常(比方说，Python 2中的``raise X``或Python 3.3版本以上的``raise X from None``)时，确保相关的细节被转移到新的异常中（比方说把KeyError转换为AttributeError时保留属性名，或这把原来异常的文本嵌入到新异常的消息里面)。
 
-- When raising an exception in Python 2, use ``raise ValueError('message')``
-  instead of the older form ``raise ValueError, 'message'``.
+- When raising an exception in Python 2, use ``raise ValueError('message')`` instead of the older form ``raise ValueError, 'message'``.<br>
+> 在Python2中，使用``raise ValueError('message')``来报告异常而不是旧版的``raise ValueError, 'message'``。
 
-  The latter form is not legal Python 3 syntax.
+    The latter form is not legal Python 3 syntax.<br>
+> 后者在Python 3中已经废除了。
 
-  The paren-using form also means that when the exception arguments are
-  long or include string formatting, you don't need to use line
-  continuation characters thanks to the containing parentheses.
+    The paren-using form also means that when the exception arguments are long or include string formatting, you don't need to use line continuation characters thanks to the containing parentheses.<br>
+> 使用括号意味着，当异常的参数很长或者包含字符串格式化时，我们可以借助Python隐式行连接的特性（把语句分散在多行编写），而无须使用续行符进行续行。
 
-- When catching exceptions, mention specific exceptions whenever
-  possible instead of using a bare ``except:`` clause.
-
-For example, use:
+- When catching exceptions, mention specific exceptions whenever possible instead of using a bare ``except:`` clause. For example, use:<br>
+> 在捕获异常时应明确地提及到异常名，而不是空的``except:``子句。例如：
 
 ```python
 try:
@@ -1170,27 +1169,22 @@ except ImportError:
     platform_specific_module = None
 ```
 
-  A bare ``except:`` clause will catch SystemExit and
-  KeyboardInterrupt exceptions, making it harder to interrupt a
-  program with Control-C, and can disguise other problems.  If you
-  want to catch all exceptions that signal program errors, use
-  ``except Exception:`` (bare except is equivalent to ``except
-  BaseException:``).
+A bare ``except:`` clause will catch SystemExit and KeyboardInterrupt exceptions, making it harder to interrupt a program with Control-C, and can disguise other problems.  If you want to catch all exceptions that signal program errors, use ``except Exception:`` (bare except is equivalent to ``except BaseException:``).<br>
+> 空的``except:``子句由于没有指定要捕获的异常类型，所以SystemExit和KeyboardInterrupt这两种异常也会被捕获，从而使得用户难以使用Control-C中断程序（因为无法判断异常是有中断引起还是由其他问题引起）。如果想要捕获所有可能的程序错误，可以使用``except Exception:``语句（空的``except:``语句等同于``except BaseException:``）。
 
-  A good rule of thumb is to limit use of bare 'except' clauses to two
-  cases:
+A good rule of thumb is to limit use of bare 'except' clauses to two cases:<br>
+> 经验告诉我们，仅在两种情形下需要使用空的``except:``子句：
 
-  1. If the exception handler will be printing out or logging the
-     traceback; at least the user will be aware that an error has
-     occurred.
+1. If the exception handler will be printing out or logging the traceback; at least the user will be aware that an error has occurred.<br>
+> 异常的处理程序会被打印出来或者会记录回溯信息；至少能让用户意识到错误发生了。
 
-  2. If the code needs to do some cleanup work, but then lets the
-     exception propagate upwards with ``raise``.  ``try...finally``
-     can be a better way to handle this case.
+2. If the code needs to do some cleanup work, but then lets the exception propagate upwards with ``raise``.  ``try...finally`` can be a better way to handle this case.<br>
+> 代码需要进行一些清理工作，但接下来会用``raise``把异常向上传播。这种情况下，使用``try...finally``语句更好。
 
-- When binding caught exceptions to a name, prefer the explicit name
-  binding syntax added in Python 2.6:
+<span> </span>
 
+- When binding caught exceptions to a name, prefer the explicit name binding syntax added in Python 2.6:<br>
+> 要把异常绑定到一个名字上时，最好使用Python 2.6中加入的显示命名绑定语法：
 ```python
 try:
     process_data()
@@ -1198,16 +1192,14 @@ except Exception as exc:
     raise DataProcessingFailedError(str(exc))
 ```
 
-  This is the only syntax supported in Python 3, and avoids the
-  ambiguity problems associated with the older comma-based syntax.
+    This is the only syntax supported in Python 3, and avoids the ambiguity problems associated with the older comma-based syntax.<br>
+> 这也是Python 3中唯一支持的语法，避免由基于逗号的旧版语法引起的混淆问题。
 
-- When catching operating system errors, prefer the explicit exception
-  hierarchy introduced in Python 3.3 over introspection of ``errno``
-  values.
+- When catching operating system errors, prefer the explicit exception hierarchy introduced in Python 3.3 over introspection of ``errno`` values.<br>
+> 捕获操作系统错误时，最好采用Python 3.3中引入的显式异常层级结构，而不是回溯的``errno``值。
 
-- Additionally, for all try/except clauses, limit the ``try`` clause
-  to the absolute minimum amount of code necessary.  Again, this
-  avoids masking bugs.
+- Additionally, for all try/except clauses, limit the ``try`` clause to the absolute minimum amount of code necessary.  Again, this avoids masking bugs.<br>
+> 此外，对于所有的try/except子句，应尽量限制try子句中代码的数量，这样可以避免错误被掩盖。例如：
 
 正确示例：
 
@@ -1231,39 +1223,28 @@ except KeyError:
     return key_not_found(key)
 ```
 
-- When a resource is local to a particular section of code, use a
-  ``with`` statement to ensure it is cleaned up promptly and reliably
-  after use. A try/finally statement is also acceptable.
+- When a resource is local to a particular section of code, use a ``with`` statement to ensure it is cleaned up promptly and reliably after use. A try/finally statement is also acceptable.<br>
+> 访问本地资源应当使用``with``语句，这能够保证在使用完毕后程序会立即进行清理。try/finally语句也是可以接受的。
 
-- Context managers should be invoked through separate functions or methods
-  whenever they do something other than acquire and release resources.
-  For example:
+- Context managers should be invoked through separate functions or methods whenever they do something other than acquire and release resources. For example:<br>
+> 使用上下文管理器做除获取/释放资源以外的事情时，应通过独立的函数或方法进行调用。例如：
 
 正确示例：
-
 ```python
 with conn.begin_transaction():
     do_stuff_in_transaction(conn)
 ```
-
 错误示例：
-
 ```python
 with conn:
     do_stuff_in_transaction(conn)
 ```
 
-  The latter example doesn't provide any information to indicate that
-  the __enter__ and __exit__ methods are doing something other than
-  closing the connection after a transaction.  Being explicit is
-  important in this case.
+The latter example doesn't provide any information to indicate that the __enter__ and __exit__ methods are doing something other than closing the connection after a transaction.  Being explicit is important in this case.<br>
+> 后面的例子除了说明在事务结束后关闭连接之外，没有提供任何信息来指示\_\_enter\_\_和\_\_exit\_\_正在处理某些别的任务。 显式地指明在这种情况下是很重要的。
 
-- Be consistent in return statements.  Either all return statements in
-  a function should return an expression, or none of them should.  If
-  any return statement returns an expression, any return statements
-  where no value is returned should explicitly state this as ``return
-  None``, and an explicit return statement should be present at the
-  end of the function (if reachable).
+- Be consistent in return statements.  Either all return statements in a function should return an expression, or none of them should.  If any return statement returns an expression, any return statements where no value is returned should explicitly state this as ``return None``, and an explicit return statement should be present at the end of the function (if reachable).<br>
+> return语句的使用要一致。函数中的所有return语句要么都返回表达式，要么都采取别的形式。如果return语句是返回表达式的，则无返回值的return语句应该写成显式的``return None``，并且在函数底部（如过可以到达）应使用一个明确的return语句。
 
 正确示例：
 
@@ -1293,115 +1274,114 @@ def bar(x):
     return math.sqrt(x)
 ```
 
-- Use string methods instead of the string module.
+- Use string methods instead of the string module.<br>
+> 使用字符串方法来替代字符串模块。
 
-  String methods are always much faster and share the same API with
-  unicode strings.  Override this rule if backward compatibility with
-  Pythons older than 2.0 is required.
+    String methods are always much faster and share the same API with unicode strings.  Override this rule if backward compatibility with Pythons older than 2.0 is required.<br>
+> 字符串方法（相比模块）总是更快，并且和unicode字符串享有相同的API。如果需要保证和Python 2.0版本以前的向后兼容性，则覆盖掉这条规则。
 
-- Use ``''.startswith()`` and ``''.endswith()`` instead of string
-  slicing to check for prefixes or suffixes.
+- Use ``''.startswith()`` and ``''.endswith()`` instead of string slicing to check for prefixes or suffixes.<br>
+> 使用``''.startswith()``和``''.endswith()``代替字符串切片来检查字符串的前缀和后缀。
 
-  startswith() and endswith() are cleaner and less error prone.  For
-  example:
-
-```python
-正确示例： if foo.startswith('bar'):
-错误示例：  if foo[:3] == 'bar':
-```
-
-- Object type comparisons should always use isinstance() instead of
-  comparing types directly. :
+    startswith() and endswith() are cleaner and less error prone.  For example:<br>
+> startswith()和endswith()更加简介并且不容易出错，例如：
 
 ```python
-正确示例： if isinstance(obj, int):
-错误示例：  if type(obj) is type(1):
+# 正确示例
+if foo.startswith('bar'):
+# 错误示例
+if foo[:3] == 'bar':
 ```
 
-  When checking if an object is a string, keep in mind that it might
-  be a unicode string too!  In Python 2, str and unicode have a
-  common base class, basestring, so you can do:
+- Object type comparisons should always use isinstance() instead of comparing types directly. :<br>
+> 比较对象类型时是总是使用isinstance()函数，而不是直接比较类型：
+
+```python
+# 正确示例
+if isinstance(obj, int):
+# 错误示例
+if type(obj) is type(1):
+```
+
+When checking if an object is a string, keep in mind that it might be a unicode string too!  In Python 2, str and unicode have a common base class, basestring, so you can do:<br>
+> 在检查一个对象是否字符串时，注意它也可能是unicode字符串！在Python 2中，str和unicode有一个共同的基类 -- basestring，所以你可以这样做：
 
 ```python
 if isinstance(obj, basestring):
 ```
 
-  Note that in Python 3, ``unicode`` and ``basestring`` no longer exist
-  (there is only ``str``) and a bytes object is no longer a kind of
-  string (it is a sequence of integers instead)
+Note that in Python 3, ``unicode`` and ``basestring`` no longer exist (there is only ``str``) and a bytes object is no longer a kind of string (it is a sequence of integers instead)<br>
+> 注意，在Python 3中，``unicode``和``basestring``已经不存在了（只有``str``），并且bytes对象不再是一种字符串（变为整数序列）。
 
-- For sequences, (strings, lists, tuples), use the fact that empty
-  sequences are false. :
-
-```python
-正确示例： if not seq:
-    if seq:
-
-错误示例： if len(seq):
-    if not len(seq):
-```
-
-- Don't write string literals that rely on significant trailing
-  whitespace.  Such trailing whitespace is visually indistinguishable
-  and some editors (or more recently, reindent.py) will trim them.
-
-- Don't compare boolean values to True or False using ``==``. :
+- For sequences, (strings, lists, tuples), use the fact that empty sequences are false. :<br>
+> 空序列（字符串，列表，元组等等）在布尔环境下返回false，我们可以利用这一点：
 
 ```python
-正确示例：   if greeting:
-错误示例：    if greeting == True:
-Worse: if greeting is True:
+# 正确示例
+if not seq:
+if seq:
+
+# 错误示例
+if len(seq):
+if not len(seq):
 ```
 
-### 函数注释
+- Don't write string literals that rely on significant trailing whitespace.  Such trailing whitespace is visually indistinguishable and some editors (or more recently, reindent.py) will trim them.<br>
+> 不要让字符串依赖于尾随的空格。这些尾随的空格在视觉上无法作出区分，一些编辑器（更近期的，reindent.py）会把这些空格移除掉。
+
+- Don't compare boolean values to True or False using ``==``. :<br>
+> 不要用==比较True或者False：
+
+```python
+# 正确示例
+if greeting:
+# 错误示例
+if greeting == True:
+# 更糟的是
+if greeting is True:
+```
+
+### 函数注解
 **Function Annotations**
 
-With the acceptance of [PEP 484](https://www.python.org/dev/peps/pep-0484), the style rules for function
-annotations are changing.
+With the acceptance of [PEP 484](https://www.python.org/dev/peps/pep-0484), the style rules for function annotations are changing.<br>
+> 随着PEP 484逐渐被接受，函数注解的风格规范产生了变化。
 
-- In order to be forward compatible, function annotations in Python 3
-  code should preferably use [PEP 484](https://www.python.org/dev/peps/pep-0484) syntax.  (There are some
-  formatting recommendations for annotations in the previous section.)
+- In order to be forward compatible, function annotations in Python 3 code should preferably use [PEP 484](https://www.python.org/dev/peps/pep-0484) syntax.  (There are some formatting recommendations for annotations in the previous section.)<br>
+>
 
-- The experimentation with annotation styles that was recommended
-  previously in this PEP is no longer encouraged.
+- The experimentation with annotation styles that was recommended previously in this PEP is no longer encouraged.<br>
+>
 
-- However, outside the stdlib, experiments within the rules of [PEP 484](https://www.python.org/dev/peps/pep-0484)
-  are now encouraged.  For example, marking up a large third party
-  library or application with [PEP 484](https://www.python.org/dev/peps/pep-0484) style type annotations,
-  reviewing how easy it was to add those annotations, and observing
-  whether their presence increases code understandabilty.
+- However, outside the stdlib, experiments within the rules of [PEP 484](https://www.python.org/dev/peps/pep-0484) are now encouraged.  For example, marking up a large third party library or application with [PEP 484](https://www.python.org/dev/peps/pep-0484) style type annotations, reviewing how easy it was to add those annotations, and observing whether their presence increases code understandabilty.<br>
+>
 
-- The Python standard library should be conservative in adopting such
-  annotations, but their use is allowed for new code and for big
-  refactorings.
+- The Python standard library should be conservative in adopting such annotations, but their use is allowed for new code and for big refactorings.<br>
+>
 
-- For code that wants to make a different use of function annotations it is recommended to put a comment of the form:
+- For code that wants to make a different use of function annotations it is recommended to put a comment of the form:<br>
+>
 
 ```# type: ignore```
 
-near the top of the file; this tells type checker to ignore all annotations.  (More fine-grained ways of disabling complaints from type checkers can be found in [PEP 484](https://www.python.org/dev/peps/pep-0484).)
+near the top of the file; this tells type checker to ignore all annotations.  (More fine-grained ways of disabling complaints from type checkers can be found in [PEP 484](https://www.python.org/dev/peps/pep-0484).)<br>
+>
 
-- Like linters, type checkers are optional, separate tools.  Python
-  interpreters by default should not issue any messages due to type
-  checking and should not alter their behavior based on annotations.
+- Like linters, type checkers are optional, separate tools.  Python interpreters by default should not issue any messages due to type checking and should not alter their behavior based on annotations.<br>
+>
 
-- Users who don't want to use type checkers are free to ignore them.
-  However, it is expected that users of third party library packages
-  may want to run type checkers over those packages.  For this purpose
-  [PEP 484](https://www.python.org/dev/peps/pep-0484) recommends the use of stub files: .pyi files that are read
-  by the type checker in preference of the corresponding .py files.
-  Stub files can be distributed with a library, or separately (with
-  the library author's permission) through the typeshed repo [[5]](https://www.python.org/dev/peps/pep-0008/#id12).
+- Users who don't want to use type checkers are free to ignore them. However, it is expected that users of third party library packages may want to run type checkers over those packages.  For this purpose [PEP 484](https://www.python.org/dev/peps/pep-0484) recommends the use of stub files: .pyi files that are read by the type checker in preference of the corresponding .py files. Stub files can be distributed with a library, or separately (with the library author's permission) through the typeshed repo [[5]](https://www.python.org/dev/peps/pep-0008/#id12)<br>
+> .
 
-- For code that needs to be backwards compatible, function annotations
-  can be added in the form of comments. See the relevant section of [PEP 484](https://www.python.org/dev/peps/pep-0484) [[6]](https://www.python.org/dev/peps/pep-0008/#id13) .
+- For code that needs to be backwards compatible, function annotations can be added in the form of comments. See the relevant section of [PEP 484](https://www.python.org/dev/peps/pep-0484) [[6]](https://www.python.org/dev/peps/pep-0008/#id13) .<br>
+>
 
-Footnotes
+Footnotes<br>
+> 脚注
 
-| | |
-|:---|:---:|
 | [[7]](https://www.python.org/dev/peps/pep-0008/#id3) | Hanging indentation is a type-setting style where all the lines in a paragraph are indented except the first line. In the context of Python, the term is used to describe a style where the opening parenthesis of a parenthesized statement is the last non-whitespace character of the line, with subsequent lines being indented until the closing parenthesis. |
+|:---:|:---|
+| | 悬挂缩进是一种 |
 
 
 
