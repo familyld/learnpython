@@ -4280,3 +4280,80 @@ Python是跨平台的，自然也要提供一个跨平台的多进程支持。`m
     Run child process test (17516)...
     Child process end.
 
+####Pool
+
+要启动大量子进程时可以用进程池的方式批量创建子进程：
+
+    from multiprocessing import Pool
+    import os, time, random
+
+    def long_time_task(name):
+        print('Run task %s (%s)...' % (name, os.getpid()))
+        start = time.time()
+        time.sleep(random.random() * 3)
+        end = time.time()
+        print('Task %s runs %0.2f seconds.' % (name, (end - start)))
+
+    if __name__=='__main__':
+        print('Parent process %s.' % os.getpid())
+        p = Pool(4)
+        for i in range(5):
+            p.apply_async(long_time_task, args=(i,))
+        print('Waiting for all subprocesses done...')
+        p.close()
+        p.join()
+        print('All subprocesses done.')
+
+执行结果：
+
+    F:\Python35>python multiprocessing_test2.py
+    Parent process 7992.
+    Waiting for all subprocesses done...
+    Run task 0 (5164)...
+    Run task 1 (13200)...
+    Run task 2 (8884)...
+    Run task 3 (1580)...
+    Task 2 runs 0.20 seconds.
+    Run task 4 (8884)...
+    Task 3 runs 1.56 seconds.
+    Task 4 runs 2.08 seconds.
+    Task 1 runs 2.58 seconds.
+    Task 0 runs 2.86 seconds.
+    All subprocesses done.
+
+这个例子首先是创建一个 `Pool` 类的实例，如果不传入参数，**默认Pool的大小就是系统的CPU核数**(比如我的电脑CPU是4核的，Pool大小就是4，最多同时执行4个进程)，这里传入一个4，那么进程池大小就是4。 **即使只有4核，传入大于4的数也可以**，操作系统会自己协调好如何通过执行多个进程。这里可以看到进程4(第5个进程)要等一个进程结束后才能开始。
+
+然后在循环中再调用 `apply_async` 方法，每次循环调用一次就启动一个子进程执行参数里的方法，参数和前面实例Process时类似。
+
+不同的是，对进程池对象调用 `join()` 方法是**等待所有子进程执行完毕再往下执行**。 并且，调用 `join()` 方法之前要先调用 `close()` 方法，**close之后就不能再往进程池加入新的进程了**。
+
+####子进程
+
+上面例子中，子进程都是自身的copy。 但很多时候子进程是一个外部进程，`subprocess` 模块可以让我们方便地启动一个子进程并控制起输入和输出。
+
+    import subprocess
+
+    r = subprocess.call(['java', '-version'])
+    print('Exit code:', r)
+
+这段代码的运行效果就像直接在命令行执行 `java -version` 一样。 事实上多个参数也可以的，存储在list里面，用逗号分割。 默认返回码为0即运行通过，为1则出错。
+
+如果要控制子进程的输入，可以通过 `communicate()` 方法，注意输出的处理方式，要进程解码：
+
+    import subprocess
+
+    print('$ nslookup')
+    p = subprocess.Popen(['nslookup'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, err = p.communicate(b'set q=mx\npython.org\nexit\n')
+    print(output.decode('gbk')) #这里原文是utf-8，但windows下要用gbk
+    print('Exit code:', p.returncode)
+
+这段代码相当于在命令行执行nslookup之后再手动输入：
+
+    set q=mx
+    python.org
+    exit
+
+注意回车也要表现出来，并且输入要转换成bytes才能传到子进程。
+
+这里无法用前面 `java -version` 的例子来做，因为不是一种类型，nslookup执行后会转换成一种等待用户输入的格式，而java执行后是直接输出帮助信息然后结束的。
