@@ -4357,3 +4357,43 @@ Python是跨平台的，自然也要提供一个跨平台的多进程支持。`m
 注意回车也要表现出来，并且输入要转换成bytes才能传到子进程。
 
 这里无法用前面 `java -version` 的例子来做，因为不是一种类型，nslookup执行后会转换成一种等待用户输入的格式，而java执行后是直接输出帮助信息然后结束的。
+
+####进程间通信
+
+操作系统提供很多机制实现进程间通信，Python的multiprocessing模块包装了底层的机制，提供了 `Queue`，`Pipes` 等方式，虾米那以 `Queue` 为例，在父进程中创建两个子进程，一个往 `Queue` 里面写数据， 一个从 `Queue` 中读数据：
+
+    from multiprocessing import Process, Queue
+    import os, time, random
+
+    # 写数据进程执行的代码:
+    def write(q):
+        print('Process to write: %s' % os.getpid())
+        for value in ['A', 'B', 'C']:
+            print('Put %s to queue...' % value)
+            q.put(value)
+            time.sleep(random.random())
+
+    # 读数据进程执行的代码:
+    def read(q):
+        print('Process to read: %s' % os.getpid())
+        while True:
+            value = q.get(True)
+            print('Get %s from queue.' % value)
+
+    if __name__=='__main__':
+        # 父进程创建Queue，并传给各个子进程：
+        q = Queue()
+        pw = Process(target=write, args=(q,))
+        pr = Process(target=read, args=(q,))
+        # 启动子进程pw，写入:
+        pw.start()
+        # 启动子进程pr，读取:
+        pr.start()
+        # 等待pw结束:
+        pw.join()
+        # pr进程里是死循环，无法等待其结束，只能强行终止:
+        pr.terminate()
+
+####小结
+
+在 `Unix/Linux` 下，`multiprocessing` 模块封装了 `fork()` 调用，使我们不需要关注 `fork()` 的细节。由于 `Windows` 没有 `fork` 调用，因此，`multiprocessing` 需要“模拟”出 `fork` 的效果，**父进程所有Python对象都必须通过 `pickle` 序列化再传到子进程去**，所有，如果 `multiprocessing` 在 `Windows` 下调用失败了，要先考虑是不是 `pickle` 失败了。
