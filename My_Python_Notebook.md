@@ -4397,3 +4397,99 @@ Python是跨平台的，自然也要提供一个跨平台的多进程支持。`m
 ####小结
 
 在 `Unix/Linux` 下，`multiprocessing` 模块封装了 `fork()` 调用，使我们不需要关注 `fork()` 的细节。由于 `Windows` 没有 `fork` 调用，因此，`multiprocessing` 需要“模拟”出 `fork` 的效果，**父进程所有Python对象都必须通过 `pickle` 序列化再传到子进程去**，所有，如果 `multiprocessing` 在 `Windows` 下调用失败了，要先考虑是不是 `pickle` 失败了。
+
+###多线程
+***
+
+前面提到多任务可以由多进程完成，也可以由一个进程内的多线程完成。 Python的标准库提供了两个模块：`_thread` 和 `threading`，`_thread` 是低级模块，`threading` 是对 `_thread` 进行了封装的高级模块。 绝大多数情况下，我们只需要使用threading这个高级模块。
+
+启动一个线程就是创建一个 `Thread` 实例并传入一个用于执行的函数，然后调用 `start()` 开始执行：
+
+    import time, threading
+
+    # 新线程执行的代码:
+    def loop():
+        print('thread %s is running...' % threading.current_thread().name)
+        n = 0
+        while n < 5:
+            n = n + 1
+            print('thread %s >>> %s' % (threading.current_thread().name, n))
+            time.sleep(1)
+        print('thread %s ended.' % threading.current_thread().name)
+
+    print('thread %s is running...' % threading.current_thread().name)
+    t = threading.Thread(target=loop, name='LoopThread')
+    t.start()
+    t.join()
+    print('thread %s ended.' % threading.current_thread().name)
+
+执行结果：
+
+    thread MainThread is running...
+    thread LoopThread is running...
+    thread LoopThread >>> 1
+    thread LoopThread >>> 2
+    thread LoopThread >>> 3
+    thread LoopThread >>> 4
+    thread LoopThread >>> 5
+    thread LoopThread ended.
+    thread MainThread ended.
+
+由于任何进程默认就会启动一个线程，我们把该线程称为**主线程，主线程又可以启动新的线程**，Python的threading模块有个 `current_thread()` 函数，它永远返回当前线程的实例。 主线程实例的名字叫 `MainThread`，子线程的名字在创建时指定，我们用 `LoopThread` 命名子线程。**名字仅仅在打印时用来显示，完全没有其他意义**，如果不起名字Python就自动给线程命名为Thread-1，Thread-2……
+
+####Lock
+
+多线程和多进程最大的不同在于，多进程中，同一个变量，**各自有一份拷贝存在于每个进程中**，互不影响，而多线程中，所有变量都由所有线程共享，所以，**任何一个变量都可以被任何一个线程修改**。
+
+举个例子：
+
+    a=a+5
+    a=a-5
+
+当多个线程同执行上面两个语句时，理论上a的值是不应该有变化的，但实际不是，`a+5` 在CPU中执行实际是分两步的：
+
+    temp=a+5
+    a=temp
+
+当多个线程同时操作a并处于不同步骤时，比如线程1执行 `temp=a+5` 后，执行 `a=temp` 前，该时刻线程2也恰恰执行了  `temp=a+5`，这样a的值就会产生错误。
+
+要避免这一问题，本质就是要**确保同一时刻只有一个线程在修改变量的值**。 因此线程要**持有锁**，然后才能操作。 创建一个锁就是通过 `threading.Lock()` 来实现：
+
+    import time, threading
+
+    # 假定这是你的银行存款:
+    balance = 0
+    lock = threading.Lock()
+
+    def change_it(n):
+        # 先存款后取款，结果应该为0:
+        global balance
+        balance = balance + n
+        balance = balance - n
+
+    def run_thread(n):
+        for i in range(100000):
+            # 先要获取锁:
+            lock.acquire()
+            try:
+                # 放心地改吧:
+                change_it(n)
+            finally:
+                # 改完了一定要释放锁:
+                lock.release()
+
+    t1 = threading.Thread(target=run_thread, args=(5,))
+    t2 = threading.Thread(target=run_thread, args=(8,))
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+    print(balance)
+
+**获得锁的线程用完后一定要释放锁**，否则那些苦苦等待锁的线程将永远等待下去，成为死线程。所以我们用try...finally来确保锁一定会被释放。
+
+**Notice**：
+
+1. 锁确保了某段关键代码只能由一个线程从头到尾完整地执行。 但也阻止了多线程并发执行，包含锁的某段代码实际上只能以单线程模式执行，效率大大下降。
+2. 由于可以存在多个锁，不同的线程持有不同的锁，并试图获取对方持有的锁时，可能会造成**死锁**，导致多个线程全部挂起，既不能执行，也无法结束，只能靠操作系统强制终止。
+
