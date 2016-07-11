@@ -4522,3 +4522,64 @@ Python是跨平台的，自然也要提供一个跨平台的多进程支持。`m
 
 如意如果真的要用Python写多核任务就要用前面的多进程的模式，多个Python进程有各自独立的GIL锁，互不影响。
 
+###ThreadLocal
+
+在多线程环境下，每个线程都有自己的数据。 线程使用自己的**局部变量**比使用全局变量好，因为局部变量只有线程自己能看见，不会影响其他线程，而全局变量的修改必须加锁。
+
+但局部变量在函数调用时必须进行传递，多层调用时就会非常麻烦，比如：
+
+    def process_student(name):
+        std = Student(name)
+        # std是局部变量，但是每个函数都要用它，因此必须传进去：
+        do_task_1(std)
+        do_task_2(std)
+
+    def do_task_1(std):
+        do_subtask_1(std)
+        do_subtask_2(std)
+
+    def do_task_2(std):
+        do_subtask_2(std)
+        do_subtask_2(std)
+
+这个例子中std是根据传入子线程的参数name实例化的Student类对象，因为每个子线程得到的name可能不同，所以每个实例都应是不同的，这里std不能是全局变量。
+
+但是不是全局变量的话，别的函数要使用std就必须调用者传入std作为参数才可以，当调用的函数变更多层数也变更多，这样传递就显得非常繁琐了。
+
+有一个思路就是写一个global的dict，然后子线程本身作key，每个子线程实例出的std作对应的value。这样可以解决问题，但代码太丑~~
+
+于是我们有了 `ThreadLocal`：
+
+    import threading
+
+    # 创建全局ThreadLocal对象:
+    local_school = threading.local()
+
+    def process_student():
+        # 获取当前线程关联的student:
+        std = local_school.student
+        print('Hello, %s (in %s)' % (std, threading.current_thread().name))
+
+    def process_thread(stuName):
+        # 绑定ThreadLocal的student:
+        local_school.student = stuName
+        process_student()
+
+    t1 = threading.Thread(target= process_thread, args=('Alice',), name='Thread-A')
+    t2 = threading.Thread(target= process_thread, args=('Bob',), name='Thread-B')
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+
+运行得到：
+
+    Hello, Alice (in Thread-A)
+    Hello, Bob (in Thread-B)
+
+注意 `process_thread(stuName)` 中 `stuName` 实在创建线程实例时放入args这个参数tuple中的，同样注意单元素tuple的写法，name参数则是用于给线程起名字的。
+
+全局变量 `local_school` 就是一个 `ThreadLocal` 对象，每个Thread对它都可以读写student属性，但互不影响。你可以把 `local_school` 看成全局变量，但每个属性如 `local_school.student` 都是线程的局部变量，可以任意读写而互不干扰，也不用管理锁的问题，`ThreadLocal`内部会处理。
+
+`ThreadLocal` 最常用的地方就是为每个线程绑定一个**数据库连接，HTTP请求，用户身份信息等**，这样一个线程的所有调用到的处理函数都可以非常方便地访问这些资源。
+
