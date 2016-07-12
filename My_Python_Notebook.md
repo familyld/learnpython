@@ -4623,3 +4623,120 @@ IO密集型任务达赖那个涉及到网络、磁盘IO，**CPU消耗很少**，
 
 对应到Python，单进程的异步编程模型称为**协程*，后面会进行讨论。
 
+###分布式进程
+
+在线程和进程中，应当**优选进程**。因为进程更稳定且可分布到多台机器上，线程则只能分布到同一台机器的多个CPU上。
+
+在Python中可以利用 `multiprocessing` 模块的子模块 `managers` 来实现分布式进程。 一个服务进程（主进程）作为调度者，依靠网络通信把任务分布到其他多个进程中。
+
+前面提到多个进程间可以用 `Queue` 进行通信，分布在不同机器上的进程通信同样可以利用 `Queue`，但是要通过 `managers` 模块把它暴露出去。
+
+先看服务进程(主进程)，它负责启动 `Queue`，并且把 `Queue` 注册到网络上，然后往里面写任务：
+
+    # task_master.py
+
+    import random, time, queue
+    from multiprocessing import freeze_support
+    from multiprocessing.managers import BaseManager
+
+    # 发送任务的队列:
+    task_queue = queue.Queue()
+    # 接收结果的队列:
+    result_queue = queue.Queue()
+
+    # 从BaseManager继承的QueueManager:
+    class QueueManager(BaseManager):
+        pass
+
+    def return_task_queue():
+        global task_queue
+        return task_queue
+
+    def return_result_queue():
+        global result_queue
+        return result_queue
+
+    def test():
+        # 把两个Queue都注册到网络上, callable参数关联了Queue对象:
+        # QueueManager.register('get_task_queue', callable=lambda: task_queue)
+        # QueueManager.register('get_result_queue', callable=lambda: result_queue)
+        QueueManager.register('get_task_queue', callable=return_task_queue)
+        QueueManager.register('get_result_queue', callable=return_result_queue)
+
+        # 绑定端口5000, 设置验证码'abc':
+        manager = QueueManager(address=('127.0.0.1', 5000), authkey=b'abc')
+        # 启动Queue:
+        manager.start()
+        # 获得通过网络访问的Queue对象:
+        task = manager.get_task_queue()
+        result = manager.get_result_queue()
+        # 放几个任务进去:
+        for i in range(10):
+            n = random.randint(0, 10000)
+            print('Put task %d...' % n)
+            task.put(n)
+        # 从result队列读取结果:
+        print('Try get results...')
+        for i in range(10):
+            r = result.get(timeout=10)
+            print('Result: %s' % r)
+        # 关闭:
+        manager.shutdown()
+        print('master exit.')
+
+    if __name__ == '__main__':
+        #freeze_support()
+        test()
+
+如果只是在一台机器写多进程，创建的Queue可以直接用，但分布式多进程中，主进程往Queue中添加任务不可以直接操作，否则就绕过了manager的封装，**必须通过 `manager.get_task_queue()` 取得Queue接口然后再添加任务**。
+
+**Notice**：
+
+原教程中代码可以在Linux/Unix下跑，但Windows下要改几个地方，上面的是改好的。
+
+1. register中callable不要用lambda，直接改成定义函数，然后传入函数名。
+
+2. 创建manager时指定IP地址，而不是直接用`''`。
+
+3. 测试代码用 `if __name__ == '__main__':` 括起来，如果有崩溃就先执行 `multiprocessing.freeze_support()` 再test。（我没崩所以没有用~）
+
+然后可以在另一台机器启动任务进程，当然本机上启动也行，不过就不是分布式了~
+
+    # task_worker.py
+
+    import time, sys, queue
+    from multiprocessing.managers import BaseManager
+
+    # 创建类似的QueueManager:
+    class QueueManager(BaseManager):
+        pass
+
+    # 由于这个QueueManager只从网络上获取Queue，所以注册时只提供名字:
+    QueueManager.register('get_task_queue')
+    QueueManager.register('get_result_queue')
+
+    # 连接到服务器，也就是运行task_master.py的机器:
+    server_addr = '127.0.0.1'
+    print('Connect to server %s...' % server_addr)
+    # 端口和验证码注意保持与task_master.py设置的完全一致:
+    m = QueueManager(address=(server_addr, 5000), authkey=b'abc')
+    # 从网络连接:
+    m.connect()
+    # 获取Queue的对象:
+    task = m.get_task_queue()
+    result = m.get_result_queue()
+    # 从task队列取任务,并把结果写入result队列:
+    for i in range(10):
+        try:
+            n = task.get(timeout=1)
+            print('run task %d * %d...' % (n, n))
+            r = '%d * %d = %d' % (n, n, n*n)
+            time.sleep(1)
+            result.put(r)
+        except Queue.Empty:
+            print('task queue is empty.')
+    # 处理结束:
+    print('worker exit.')
+
+任务进程是通过网络连接到服务进程的，所以**要指定跑服务进程那台机器的IP**。
+
