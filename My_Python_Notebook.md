@@ -4901,3 +4901,29 @@ Python提供 `re` 模块来包含所有正则表达式的功能。 但是，因�
     >>> re_telephone.match('010-8086').groups()
     ('010', '8086')
 
+###练习
+
+写一个可以匹配Email地址的正则表达式，并且能提取出名字：
+
+    import re
+    re_email = re.compile(r'([A-Za-z\.\_]+)@([A-Za-z0-9]+?)\.com')
+    while True:
+        email = input('plaues enter email address:').strip()
+        res = re_email.match(email)
+        if res:
+            print('Hello, %s' % res.group(1))
+        else:
+            print('Invalid email address.')
+
+思路很简单，邮箱的格式是 `用户名@邮箱名.com`，注意分组的设置，然后后半部分要用非贪婪匹配。
+
+运行时：
+
+    F:\Python35>python checkEmail.py
+    plaues enter email address:family_ld@163.com
+    Hello, family_ld
+    plaues enter email address:baidu.com
+    Invalid email address.
+    plaues enter email address:bill.gates@microsoft.com
+    Hello, bill.gates
+
