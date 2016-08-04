@@ -5091,3 +5091,27 @@ datetime类有一个属性 `tzinfo` 专门用来表示时区，默认是None，�
 
         print('Pass')
 
+###collections
+
+collections内建模块提供了许多有用的集合类。
+
+####namedtuple
+
+namedtuple是一个函数，可以用来创建一个自定义的tuple对象，并且规定tuple中元素的个数，可以用属性来访问这个自定义tuple中的元素。
+
+    >>> from collections import namedtuple
+    >>> Point = namedtuple('Point', ['x', 'y'])
+    >>> p = Point(1, 2)
+    >>> p.x
+    1
+    >>> p.y
+    2
+
+比如这个例子中定义了一个Point对象，它继承自tuple，有两个元素x和y，也可以理解为两个属性x和y。 这样我们既能更准确地描述对象，又不需要创建一个类这么麻烦。
+
+    >>> isinstance(p, Point)
+    True
+    >>> isinstance(p, tuple)
+    True
+
+可以看到定义的Point确实是tuple的子类，注意 `Point = namedtuple('Point', ['x', 'y'])` 中等式左边是类名，可以不必和等式右边的名相同，但是一般为了代码可读性还是保证一致~~
