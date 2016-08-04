@@ -4927,3 +4927,130 @@ Python提供 `re` 模块来包含所有正则表达式的功能。 但是，因�
     plaues enter email address:bill.gates@microsoft.com
     Hello, bill.gates
 
+##常用内建模块
+
+###datatime
+
+datatime库用于处理日期和时间，获取当前日期和时间如下：
+
+    >>> from datetime import datetime
+    >>> now = datetime.now() # 获取当前datetime
+    >>> print(now)
+    2015-05-18 16:28:07.198690
+    >>> print(type(now))
+    <class 'datetime.datetime'>
+
+注意import的方式，在datetime模块下有一个datetime类，我们要用到的是这个类的类方法，所以不能只 `import datetime`，否则就要用 `datetime.datetime.类方法名` 的方式来使用。
+
+生产一个指定的日期和时间可以通过类的构造函数完成：
+
+    >>> from datetime import datetime
+    >>> dt = datetime(2015, 4, 19, 12, 20) # 用指定日期时间创建datetime
+    >>> print(dt)
+    2015-04-19 12:20:00
+
+####datetime转换为timestamp
+
+因为计算机中timestamp实际是用数字表示的，当前时间实质是从1970年1月1日 00:00:00 UTC+00:00时区的时刻(称为：**epoch time**，即新纪元时间，记为数字0)到当前时间所过的**秒数**，这个差我们称为timestamp。
+
+注意UTC后面的时区，比方说我们生活在东八区，那么epoch time就应该是 `1970-1-1 08:00:00 UTC+8:00`，这和 `1970-1-1 00:00:00 UTC+0:00` 是一样的，计算机存的都是0。
+
+要把datetime类型转换为timestamp只需要简单调用 `timestamp()` 方法：
+
+    >>> dt = datetime(2015, 4, 19, 12, 20) # 用指定日期时间创建datetime
+    >>> dt.timestamp() # 把timestamp转换为datetime
+    1429417200.0
+
+注意timestamp是个浮点数，小数点表示毫秒数。
+
+####timestamp转换为datetime
+
+反过来转换时调用 `fromtimestamp()` 方法：
+
+    >>> t = 1429417200.0
+    >>> print(datetime.fromtimestamp(t))
+    2015-04-19 12:20:00
+
+注意到timestamp是一个浮点数，它没有时区的概念，而**datetime是有时区的**。上述转换**是在timestamp和本地时间做转换**。所以我们如果操作系统设定的是东八区，那所得的时间实际上就是 `2015-04-19 12:20:00 UTC+8:00`。
+
+如果要转换为标准的格林威治时间，则使用 `utcfromtimestamp()` 函数：
+
+    >>> print(datetime.utcfromtimestamp(t)) # UTC时间
+    2015-04-19 04:20:00
+
+####str转换为datetime
+
+有时用户输入的日期时间是字符串，要进行处理就必须转换为datetime，这是通过 `datetime
+.strptime()` 函数实现的，如何进行格式化可以参考[Python文档](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior)。
+
+    >>> cday = datetime.strptime('2015-6-1 18:19:59', '%Y-%m-%d %H:%M:%S')
+    >>> print(cday)
+    2015-06-01 18:19:59
+
+####datetime转换为str
+
+类似地可以反过来通过 `datetime.strftime()` 函数进行转换。
+
+    >>> now = datetime.now()
+    >>> print(now.strftime('%a, %b %d %H:%M'))
+    Mon, May 05 16:28
+
+####datetime加减
+
+datetime的加减要导入 `timedelta` 这个类：
+
+    >>> from datetime import datetime, timedelta
+    >>> now = datetime.now()
+    >>> now
+    datetime.datetime(2015, 5, 18, 16, 57, 3, 540997)
+    >>> now + timedelta(hours=10)
+    datetime.datetime(2015, 5, 19, 2, 57, 3, 540997)
+    >>> now - timedelta(days=1)
+    datetime.datetime(2015, 5, 17, 16, 57, 3, 540997)
+    >>> now + timedelta(days=2, hours=12)
+    datetime.datetime(2015, 5, 21, 4, 57, 3, 540997)
+
+可以通过不同的关键字参数设定具体相差的日数，小时数等等。
+
+####本地时间转换为UTC时间
+
+UTC时间特指的是格林威治时间，即**零时区(UTC+0:00)的时间**；本地时间则是**系统设定时区的时间**。
+
+datetime类有一个属性 `tzinfo` 专门用来表示时区，默认是None，也即默认产生的datetime是不带时区信息的。
+
+    >>> from datetime import datetime, timedelta, timezone
+    >>> tz_utc_8 = timezone(timedelta(hours=8)) # 创建时区UTC+8:00
+    >>> now = datetime.now()
+    >>> now
+    datetime.datetime(2015, 5, 18, 17, 2, 10, 871012)
+    >>> dt = now.replace(tzinfo=tz_utc_8) # 强制设置为UTC+8:00
+    >>> dt
+    datetime.datetime(2015, 5, 18, 17, 2, 10, 871012, tzinfo=datetime.timezone(datetime.timedelta(0, 28800)))
+
+**注意**：
+
+教程里说如果系统时区不是UTC+8:00，上面这段代码就不会成功，因为**不能强制设置错误的时区**。 但实际上我用Win10+Python3是可以强制设置别的时区的。
+
+####时区转换
+
+通过 `astimezone()` 这个函数可以将任意**带时区信息**的datetime对象进行时区转换。 如果没有设置过时区信息就要先构造一个带时区信息的datetime对象。
+
+    # 拿到UTC时间，并强制设置时区为UTC+0:00:
+    >>> utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+    >>> print(utc_dt)
+    2015-05-18 09:05:12.377316+00:00
+    # astimezone()将转换时区为北京时间:
+    >>> bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+    >>> print(bj_dt)
+    2015-05-18 17:05:12.377316+08:00
+    # astimezone()将转换时区为东京时间:
+    >>> tokyo_dt = utc_dt.astimezone(timezone(timedelta(hours=9)))
+    >>> print(tokyo_dt)
+    2015-05-18 18:05:12.377316+09:00
+
+要构造带时区信息的datetime对象可以像前一小节那样直接replace掉tzinfo属性，也可以像这里这样构造一个UTC+0:00时区的datetime对象，然后再转换。
+
+####小结
+
+1. datetime表示的时间必须带有时区信息才能确定一个特定的时间，否则只能视为本地时间。
+2. 要存储datetime最佳方法是转换为timestamp再存，因为timestamp值跟时区无关。
