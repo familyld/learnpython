@@ -5130,3 +5130,20 @@ deque是为了高效实现插入和删除操作的双向列表，适合用于队
     deque(['y', 'a', 'b', 'c', 'x'])
 
 deque除了实现list的 `append()` 和`pop()` 外，还支持 `appendleft()` 和 `popleft()`，这样就可以非常高效地往头部添加或删除元素。
+
+####defaultdict
+
+使用dict时，如果引用的Key不存在，就会抛出KeyError。如果希望key不存在时，返回一个默认值，就可以用defaultdict：
+
+    >>> from collections import defaultdict
+    >>> dd = defaultdict(lambda: 'N/A')
+    >>> dd['key1'] = 'abc'
+    >>> dd['key1'] # key1存在
+    'abc'
+    >>> dd['key2'] # key2不存在，返回默认值
+    'N/A'
+
+注意**默认值是调用函数返回的**，而**函数在创建defaultdict对象时传入**。
+
+除了在Key不存在时返回默认值，defaultdict的其他行为跟dict是完全一样的。
+
