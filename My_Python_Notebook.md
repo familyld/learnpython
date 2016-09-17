@@ -5163,3 +5163,23 @@ deque除了实现list的 `append()` 和`pop()` 外，还支持 `appendleft()` �
     OrderedDict([('f', 6), ('a', 1), ('b', 2), ('c', 3), ('e', 5), ('d', 4)])
 
 运用这个特质可以编写一个FIFO的dict，当到达dict容量上限时，最早插入dict的key被删除。
+
+####Counter
+
+Counter是一个计数器类，可以进行字符统计，非常方便：
+
+    >>> from collections import Counter
+    >>> c = Counter()
+    >>> for ch in 'programming':
+    ...     c[ch] = c[ch] + 1
+    ...
+    >>> c
+    Counter({'g': 2, 'm': 2, 'r': 2, 'a': 1, 'i': 1, 'o': 1, 'n': 1, 'p': 1})
+
+也可以直接写为：
+
+    >>> c = Counter('programming')
+    >>> c
+    Counter({'g': 2, 'r': 2, 'm': 2, 'n': 1, 'o': 1, 'i': 1, 'a': 1, 'p': 1})
+
+Counter实际上也是dict的一个子类，上面的结果可以看出，字符'g'、'm'、'r'各出现了两次，其他字符各出现了一次。
