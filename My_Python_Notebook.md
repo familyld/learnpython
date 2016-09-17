@@ -5147,3 +5147,19 @@ deque除了实现list的 `append()` 和`pop()` 外，还支持 `appendleft()` �
 
 除了在Key不存在时返回默认值，defaultdict的其他行为跟dict是完全一样的。
 
+####OrderedDict
+
+因为dict的Key是无序的，所以对dict做迭代时，无法确定Key的顺序，准确地说是我们插入dict的顺序和迭代时取出的顺序可能不同：
+
+    >>> d = dict([('f',6),('a', 1), ('b', 2), ('c', 3),('e',5),('d',4)])
+    >>> d
+    {'c': 3, 'e': 5, 'a': 1, 'b': 2, 'f': 6, 'd': 4}
+
+我们可以用OrderedDict解决这个问题，这里有序指的是**Key按照插入的顺序排列，而不是按Key的大小排序**。
+
+    >>> from collections import OrderedDict
+    >>> d = OrderedDict([('f',6),('a', 1), ('b', 2), ('c', 3),('e',5),('d',4)])
+    >>> d
+    OrderedDict([('f', 6), ('a', 1), ('b', 2), ('c', 3), ('e', 5), ('d', 4)])
+
+运用这个特质可以编写一个FIFO的dict，当到达dict容量上限时，最早插入dict的key被删除。
