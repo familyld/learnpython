@@ -5233,3 +5233,43 @@ Base64适用于小段内容的编码，比如数字证书签名、Cookie的内�
         s=s+b'='*a
         return base64.b64decode(s)
 
+###struct
+
+准确来说Python是没有专门处理字节的数据类型的，但是因为str类型不但可以是unicode字符串还可以是bytes数组，所以也可以认为str就是字节数组，可以通过encode一个unicode字符串得到。 但是没有直接提供int，float等类型与bytes的转换。
+
+比如要把一个unsigned integer(32 bit)转换为bytes，就要先获得逐个字节再变成bytes数组：
+
+    >>> n = 10240099
+    >>> b1 = (n & 0xff000000) >> 24
+    >>> b2 = (n & 0xff0000) >> 16
+    >>> b3 = (n & 0xff00) >> 8
+    >>> b4 = n & 0xff
+    >>> bs = bytes([b1, b2, b3, b4])
+    >>> bs
+    b'\x00\x9c@c'
+
+如果是float类型那就GG了。
+
+幸运的是Python提供了一个struct模块为我们解决这个问题，能够进行bytes和其他二进制数据类型的转换。
+
+    >>> import struct
+    >>> struct.pack('>I', 10240099)
+    b'\x00\x9c@c'
+
+注意这里得到的就是4个字节的bytes数组，`@c`是两个字节，因为属于ascii码就能直接显示出来。
+
+`pack` 的第一个参数是处理指令，`'>I'` 的意思是：
+
+`>` 表示字节顺序是big-endian，也就是网络序，`I` 表示4字节无符号整数。
+
+后面的参数个数要和处理指令一致。
+
+`unpack` 把bytes变成相应的数据类型：
+
+    >>> struct.unpack('>IH', b'\xf0\xf0\xf0\xf0\x80\x80')
+    (4042322160, 32896)
+
+根据 `>IH` 的说明，后面的bytes依次变为 `I`：4字节无符号整数和 `H`：2字节无符号整数。
+
+所以，尽管Python不适合编写底层操作字节流的代码，但在对性能要求不高的地方，利用struct就方便多了。数据类型的占位符可以看[Python官方文档](https://docs.python.org/3/library/struct.html#format-characters)。
+
