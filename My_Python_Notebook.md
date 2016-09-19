@@ -5301,3 +5301,40 @@ Base64适用于小段内容的编码，比如数字证书签名、Cookie的内�
         else:
             print( "不是位图文件")
 
+###hashlib
+
+hashlib模块提供了常见的摘要算法，如MD5，SHA1等等。 **摘要算法又称哈希算法、散列算法**。
+
+摘要算法就是通过摘要函数f()**对任意长度的数据data计算出固定长度的摘要digest**（通常用16进制字符串表示），目的是为了发现原始数据是否被人篡改过。
+之所以可以这样做是因为摘要函数是一个单向函数，计算f(data)很容易，但通过digest反推data却非常困难。而且，对原始数据做一个bit的修改，都会导致计算出的摘要完全不同。
+
+计算MD5代码如下：
+
+    import hashlib
+
+    md5 = hashlib.md5()
+    md5.update('how to use md5 in python hashlib?'.encode('utf-8'))
+    print(md5.hexdigest())
+
+结果是 `d26a53750bc40b38b65a520292f69306`。 如果数据量较大，篇幅较长，可以多次调用update来计算，这样结果是一样的，但只要改动一个字母，结果就会不一样。
+
+    import hashlib
+
+    md5 = hashlib.md5()
+    md5.update('how to use md5 in '.encode('utf-8'))
+    md5.update('python hashlib?'.encode('utf-8'))
+    print(md5.hexdigest())
+
+使用SHA1算法也类似，稍微修改一下就可以了：
+
+    import hashlib
+
+    sha1 = hashlib.sha1()
+    sha1.update('how to use sha1 in '.encode('utf-8'))
+    sha1.update('python hashlib?'.encode('utf-8'))
+    print(sha1.hexdigest())
+
+MD5是最常见的摘要算法，速度很快，生成结果是固定的128bit字节，通常用32位的16进制字符串表示。
+
+SHA1结果是160bit字节，通常用40位的16进制字符串表示。 更安全的有SHA256和SHA512，但越安全的算法越慢，摘要长度越长。
+
