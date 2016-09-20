@@ -5353,3 +5353,39 @@ SHA1结果是160bit字节，通常用40位的16进制字符串表示。 更安�
     def calc_md5(password):
         return get_md5(password + 'the-Salt')
 
+####练习
+
+设计一个模拟登陆系统，采用更安全的方式计算MD5：
+
+    import hashlib
+
+    def register(username, password):
+        db[username] = get_md5(password + username + 'the-Salt')
+        print('注册成功')
+
+    def login():
+        #登陆
+        username = input('请输入登陆用户名：')
+        password = input('请输入登陆密码：')
+        if username in db:
+            if db[username] == get_md5(password + username + 'the-Salt'):
+                print('登陆成功')
+            else:
+                print('密码错误')
+                login()
+        else:
+            print('用户名错误')
+            login()
+
+    def get_md5(password):
+        md5 = hashlib.md5()
+        md5.update(password.encode('utf-8'))
+        return md5.hexdigest()
+
+    #注册
+    db={}
+    username = input('请输入用户名：')
+    password = input('请输入密码：')
+    register(username, password)
+    login()
+
