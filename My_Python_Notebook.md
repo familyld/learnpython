@@ -5470,3 +5470,77 @@ itertools模块提供非常有用的迭代对象操作函数。 比如 `count(st
 这样无论大写还是小写，作用于匿名函数后都返回大写字母，大写字母相同就认为是一组的。
 
 注意group不能直接打印，要先转换为list才能做其他操作。
+
+###XML
+
+XML比JSON复杂，但也有不少Web应用还在用。有两种操作方法：DOM和SAX。
+
+DOM把整个XML读入内存，解析为树，缺点是占用内存大，解析慢，但是可以任意地遍历树节点。
+
+SAX是流模式，边读边解析，占用内存小，解析快，但要自己处理事情，正常情况下优先考虑SAX。
+
+Python中使用SAX解析XML很简洁，当SAX解析器读到一个结点时，比如：
+
+    <a href="/">python</a>
+
+会产生三种事件：
+1. 读取 `<a href="/">` 时：**start_element事件**
+2. 读取 `python` 时：**char_data事件**
+3. 读取 `</a>` 时：**end_element事件**
+
+我们只需要为这三类时间编写对应的处理函数(handler)就可以了。
+
+    from xml.parsers.expat import ParserCreate
+
+    class DefaultSaxHandler(object):
+        def start_element(self, name, attrs):
+            print('sax:start_element: %s, attrs: %s' % (name, str(attrs)))
+
+        def end_element(self, name):
+            print('sax:end_element: %s' % name)
+
+        def char_data(self, text):
+            print('sax:char_data: %s' % text)
+
+    xml = r'''<?xml version="1.0"?>
+    <ol>
+        <li><a href="/python">Python</a></li>
+        <li><a href="/ruby">Ruby</a></li>
+    </ol>
+    '''
+
+    handler = DefaultSaxHandler()
+    parser = ParserCreate()
+    parser.StartElementHandler = handler.start_element
+    parser.EndElementHandler = handler.end_element
+    parser.CharacterDataHandler = handler.char_data
+    parser.Parse(xml)
+
+这段代码就是定义了三种事件的处理函数，然后封装在了一个类里面，注意handler赋值给parser时右值是函数本身，而不是函数返回的值，所以注意不能加括号。
+
+运行结果如下：
+
+    >>>
+    ====================== RESTART: F:/Python35/XML_test.py ======================
+    sax:start_element: ol, attrs: {}
+    sax:char_data:
+
+    sax:char_data:
+    sax:start_element: li, attrs: {}
+    sax:start_element: a, attrs: {'href': '/python'}
+    sax:char_data: Python
+    sax:end_element: a
+    sax:end_element: li
+    sax:char_data:
+
+    sax:char_data:
+    sax:start_element: li, attrs: {}
+    sax:start_element: a, attrs: {'href': '/ruby'}
+    sax:char_data: Ruby
+    sax:end_element: a
+    sax:end_element: li
+    sax:char_data:
+
+    sax:end_element: ol
+
+注意当读取一段字符串时，`CharacterDataHandler` 会被多次调用，可以先进行保存，到 `EndElementHandler` 里面再合并输出。
