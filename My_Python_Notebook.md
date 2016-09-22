@@ -5677,3 +5677,34 @@ HTML可以认为是XML的子集，因为语法没有XML那么严谨，所以不�
 ###urllib
 
 urllib库提供一些操作URL的功能。
+
+####Get
+
+urllib的request模块可以非常方便地抓去URL内容，可以发送一个GET请求到指定页面，然后返回HTTP响应。
+
+例如，对豆瓣的URL进行抓取，并返回响应：
+
+    from urllib import request
+
+    with request.urlopen('https://api.douban.com/v2/book/2129650') as f:
+        data = f.read()
+        print('Status:', f.status, f.reason)
+        for k, v in f.getheaders():
+            print('%s: %s' % (k, v))
+        print('Data:', data.decode('utf-8'))
+
+其中 `status` 可以读出返回的状态码，`reason` 是对状态码的解释。 `getheaders()` 可以返回HTTP响应的头部，头部是一个list，每个元素是一个二元tuple，所以可以像代码中读取。 `read()` 返回的data则是utf-8编码(一般网页会说明)的bytes字节流，要先 `decode` 才能读，decode后就是一个str。
+
+写爬虫时需要**模拟浏览器发送GET请求**，这时需要用到 `Request` 对象，通过对它添加HTTP头(User-Agent)就可以把伪装成从浏览器请求。 例如：模拟iPone6请求豆瓣首页：
+
+    from urllib import request
+
+    req = request.Request('http://www.douban.com/')
+    req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+    with request.urlopen(req) as f:
+        print('Status:', f.status, f.reason)
+        for k, v in f.getheaders():
+            print('%s: %s' % (k, v))
+        print('Data:', f.read().decode('utf-8'))
+
+这时豆瓣会返回适合iPone的移动版网页。
