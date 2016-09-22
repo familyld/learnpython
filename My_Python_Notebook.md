@@ -5619,3 +5619,57 @@ URL中参数w是城市代码，要查询某个城市代码，可以在weather.ya
     print('Weather:', str(weather))
 
 这里区分今天和明天用了个取巧的方法，因为没有用datetime，根据xml中的写法，第一次遇到 `yweather:forecast` 标签时预报的是今天的天气，此时w字典中还没有 `today` 这个key，所以判断到 `today` 不在字典中时保存的是今天的预报。同理，`tomorrow` 不在字典中时保存的是明天的预报。
+
+###HTMLParser
+
+HTML可以认为是XML的子集，因为语法没有XML那么严谨，所以不能用标准的DOM或SAX来解析HTML。
+
+写爬虫时把目标网站的页面抓下来后，第二部就是解析该HTML页面，找出里面的文字、图片和视频等等。
+
+    from html.parser import HTMLParser
+    from html.entities import name2codepoint
+
+    class MyHTMLParser(HTMLParser):
+
+        def handle_starttag(self, tag, attrs):
+            print('<%s>' % tag)
+
+        def handle_endtag(self, tag):
+            print('</%s>' % tag)
+
+        def handle_startendtag(self, tag, attrs):
+            print('startendtag: <%s/> with attr:%s' % (tag, str(attrs)))
+
+        def handle_data(self, data):
+            print(data)
+
+        def handle_comment(self, data):
+            print('<!--', data, '-->')
+
+        def handle_entityref(self, name):
+            print('&%s;' % name)
+
+        def handle_charref(self, name):
+            print('&#%s;' % name)
+
+    parser = MyHTMLParser()
+    parser.feed('''<html>
+    <head></head>
+    <body>
+    <!-- test html parser -->
+        <p>Some <a href=\"#\">html</a> HTML&nbsp;tutorial...<br>END</p>
+    </body></html>''')
+
+`feed()` 方法可以多次调用，也就是说我们不需要一次把整个页面的HTML塞进去，可以一段段来。
+
+这里定义的几个handler功能分别是：
+
+    handle_startendtag 处理开始结束一起的标签，比如<img ... />
+    handle_starttag 处理开始标签，比如<xx>
+    handle_endtag 处理结束标签，比如</xx>
+    handle_charref 处理特殊字符串，就是以&#开头的，一般是内码表示的字符
+    handle_entityref 处理一些特殊字符，以&开头的，比如
+    handle_data 处理数据，就是<xx>data</xx>中间的那些数据
+    handle_comment 处理注释
+    handle_decl 处理<!开头的，比如<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    handle_pi 处理形如<?instruction>的东西
