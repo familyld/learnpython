@@ -5673,3 +5673,7 @@ HTML可以认为是XML的子集，因为语法没有XML那么严谨，所以不�
     handle_comment 处理注释
     handle_decl 处理<!开头的，比如<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     handle_pi 处理形如<?instruction>的东西
+
+###urllib
+
+urllib库提供一些操作URL的功能。
