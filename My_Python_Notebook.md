@@ -5708,3 +5708,33 @@ urllib的request模块可以非常方便地抓去URL内容，可以发送一个G
         print('Data:', f.read().decode('utf-8'))
 
 这时豆瓣会返回适合iPone的移动版网页。
+
+####Post
+
+除了GET请求，有时我们需要POST一些数据，发送POST请求，这是把参数以bytes形式传入就可以了，比如模拟登陆网页微博：
+
+    from urllib import request, parse
+
+    print('Login to weibo.cn...')
+    email = input('Email: ')
+    passwd = input('Password: ')
+    login_data = parse.urlencode([
+        ('username', email),
+        ('password', passwd),
+        ('entry', 'mweibo'),
+        ('client_id', ''),
+        ('savestate', '1'),
+        ('ec', ''),
+        ('pagerefer', 'https://passport.weibo.cn/signin/welcome?entry=mweibo&r=http%3A%2F%2Fm.weibo.cn%2F')
+    ])
+
+    req = request.Request('https://passport.weibo.cn/sso/login')
+    req.add_header('Origin', 'https://passport.weibo.cn')
+    req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+    req.add_header('Referer', 'https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F')
+
+    with request.urlopen(req, data=login_data.encode('utf-8')) as f:
+        print('Status:', f.status, f.reason)
+        for k, v in f.getheaders():
+            print('%s: %s' % (k, v))
+        print('Data:', f.read().decode('utf-8'))
