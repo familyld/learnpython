@@ -5733,6 +5733,18 @@ urllib的request模块可以非常方便地抓去URL内容，可以发送一个G
     req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
     req.add_header('Referer', 'https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F')
 
+####Handler
+
+有时需要通过Proxy(代理)来访问网站，就需要使用 `ProxyHandler` 处理：
+
+    proxy_handler = urllib.request.ProxyHandler({'http': 'http://www.example.com:3128/'})
+    proxy_auth_handler = urllib.request.ProxyBasicAuthHandler()
+    proxy_auth_handler.add_password('realm', 'host', 'username', 'password')
+    opener = urllib.request.build_opener(proxy_handler, proxy_auth_handler)
+    with opener.open('http://www.example.com/login.html') as f:
+        pass
+
+
     with request.urlopen(req, data=login_data.encode('utf-8')) as f:
         print('Status:', f.status, f.reason)
         for k, v in f.getheaders():
