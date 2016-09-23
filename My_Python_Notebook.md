@@ -5750,3 +5750,8 @@ urllib的request模块可以非常方便地抓去URL内容，可以发送一个G
         for k, v in f.getheaders():
             print('%s: %s' % (k, v))
         print('Data:', f.read().decode('utf-8'))
+
+##常用第三方模块
+
+基本上，所有的第三方模块都会在PyPI - the Python Package Index上注册，只要找到对应的模块名字，即可用pip安装。
+
