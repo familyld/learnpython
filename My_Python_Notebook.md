@@ -5755,3 +5755,30 @@ urllib的request模块可以非常方便地抓去URL内容，可以发送一个G
 
 基本上，所有的第三方模块都会在PyPI - the Python Package Index上注册，只要找到对应的模块名字，即可用pip安装。
 
+###PIL
+
+PIL：Python Imaging Library，已经是Python平台事实上的图像处理标准库了。PIL功能非常强大，但API却非常简单易用。 由于PIL仅支持到Python2.7，后来又创建了兼容Python3的版本，名称是Pillow，这里我们直接安装Pillow。
+
+命令行下直接通过pip安装即可：
+
+    $ pip install pillow
+
+####操作图像
+
+我们可以非常方便地获取图片信息，并且进行裁剪旋转加滤镜等操作。
+
+    from PIL import Imagee, ImageFilter
+
+    # 打开一个jpg图像文件，注意是当前路径:
+    im = Image.open('test.jpg')
+    # 获得图像尺寸:
+    w, h = im.size
+    print('Original image size: %sx%s' % (w, h))
+    # 缩放到50%:
+    im.thumbnail((w//2, h//2))
+    print('Resize image to: %sx%s' % (w//2, h//2))
+    # 把缩放后的图像用jpeg格式保存:
+    im.save('thumbnail.jpg', 'jpeg')
+    # 应用模糊滤镜:
+    im2 = im.filter(ImageFilter.BLUR)
+    im2.save('blur.jpg', 'jpeg')
