@@ -635,4 +635,80 @@ array([[0, 0, 2],
 [1, 0, 1]], dtype=int32)
 ```
 
+#### 统计运算函数
+
+```python
+In [109]: np.sum(arr11)   #计算所有元素的和
+Out[109]: -18
+
+In [110]: np.sum(arr11,axis = 0)    #对每一列求和，注意axis是0
+Out[110]: array([ -2,  -6, -10])
+
+In [111]: np.sum(arr11, axis = 1)     #对每一行求和，注意axis是1
+Out[111]: array([  9,   0,  -9, -18])
+
+In [112]: np.cumsum(arr11) #对每一个元素求累积和（从上到下，从左到右的元素顺序），即每移动一次就把当前数字加到和值
+Out[112]: array([  4,   7,   9,  10,  10,   9,   7,   4,   0,  -5, -11, -18], dtype=int32)
+
+In [113]: np.cumsum(arr11, axis = 0) #计算每一列的累积和，并返回二维数组
+Out[113]:
+array([[  4,   3,   2],
+[  5,   3,   1],
+[  3,   0,  -3],
+[ -2,  -6, -10]], dtype=int32)
+
+In [114]: np.cumprod(arr11, axis = 1) #计算每一行的累计积，并返回二维数组
+Out[114]:
+array([[   4,   12,   24],
+[   1,    0,    0],
+[  -2,    6,  -24],
+[  -5,   30, -210]], dtype=int32)
+
+In [115]: np.min(arr11)   #计算所有元素的最小值
+Out[115]: -7
+
+In [116]: np.max(arr11, axis = 0) #计算每一列的最大值
+Out[116]: array([4, 3, 2])
+
+In [117]: np.mean(arr11)  #计算所有元素的均值
+Out[117]: -1.5
+
+In [118]: np.mean(arr11, axis = 1) #计算每一行的均值
+Out[118]: array([ 3.,  0., -3., -6.])
+
+In [119]: np.median(arr11)   #计算所有元素的中位数
+Out[119]: -1.5
+
+In [120]: np.median(arr11, axis = 0)   #计算每一列的中位数
+Out[120]: array([-0.5, -1.5, -2.5])
+
+In [121]: np.var(arr12)   #计算所有元素的方差
+Out[121]: 5.354166666666667
+
+In [122]: np.std(arr12, axis = 1)   #计算每一行的标准差
+Out[122]: array([ 2.49443826,  1.88561808,  1.69967317,  2.1602469 ])
+```
+
+**numpy中的统计函数运算是非常灵活的，既可以计算所有元素的统计值，也可以计算指定行或列的统计指标**。还有其他常用的函数，如符号函数`sign`(将正数、负数、零分别映射为1、-1、0)，`ceil`(取>=x的最小整数)，`floor`(取<=x的最大整数)，`modf`(将浮点数的整数部分与小数部分分别存入两个独立的数组)，`cos`，`arccos`，`sin`，`arcsin`，`tan`，`arctan`等。
+
+让我很兴奋的一个函数是`where()`，它类似于Excel中的if函数，可以进行灵活的变换：
+
+```python
+In [123]: arr11
+Out[123]:
+array([[ 4,  3,  2],
+[ 1,  0, -1],
+[-2, -3, -4],
+[-5, -6, -7]])
+
+In [124]: np.where(arr11 < 0, 'negtive','positive')
+Out[124]:
+array([['positive', 'positive', 'positive'],
+['positive', 'positive', 'negtive'],
+['negtive', 'negtive', 'negtive'],
+['negtive', 'negtive', 'negtive']],
+dtype='<U8')
+```
+
+当然，`np.where` 还可以嵌套使用，完成复杂的运算。
 
