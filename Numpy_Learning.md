@@ -791,3 +791,81 @@ In [135]: vector = np.array([0,8,-9])
 In [136]: np.linalg.solve(arr14,vector)     # 求解线性方程组
 Out[136]: array([ 29.,  16.,   3.]) #1*29 - 2*16 + 1*3 = 0，以此类推
 ```
+
+## 随机数生成
+
+统计学中经常会讲到数据的分布特征，如正态分布、指数分布、卡方分布、二项分布、泊松分布等，下面就讲讲有关分布的随机数生成。
+
+### 正态分布直方图
+
+```python
+In [137]: import matplotlib #用于绘图的模块
+In [138]: np.random.seed(1234)    #设置随机种子
+In [139]: N = 10000   #随机产生的样本量
+In [140]: randnorm = np.random.normal(size = N)   #生成正态随机数
+In [141]: counts, bins, path = matplotlib.pylab.hist(randnorm, bins = np.sqrt(N), normed = True, color = 'blue')  #绘制直方图
+```
+
+以上将直方图的频数和组距存放在counts和bins内。
+
+```python
+In [142]: sigma = 1; mu = 0
+In [143]: norm_dist = (1/np.sqrt(2*sigma*np.pi))*np.exp(-((bins-mu)**2)/2)    #正态分布密度函数
+In [144]: matplotlib.pylab.plot(bins,norm_dist,color = 'red') #绘制正态分布密度函数图
+```
+
+![graph1](http://mmbiz.qpic.cn/mmbiz/yjFUicxiaClgUXjmGVZtctljErLLnffs9Fsug02YAxI2vUgquFG71OO6RZYCNoaiaHOMwRAbkOSLdic15aaaTqhKzQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+补充一下，这个例子想说的是 `random.normal` 生成指定数目的随机数（可以进一步指定分布的均值、标准差和中心），然后把这些随机数用直方图画了出来。并且画了一条同一区间内的正态分布曲线来对比。注意种子的设置和生成随机数的大小是无关的，只是说使用不同的种子会生成不同的随机数，详细可以查找相关资料。
+
+### 使用二项分布进行赌博
+
+同时抛弃9枚硬币，如果正面朝上少于5枚，则输掉8元，否则就赢8元。如果手中有1000元作为赌资，请问赌博10000次后可能会是什么情况呢？
+
+```python
+In [146]: np.random.seed(1234)
+In [147]: binomial = np.random.binomial(9,0.5,10000)  #生成二项分布随机数
+In [148]: money = np.zeros(10000) #生成10000次赌资的列表
+In [149]: money[0] = 1000 #首次赌资为1000元
+In [150]: for i in range(1,10000):
+     ...:     if binomial[i] < 5:
+     ...:         money[i] = money[i-1] - 8
+#如果少于5枚正面，则在上一次赌资的基础上输掉8元
+     ...:     else:
+     ...:         money[i] = money[i-1] + 8
+#如果至少5枚正面，则在上一次赌资的基础上赢取8元
+In [151]: matplotlib.pylab.plot(np.arange(10000), money)
+```
+
+![graph2](http://mmbiz.qpic.cn/mmbiz/yjFUicxiaClgUXjmGVZtctljErLLnffs9FwvwtdAekD30cx5dWkf3J9PaVVNaAogGpoAOyREnZcVCFTLTL43Bskw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+### 使用随机整数实现随机游走
+
+一个醉汉在原始位置上行走10000步后将会在什么地方呢？如果他每走一步是随机的，即下一步可能是1也可能是-1。
+
+```python
+In [152]: np.random.seed(1234)    #设定随机种子
+In [153]: position = 0    #设置初始位置
+In [154]: walk = []   #创建空列表
+In [155]: steps = 10000   #假设接下来行走10000步
+In [156]: for i in np.arange(steps):
+     ...:     step = 1 if np.random.randint(0,2) else -1  #每一步都是随机的（如果随机到1就走1步，随机到0就走-1步）
+     ...:     position = position + step  #对每一步进行累计求和
+     ...:     walk.append(position)   #确定每一步所在的位置
+In [157]: matplotlib.pylab.plot(np.arange(10000), walk)   #绘制随机游走图
+```
+
+![graph3](http://mmbiz.qpic.cn/mmbiz/yjFUicxiaClgUXjmGVZtctljErLLnffs9Frp8BIXlMvXMvOR5nPHcicuzrRfSicPBicbApwriaUpD7NFnmy0oTlqrvgg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+上面的代码还可以写成（结合前面所讲的where函数，cumsum函数）：
+
+```python
+In [158]: np.random.seed(1234)
+In [159]: step = np.where(np.random.randint(0,2,10000)>0,1,-1)
+In [160]: position = np.cumsum(step)
+In [161]: matplotlib.pylab.plot(np.arange(10000), position)
+```
+
+![graph4](http://mmbiz.qpic.cn/mmbiz/yjFUicxiaClgUXjmGVZtctljErLLnffs9Frp8BIXlMvXMvOR5nPHcicuzrRfSicPBicbApwriaUpD7NFnmy0oTlqrvgg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+**避免for循环，可以达到同样的效果**。
