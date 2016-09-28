@@ -102,3 +102,151 @@ dtype: int32
 
 这部分内容我们放在后面讲，接下来就开始讲一讲如何构造一个DataFrame。
 
+### 2、DataFrame的创建
+
+数据框的创建主要有三种方式：
+
+#### 1）通过二维数组创建数据框
+
+```python
+In [14]: arr2 = np.arange(12).reshape(4,3)
+In [15]: arr2
+Out[15]:
+array([[ 0,  1,  2],
+[ 3,  4,  5],
+[ 6,  7,  8],
+[ 9, 10, 11]])
+In [16]: type(arr2)
+Out[16]: numpy.ndarray
+```
+
+返回的是数组类型。
+
+```python
+In [17]: df1 = pd.DataFrame(arr2)
+In [18]: df1
+Out[18]:
+   0   1   2
+0  0   1   2
+1  3   4   5
+2  6   7   8
+3  9  10  11
+In [19]: type(df1)
+Out[19]: pandas.core.frame.DataFrame
+```
+
+返回的数据框类型。
+
+#### 2）通过字典的方式创建数据框
+
+以下以两种字典来创建数据框，一个是字典列表，一个是嵌套字典。
+
+```python
+In [20]: dic2 = {'a':[1,2,3,4],'b':[5,6,7,8],
+    ...:         'c':[9,10,11,12],'d':[13,14,15,16]}
+In [21]: dic2
+Out[21]:
+{'a': [1, 2, 3, 4],
+'b': [5, 6, 7, 8],
+'c': [9, 10, 11, 12],
+'d': [13, 14, 15, 16]}
+In [22]: type(dic2)
+Out[22]: dict
+```
+
+返回的是字典类型。
+
+```python
+In [23]: df2 = pd.DataFrame(dic2)
+In [24]: df2
+Out[24]:
+   a  b   c   d
+0  1  5   9  13
+1  2  6  10  14
+2  3  7  11  15
+3  4  8  12  16
+In [25]: type(df2)
+Out[25]: pandas.core.frame.DataFrame
+```
+
+返回的是数据框类型。
+
+```python
+In [26]: dic3 = {'one':{'a':1,'b':2,'c':3,'d':4},
+    ...:         'two':{'a':5,'b':6,'c':7,'d':8},
+    ...:         'three':{'a':9,'b':10,'c':11,'d':12}}
+In [27]: dic3
+Out[27]:
+{'one': {'a': 1, 'b': 2, 'c': 3, 'd': 4},
+'three': {'a': 9, 'b': 10, 'c': 11, 'd': 12},
+'two': {'a': 5, 'b': 6, 'c': 7, 'd': 8}}
+In [28]: type(dic3)
+Out[28]: dict
+```
+
+返回的是字典类型。
+
+```python
+In [29]: df3 = pd.DataFrame(dic3)
+In [30]: df3
+Out[30]:
+    one  three  two
+a    1      9    5
+b    2     10    6
+c    3     11    7
+d    4     12    8
+In [31]: type(df3)
+Out[31]: pandas.core.frame.DataFrame
+```
+
+返回的是数据框类型。这里需要说明的是，如果使用嵌套字典创建数据框的话，**嵌套字典的最外层键会形成数据框的列变量(columns)，而内层键则会形成数据框的行索引(index)**。
+
+同样补充一下，用数组来创建数据框的话也是可以通过columns关键字和index关键字分别指定列名和行索引的：
+
+```python
+>>> a = np.arange(1,7).reshape(3,2)
+>>> a
+array([[1, 2],
+       [3, 4],
+       [5, 6]])
+>>> pd.DataFrame(a, columns=['c1','c2'], index=['r1','r2','r3'])
+    c1  c2
+r1   1   2
+r2   3   4
+r3   5   6
+```
+
+#### 3）通过数据框的方式创建数据框
+
+可以取数据框的一部分构成新的数据框，索引的用法和numpy是一致的。
+
+```python
+In [32]: df4 = df3[['one','three']]
+In [33]: df4
+Out[33]:
+    one  three
+a    1      9
+b    2     10
+c    3     11
+d    4     12
+In [34]: type(df4)
+Out[34]: pandas.core.frame.DataFrame
+```
+
+返回的是数据框类型。
+
+```python
+In [35]: s3 = df3['one']
+In [36]: s3
+Out[36]:
+a    1
+b    2
+c    3
+d    4
+Name: one, dtype: int64
+In [37]: type(s3)
+Out[37]: pandas.core.series.Series
+```
+
+如果只选择数据框中的某一列/某一行，返回的就会是一个序列对象。
+
