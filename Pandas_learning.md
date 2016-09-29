@@ -392,3 +392,139 @@ dtype: float64
 **由于s5中没有对应的g索引，s6中没有对应的e索引，所以数据的运算会产生两个缺失值NaN**。注意，这里的算术结果就实现了两个序列索引的自动对齐，而非简单的将两个序列加总或相除。对于**数据框的对齐，不仅仅是行索引的自动对齐，同时也会自动对齐列索引（变量名）**。
 
 数据框中同样有索引，而且数据框是二维数组的推广，所以数据框不仅有行索引，而且还存在列索引，关于数据框中的索引相比于序列的应用要强大的多，这部分内容将放在下面的数据查询中讲解。
+
+## 利用pandas查询数据
+
+这里的查询数据相当于R语言里的subset功能，可以通过布尔索引有针对的选取原数据的子集、指定行、指定列等。我们先导入一个student数据集：
+
+```python
+In [56]: student = pd.io.parsers.read_csv('C:\\Users\\admin\\Desktop\\student.csv')
+```
+
+查询数据的前5行或末尾5行：
+
+```python
+In [57]: student.head()
+Out[57]:
+      Name Sex  Age  Height  Weight
+0   Alfred   M   14    69.0   112.5
+1    Alice   F   13    56.5    84.0
+2  Barbara   F   13    65.3    98.0
+3    Carol   F   14    62.8   102.5
+4    Henry   M   14    63.5   102.5
+
+In [58]: student.tail()
+Out[58]:
+       Name Sex  Age  Height  Weight
+14   Philip   M   16    72.0   150.0
+15   Robert   M   12    64.8   128.0
+16   Ronald   M   15    67.0   133.0
+17   Thomas   M   11    57.5    85.0
+18  William   M   15    66.5   112.0
+```
+
+查询指定的行：
+
+```python
+In [59]: student.ix[[0,2,4,5,7]] #这里的ix索引标签函数必须是中括号[]
+Out[59]:
+      Name Sex  Age  Height  Weight
+0   Alfred   M   14    69.0   112.5
+2  Barbara   F   13    65.3    98.0
+4    Henry   M   14    63.5   102.5
+5    James   M   12    57.3    83.0
+7    Janet   F   15    62.5   112.5
+```
+
+查询指定的列：
+
+```python
+In [60]: student[['Name','Height','Weight']].head()  #如果多个列的话，必须使用双重中括号
+Out[60]:
+      Name  Height  Weight
+0   Alfred    69.0   112.5
+1    Alice    56.5    84.0
+2  Barbara    65.3    98.0
+3    Carol    62.8   102.5
+4    Henry    63.5   102.5
+```
+
+也可以通过ix索引标签查询指定的列：
+
+```python
+In [61]: student.ix[:,['Name','Height','Weight']].head()
+Out[61]:
+      Name  Height  Weight
+0   Alfred    69.0   112.5
+1    Alice    56.5    84.0
+2  Barbara    65.3    98.0
+3    Carol    62.8   102.5
+4    Henry    63.5   102.5
+```
+
+查询指定的行和列：
+
+```python
+In [62]: student.ix[[0,2,4,5,7],['Name','Height','Weight']].head()
+Out[62]:
+      Name  Height  Weight
+0   Alfred    69.0   112.5
+2  Barbara    65.3    98.0
+4    Henry    63.5   102.5
+5    James    57.3    83.0
+7    Janet    62.5   112.5
+```
+
+这里简单说明一下**ix的用法**：`df.ix[行索引,列索引]`
+
+1. ix后面必须是中括号
+2. 多个行索引或列索引必须用中括号括起来
+3. 如果选择所有行索引或列索引，则用英文状态下的冒号:表示
+
+以上是从行或列的角度查询数据的子集，现在我们来看看如何**通过布尔索引实现数据的子集查询**。
+查询所有女生的信息：
+
+```python
+In [63]: student[student['Sex']=='F']
+Out[63]:
+       Name Sex  Age  Height  Weight
+1     Alice   F   13    56.5    84.0
+2   Barbara   F   13    65.3    98.0
+3     Carol   F   14    62.8   102.5
+6      Jane   F   12    59.8    84.5
+7     Janet   F   15    62.5   112.5
+10    Joyce   F   11    51.3    50.5
+11     Judy   F   14    64.3    90.0
+12   Louise   F   12    56.3    77.0
+13     Mary   F   15    66.5   112.0
+```
+
+查询出所有12岁以上的女生信息：
+
+```python
+In [64]: student[(student['Sex']=='F') & (student['Age']>12)]
+Out[64]:
+       Name Sex  Age  Height  Weight
+1     Alice   F   13    56.5    84.0
+2   Barbara   F   13    65.3    98.0
+3     Carol   F   14    62.8   102.5
+7     Janet   F   15    62.5   112.5
+11     Judy   F   14    64.3    90.0
+13     Mary   F   15    66.5   112.0
+```
+
+查询出所有12岁以上的女生姓名、身高和体重：
+
+```python
+In [66]: student[(student['Sex']=='F') & (student['Age']>12)][['Name','Height','Weight']]
+Out[66]:
+       Name  Height  Weight
+1     Alice    56.5    84.0
+2   Barbara    65.3    98.0
+3     Carol    62.8   102.5
+7     Janet    62.5   112.5
+11     Judy    64.3    90.0
+13     Mary    66.5   112.0
+```
+
+上面的查询逻辑其实非常的简单，需要注意的是，如果是多个条件的查询，必须在&（且）或者|（或）的两端条件用括号括起来。
