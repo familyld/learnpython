@@ -963,3 +963,55 @@ Index: []
 ![g24](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwLoaicwu7N4ZicMsqUPwKiblWNbmYXw6PlsG1Yh5v8657HbaP82lZhMWgg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
 
 很显然，在使用填充法时，相对于常数填充或前项、后项填充，使用各列的众数、均值或中位数填充要更加合理一点，这也是工作中常用的一个快捷手段。
+
+## 数据透视表
+在Excel中有一个非常强大的功能就是数据透视表，通过托拉拽的方式可以迅速的查看数据的聚合情况，这里的聚合可以是计数、求和、均值、标准差等。
+
+pandas为我们提供了非常强大的函数pivot_table()，该函数就是实现数据透视表功能的。对于上面所说的一些**聚合函数，可以通过参数aggfunc设定**。我们先看看这个函数的语法和参数吧：
+
+```python
+pivot_table(data,values=None,
+                   index=None,
+                   columns=None,
+                   aggfunc='mean',
+                   fill_value=None,
+                   margins=False,
+                   dropna=True,
+                   margins_name='All')
+```
+
+- **data**：需要进行数据透视表操作的数据框
+- **values**：指定需要聚合的字段
+- **index**: 指定某些原始变量作为行索引
+- **columns**: 指定哪些离散的分组变量
+- **aggfunc**: 指定相应的聚合函数，默认为`numpy.mean()`
+- **fill_value**：使用一个常数替代缺失值，默认不替换
+- **margins**: 是否进行行或列的汇总，默认不汇总
+- **dropna**: 默认所有观测为缺失的列
+- **margins_name**：默认行汇总或列汇总的名称为'All'
+
+我们仍然以student表为例，来认识一下数据透视表pivot_table函数的用法：
+
+对一个分组变量（Sex），一个数值变量（Height）作统计汇总：
+
+![g25](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwOkHSnJ9b1pknpQhtialtrlYWtOHl3RjGcAlm82dOQkEmtnanH0hpPicw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+对一个分组变量（Sex），两个数值变量（Height,Weight）作统计汇总：
+
+![g26](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwEvkhXjZcLXZDTyVq8y4knSonHt0vIgNE9xSWiaQ1rlJhwYEoeknBqWA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+对两个分组变量（Sex，Age)，两个数值变量（Height,Weight）作统计汇总：
+
+![g27](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwwARphPnKPQgMaDicFcJMb5xZM36joibOicwokjfLiate8lwetpmq0wucTw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+很显然这样的结果并不像Excel中预期的那样，该如何变成列联表的形式的？很简单，只需**将结果进行非堆叠操作（unstack）**即可：
+
+![g29](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwHO4HwBfnD3hOW7YnQicoFVq6QMEB12PdiczUlkN1vqb7DICqewDlXQMg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+看，这样的结果是不是比上面那种看起来更舒服一点？
+
+使用多个聚合函数
+
+![g30](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQw6iaYk8qnZAbTygiaSMfHyM9ZU7vMlUtJTnHy78IdINNWb4VibSCgSHic1w/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+有关更多数据透视表的操作，可参考[《Pandas透视表（pivot_table）详解》](http://python.jobbole.com/81212/)一文。
