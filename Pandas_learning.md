@@ -482,6 +482,7 @@ Out[62]:
 3. 如果选择所有行索引或列索引，则用英文状态下的冒号:表示
 
 以上是从行或列的角度查询数据的子集，现在我们来看看如何**通过布尔索引实现数据的子集查询**。
+
 查询所有女生的信息：
 
 ```python
@@ -528,6 +529,28 @@ Out[66]:
 ```
 
 上面的查询逻辑其实非常的简单，需要注意的是，如果是多个条件的查询，必须在&（且）或者|（或）的两端条件用括号括起来。
+
+补充一下，除了使用在方括号索引内，布尔索引同样也能用于ix中作为行索引的部分：
+
+```python
+>>> df
+   0  1
+a  1  2
+b  3  4
+c  0  0
+>>> df[(df[0]==1) | (df[0]==3)]
+   0  1
+a  1  2
+b  3  4
+>>> df.ix[(df[0]==1) | (df[0]==3)]
+   0  1
+a  1  2
+b  3  4
+>>> df.ix[(df[0]==1) | (df[0]==3), 1::-1]
+   1  0
+a  2  1
+b  4  3
+```
 
 ## 统计分析
 
@@ -688,7 +711,7 @@ x2  0.17895  1.000000 -0.033874
 x3  0.00659 -0.033874  1.000000
 ```
 
-如果只想关注某一个变量与其余变量的相关系数的话，可以使用corrwith,如下方只关心x1与其余变量的相关系数：
+如果**只想关注某一个变量与其余变量的相关系数**的话，可以使用corrwith,如下方只关心x1与其余变量的相关系数：
 
 ```python
 In [95]: df.corrwith(df['x1'])
@@ -710,3 +733,143 @@ x2  0.870124  10.206447   -0.507512
 x3  2.078596  -0.507512  780.090808
 ```
 
+## 类似于SQL的操作
+
+在SQL中常见的操作主要是增、删、改、查几个动作，那么pandas能否实现对数据的这几项操作呢？答案是Of Course!
+
+### 增：添加新行或增加新列
+
+```python
+In [99]: dic = {'Name':['LiuShunxiang','Zhangshan'],
+    ...:        'Sex':['M','F'],'Age':[27,23],
+    ...:        'Height':[165.7,167.2],'Weight':[61,63]}
+
+In [100]: student2 = pd.DataFrame(dic)
+
+In [101]: student2
+Out[101]:
+   Age  Height          Name Sex  Weight
+0   27   165.7  LiuShunxiang   M      61
+1   23   167.2     Zhangshan   F      63
+```
+
+现在将student2中的数据新增到student中，可以通过**concat函数**实现：
+
+![g1](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwTIu4ibolcJbCGXJnwicUOgsLwS0zpiazsDrZ6mRLJHCRbiawQAaFxtg2MQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+注意到了吗？在数据库中union必须要求两张表的列顺序一致，而这里**concat函数可以自动对齐两个数据框的变量**（前面student数据框列的顺序是'Name Sex  Age  Height  Weight'，和student2定义的列顺序不同，但是合并时按列名进行了对齐）！
+
+新增列的话，其实在pandas中就更简单了，例如在student2中新增一列学生成绩：
+
+![g2](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwQGicPicpQqU30D8XPtT5qibFB5OnxcYQ6K31yCrbrz8icpSSGYlbGKV6Kg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+对于新增的列没有赋值，就会出现空NaN的形式。
+
+补充一下，也可以这样初始化并新增一列：
+
+```python
+>>> df = pd.DataFrame({'a':[1,2],'b':[3,4]})
+>>> df
+   a  b
+0  1  3
+1  2  4
+>>> df['c'] = 0
+>>> df
+   a  b  c
+0  1  3  0
+1  2  4  0
+```
+
+### 删：删除表、观测行或变量列
+
+删除数据框student2,通过del命令实现，该命令可以删除Python的所有对象。
+
+![g3](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwPgAX4xN3piaeM5KIotujfYSfogWYLuvKVRdqvUpr11oBNttYlScHoJQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+#### 删除指定的行
+
+![g4](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwbA70IZKNtKrEBkbvlFr4Xcz8U48HticgSCR7VB0jSRJ8ribQyQs7L17A/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+原数据中的第1,2,4,7行的数据已经被删除了。
+
+根据**布尔索引**删除行数据，其实这个删除就是保留删除条件的反面数据，例如删除所有14岁以下的学生：
+
+![g5](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwnvpevZlxcWUf9234l9e3ia5t4utIibKbOUXqw2ibG2maV9uqlF7ziaAkjw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+#### 删除指定的列
+
+![g6](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwECAW5ibeKFaicFZ9NdKdS8tExC0jSz92Wib6Lad5OVdbofnMIByUCUP3g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+我们发现，不论是删除行还是删除列，都可以通过drop方法实现，只需要设定好删除的轴即可，即**调整drop方法中的axis参数。默认该参数为0，表示删除行观测，如果需要删除列变量，则需设置为1**。
+
+### 改：修改原始记录的值
+
+如果发现表中的某些数据错误了，如何更改原来的值呢？我们试试**结合布尔索引和赋值**的方法：
+
+例如发现student3中姓名为Liushunxiang的学生身高错了，应该是173，如何改呢？
+
+![g7](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwRRGbEkt2xNIs4BVMrhVgzqiaDwQqxlOJKR1PW3aYTc1p7zDibvkbUICg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+这样就可以把原来的身高修改为现在的170了。
+
+看，关于索引的操作非常灵活、方便吧，就这样轻松搞定数据的更改。
+
+### 查
+
+有关数据查询部分，上面已经介绍过，下面重点讲讲聚合、排序和多表连接操作。
+
+### 聚合
+
+pandas模块中可以通过groupby()函数实现数据的聚合操作
+
+根据性别分组，计算各组别中学生身高和体重的平均值：
+
+![g8](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwWAliaoe6sXiboLVSbicpe2LPvAkzcWQDqmiaB3Srbz9QwagLyTtHNNzNHg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+如果不对原始数据作限制的话，聚合函数会**自动选择数值型数据进行聚合计算**。如果不想对年龄计算平均值的话，就需要剔除改变量：
+
+![g9](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwLXkwoicFG8oEeHbzbkaVibDWeBDUOLVutnFM7SgRtlq3jYGSKT7G00pw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+groupby还可以使用多个分组变量，例如根本年龄和性别分组，计算身高与体重的平均值：
+
+![g10](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwmicaE9Hm0eTIFIqkvNeRvhElSRRsl4FSPP3ibeDDU4y6Bm6WGkLSvvrg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+当然，还可以**对每个分组计算多个统计量**：
+
+![g11](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwcgcz9bicCWxRnfu7BibNvUsKamVWOntdrkBKPOrC6rdMyMR2nfKeHRAw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+是不是很简单，只需一句就能完成SQL中的SELECT...FROM...GROUP BY...功能，何乐而不为呢？
+
+### 排序
+
+排序在日常的统计分析中还是比较常见的操作，我们可以使用order、sort_index和sort_values实现序列和数据框的排序工作：
+
+![g12](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQw6YeuvzQqt7FamAryWEprAltcysLCjPBUgh3epdJRicK2c2tmTBaFOFw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+我们再试试降序排序的设置：
+
+![g13](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwOnc7KsnraR3qAMs2dicuFBZRnhqIZRRyia48AjiaKXMs2TUCK4ZZibeLbQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+上面两个结果其实都是按值排序，并且结果中都给出了警告信息，即**建议使用sort_values()函数进行按值排序**。
+
+在数据框中一般都是按值排序，例如：
+
+![g14](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwSOfubia7UEGGPWt1lerH1NzicrAibnrCEHoK8xAicz914AlytFAL7kOOibA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+### 多表连接
+
+多表之间的连接也是非常常见的数据库操作，连接分**内连接**和**外连接**，在数据库语言中通过join关键字实现，pandas我比较建议使用merge函数实现数据的各种连接操作。
+
+如下是构造一张学生的成绩表：
+
+![g15](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwehjHYusfagiaZu5CVMcj1rmXOWrGPiaqGJWkase0OnqyKiaypicQjbEFIQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+现在想把学生表student与学生成绩表score做一个关联，该如何操作呢？
+
+![g16](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQw8qCMoiaMtBYUBbPjscNTGeu9BxgyTdBGeQ0ic9kFKnKp88YEelWulTtw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+注意，**默认情况下，merge函数实现的是两个表之间的内连接，即返回两张表中共同部分的数据**。可以通过how参数设置连接的方式，left为左连接；right为右连接；outer为外连接。
+
+![g17](http://mmbiz.qpic.cn/mmbiz_png/yjFUicxiaClgWibpwROULeFdlOuXM57CpQwq8S6j6UfSmtd4nmiclU04UFF06ic2oD2Jjicw40loyLAdk6U9nGdF4yvw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
+
+左连接实现的是保留student表中的所有信息，同时将score表的信息与之配对，能配多少配多少，对于**没有配对上的Name，将会显示成绩为NaN**。
