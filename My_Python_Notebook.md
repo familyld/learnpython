@@ -5832,3 +5832,74 @@ virtualenv为应用提供了隔离的Python运行环境，解决了不同应用�
 如果我们开发的应用有的需要用到某个第三包的2.7版本，有的要用2.6版本，我们就要让这些应用各自拥有一套独立的Python运行环境，virtualenv就是做这件事的。
 
 详细请浏览[教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432712108300322c61f256c74803b43bfd65c6f8d0d0000)。 这里不详述了。
+
+##图形界面
+
+Python支持多种图形界面的第三方库，包括 `Tk`、`wxWidgets`、 `Qt` 和 `GTK` 等等。其中 `Tkinter` 是Python自带的支持 `Tk` 的库，使用Tkinter，无需安装任何包，就可以直接使用。这一节主要就讲 `Tkinter`。
+
+###第一个GUI程序
+
+    #导入Tkinter包的所有内容
+    from tkinter import *
+
+    #从Frame派生一个Application类，这是所有Widget的父容器
+    class Application(Frame):
+        def __init__(self, master=None):
+            Frame.__init__(self, master)
+            self.pack()
+            self.createWidgets()
+
+        def createWidgets(self):
+            self.helloLabel = Label(self, text='Hello, world!')
+            self.helloLabel.pack()
+            self.quitButton = Button(self, text='Quit', command=self.quit)
+            self.quitButton.pack()
+
+    #实例化Application，并启动消息循环
+    app = Application()
+    # 设置窗口标题:
+    app.master.title('Hello World')
+    # 主消息循环:
+    app.mainloop()
+
+在GUI中，每个Button，Label，输入框等都是Widget。 Frame则是一个可以容纳其他Widget的Widget，所有Widget像一颗树一样组合起来。
+
+`pack()` 方法把Widget加入到父容器中并实现最简单的布局。`pack()` 只是最简单的布局方式，可以实现更复杂的，如 `grid()`。
+
+最后实例化类，然后设置标题并启动消息循环。linux中，没有 `mainloop()` 函数，程序执行一次（闪一下）就退出了，`mainloop()` 的功能类似于让主程序循环执行的函数，能让程序有机会监听来自操作系统的消息。 GUI程序的**主线程负责监听来自操作系统的消息**，并依次处理每一条消息。因此，**如果消息处理非常耗时，就需要在新线程中处理**。
+
+####输入文本
+
+可以稍微修改一下上面程序，加入一个文本框，用户输入后点击按钮弹出消息对话框：
+
+    from tkinter import *
+    import tkinter.messagebox as messagebox
+
+    class Application(Frame):
+        def __init__(self, master=None):
+            Frame.__init__(self, master)
+            self.pack()
+            self.createWidgets()
+
+        def createWidgets(self):
+            self.nameInput = Entry(self)
+            self.nameInput.pack()
+            self.alertButton = Button(self, text='Hello', command=self.hello)
+            self.alertButton.pack()
+
+        def hello(self):
+            name = self.nameInput.get() or 'world'
+            messagebox.showinfo('Message', 'Hello, %s' % name)
+
+    app = Application()
+    # 设置窗口标题:
+    app.master.title('Hello World')
+    # 主消息循环:
+    app.mainloop()
+
+当用户点击按钮时，触发 `hello()` 函数，通过 `self.nameInput.get()` 获得用户输入的文本后，使用 `tkMessageBox.showinfo()` 可以弹出消息对话框。
+
+####小结
+
+Python内置的Tkinter可以满足基本的GUI程序的要求，如果是非常复杂的GUI程序，建议用操作系统原生支持的语言和库来编写。
+
