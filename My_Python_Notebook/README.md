@@ -1,6 +1,6 @@
 # Python学习笔记
 
-该笔记记录的是学习[廖雪峰Python3教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000#0)的过程，摘录了一些重点，并加入了一些自己在学习过程中对所遇到问题的理解。
+该笔记记录的是学习[廖雪峰Python3教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000#0)的过程，摘录了一些重点，重新编排内容，并加入了更丰富的代码示例和对学习过程中所遇到问题的理解。
 
 #### [01Python基础](https://github.com/familyld/learnpython/blob/master/My_Python_Notebook/01Python基础.md)
 
