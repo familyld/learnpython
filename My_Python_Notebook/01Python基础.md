@@ -302,7 +302,7 @@ Out[15]: ','
 Python显示bytes类型的数据会用b作前缀，要注意 **`b'ABC'`** 和 **`'ABC'`** 的差别，尽管内容一样，但前者的每个字符都只占1个字节，而后者在Python中以Unicode进行编码，每个字符占两个字节。也即：
 
 ```python
->>> b'\x41\x42\x43'      # bytes类型，每个英文字符占1个字节
+>>> b'\x41\x42\x43'  # bytes类型，每个英文字符占1个字节
 b'ABC'
 >>> '\u0041\u0042\u0043' # Unicode类型，每个英文字符占2个字节，前8bit用0填充
 'ABC'
@@ -390,3 +390,103 @@ ValueError: incomplete format
 ```
 
 ***
+
+<br>
+
+## 使用list和tuple
+
+### list
+
+list是一种Python内置的数据类型，表示**有序集合**，可动态删除和插入。通过索引可以访问列表元素，**索引从0开始**，即访问第一个列表元素。并且列表是循环的，**可以通过索引－1访问最尾的元素**，索引－2访问倒数第二个元素。例如：
+
+```python
+>>> classmates = ['Michael', 'Bob', 'Tracy']
+>>> classmates
+['Michael', 'Bob', 'Tracy']
+>>> classmates[0]
+'Michael'
+>>> classmates[-1]
+'Tracy'
+>>> classmates[-2]
+'Bob'
+```
+
+另外，还可以用 `len()` 函数获取列表的元素个数。
+
+list 是一个**可变的**有序表，所以，可以往 list 中追加元素到末尾：
+
+```python
+>>> classmates.append('Adam')
+>>> classmates
+['Michael', 'Bob', 'Tracy', 'Adam']
+```
+
+也可以把元素插入到指定的位置，比如索引号为 1 的位置：
+
+```python
+>>> classmates.insert(1, 'Jack')
+>>> classmates
+['Michael', 'Jack', 'Bob', 'Tracy', 'Adam']
+```
+
+要删除 list 末尾的元素，用 pop() 方法：
+
+```python
+>>> classmates.pop()
+'Adam'
+>>> classmates
+['Michael', 'Jack', 'Bob', 'Tracy']
+```
+
+要删除指定位置的元素，用 pop(i) 方法，其中 i 是索引位置：
+
+```python
+>>> classmates.pop(1)
+'Jack'
+>>> classmates
+['Michael', 'Bob', 'Tracy']
+```
+
+要把某个元素替换成别的元素，可以直接赋值给对应的索引位置：
+
+```python
+>>> classmates[1] = 'Sarah'
+>>> classmates
+['Michael', 'Sarah', 'Tracy']
+```
+
+list 里面的元素的数据类型可以不同，比如：
+
+```python
+>>> L = ['Apple', 123, True]
+```
+
+list 里面的元素也可以是另一个 list，比如：
+
+```python
+>>> s = ['python', 'java', ['asp', 'php'], 'scheme'] # 四个元素，其中第三个元素是一个列表
+>>> len(s)
+4
+
+>>> s[0]
+'python'
+>>> s[2]
+['asp', 'php']
+>>> s[2][0]
+'asp'
+>>> s[2][1]
+'php'
+```
+
+要注意s只有4个元素，s[2]作为一个list类型的元素。要拿到'php'可以用 `s[2][1]`，即把s看作一个二维数组，这样的嵌套可以有很多层。
+
+如果一个 list 中一个元素也没有，就是一个空的 list，它的长度为 0：
+
+```python
+>>> L = []
+>>> len(L)
+0
+```
+
+***
+
