@@ -532,3 +532,22 @@ tuple也有 "可变" 的例子，如果tuple的其中一个元素是list，则�
 
 ***
 
+<br>
+
+## 条件判断
+
+### 条件判断
+
+Python中代码块是以缩进作区分的，**if－else条件判断注意要在判定条件后写冒号，并且代码块都正确对齐。多个判断条件可以使用多个elif来实现**。例如：
+
+```python
+age = 20
+if age >= 6:
+print('teenager')
+elif age >= 18:
+print('adult')
+else:
+print('kid')
+```
+
+判断条件并不一定要是一个判断式，可以简写为一个变量，**当变量为非零数值，非空字符串，非空list等时，判断为True，否则为False**。
