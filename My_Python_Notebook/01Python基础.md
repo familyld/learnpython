@@ -551,3 +551,35 @@ print('kid')
 ```
 
 判断条件并不一定要是一个判断式，可以简写为一个变量，**当变量为非零数值，非空字符串，非空list等时，判断为True，否则为False**。
+
+***
+
+### 再议input
+
+有时会采取 **`input('提示语句')`** 的方式读取用户输入，作为判定条件。要注意**用户输入属于字符串类型**，要进行数值比较必须先转换为对应的数据类型，否则会报错。
+
+Python提供int(), float(), str()等方法进行数据类型的转换。
+
+```python
+# 输入1表示Yes，输入0表示No
+>>> choose = input('If you choose yes, please input 1. Otherwise, input 0: ')
+If you choose yes, please input 1. Otherwise, input 0: 0
+
+>>> if choose:     # 没有进行转换
+...     print('Yes')
+... else:
+...     print('No')
+...
+Yes
+
+>>> if int(choose): # 进行了转换
+...     print('Yes')
+... else:
+...     print('No')
+...
+No
+```
+
+***
+
+
