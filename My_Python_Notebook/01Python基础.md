@@ -565,20 +565,71 @@ Python提供int(), float(), str()等方法进行数据类型的转换。
 >>> choose = input('If you choose yes, please input 1. Otherwise, input 0: ')
 If you choose yes, please input 1. Otherwise, input 0: 0
 
->>> if choose:     # 没有进行转换
-...     print('Yes')
+>>> if choose: # 没有进行转换
+... print('Yes')
 ... else:
-...     print('No')
+... print('No')
 ...
 Yes
 
 >>> if int(choose): # 进行了转换
-...     print('Yes')
+... print('Yes')
 ... else:
-...     print('No')
+... print('No')
 ...
 No
 ```
+
+***
+
+### 循环
+
+Python提供两种循环写法，一种是 **`for...in...`** 循环，一种是 **`while...`** 循环。for循环依次把list或tuple中的每个元素赋值给目标标识符，格式如下：
+
+```python
+>>> names = ['Michael', 'Bob', 'Tracy']
+>>> for name in names:
+...     print(name)
+...
+Michael
+Bob
+Tracy
+```
+
+当列表为连续数值时，可以用range方法生成，格式如下：
+
+```python
+>>> sum = 0
+>>> for x in range(5):
+...     sum = sum + x
+...     print(sum)
+...
+0
+1
+3
+6
+10
+```
+
+while循环的写法和if－else很相似，也是在判定条件后面加一个冒号。例如：
+
+```python
+>>> sum = 0
+>>> n = 11
+>>> while n > 0:
+...     sum = sum + n
+...     n = n - 2
+...     print(sum)
+...
+11
+20
+27
+32
+35
+36
+```
+
+另外，对于死循环的程序，可以通过***Ctrl＋C***强制终止。
 
 ***
 
