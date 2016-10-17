@@ -589,7 +589,7 @@ Python提供两种循环写法，一种是 **`for...in...`** 循环，一种是 
 ```python
 >>> names = ['Michael', 'Bob', 'Tracy']
 >>> for name in names:
-...     print(name)
+... print(name)
 ...
 Michael
 Bob
@@ -601,8 +601,8 @@ Tracy
 ```python
 >>> sum = 0
 >>> for x in range(5):
-...     sum = sum + x
-...     print(sum)
+... sum = sum + x
+... print(sum)
 ...
 0
 1
@@ -617,9 +617,9 @@ while循环的写法和if－else很相似，也是在判定条件后面加一个
 >>> sum = 0
 >>> n = 11
 >>> while n > 0:
-...     sum = sum + n
-...     n = n - 2
-...     print(sum)
+... sum = sum + n
+... n = n - 2
+... print(sum)
 ...
 11
 20
@@ -633,4 +633,61 @@ while循环的写法和if－else很相似，也是在判定条件后面加一个
 
 ***
 
+## 使用dict和set
 
+### dict
+
+dict即字典，用于存储键值对，查找速度极快。如果使用list来存键值对就需要两个list，要先从key list找出key，再从value list找到对应项的值，因此list越长，耗时越长。用dict实现则可以直接根据key来找value。格式如下：
+
+```python
+>>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+>>> d['Michael']
+95
+```
+
+dict速度快是因为Python内部像字典一样建立了索引，字典有部首表，Python内部也会根据不同key算出一个存放的「页码」(哈希算法)，所以速度非常快。除了初始化赋值还可以对同一个key进行多次赋值，会覆盖原来的value，如果key不存在就会对dict插入一个新的键值对：
+
+```python
+>>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+>>> d
+{'Tracy': 85, 'Michael': 95, 'Bob': 75}
+
+>>> d['Michael'] = 20
+>>> d
+{'Tracy': 85, 'Michael': 20, 'Bob': 75}
+
+>>> d['Lincoln'] = 100
+>>> d
+{'Tracy': 85, 'Michael': 20, 'Bob': 75, 'Lincoln': 100}
+```
+
+要判断key是否在dict里面有两种方法：
+
+1.使用in关键字，有则返回True，无则返回False
+
+```python
+>>> 'Thomas' in d
+False
+```
+
+2.使用dict提供的get方法，有则返回key对应的value，无则返回空值None或者自己指定的值。
+
+```python
+>>> d.get('Thomas')
+None
+>>> d.get('Thomas', -1)
+-1
+```
+
+删除一个key则对应的value也会从dict中删除，使用pop方法来实现：
+
+```python
+>>> d.pop('Bob')
+75
+>>> d
+{'Tracy': 85, 'Michael': 20, 'Lincoln': 100}
+```
+
+**dict的插入和查找速度极快，不会随着key的增加而增加，但需要占用大量的内存**，内存浪费多。list则相反，插入和查找时间随元素增加而增加，但占用空间少。所以dict是一种用空间换时间的方法，注意**dict的key必须是不可变对象**，无法修改key，不然dict就混乱了。**字符串和整数等都可以作为key，list无法作为key**。
+
+***
