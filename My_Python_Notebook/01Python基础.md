@@ -8,21 +8,21 @@
     - [数据类型](#数据类型)
     - [变量](#变量)
     - [常量](#常量)
-- [字符串和编码](#字符串和编码)
-    - [字符编码](#字符编码)
-    - [字符串](#字符串)
-    - [格式化](#格式化)
 - [使用list和tuple](#使用list和tuple)
     - [list](#list)
     - [tuple](#tuple)
-- [条件判断](#条件判断)
-    - [条件判断](#条件判断-1)
-    - [再议input](#再议input)
-    - [循环](#循环)
 - [使用dict和set](#使用dict和set)
     - [dict](#dict)
     - [set](#set)
     - [再议不可变对象](#再议不可变对象)
+- [条件判断](#条件判断)
+    - [条件判断](#条件判断-1)
+    - [再议input](#再议input)
+    - [循环](#循环)
+- [字符串和编码](#字符串和编码)
+    - [字符编码](#字符编码)
+    - [字符串](#字符串)
+    - [格式化](#格式化)
 
 <!-- /MarkdownTOC -->
 
@@ -170,6 +170,389 @@ False
 
 <br>
 
+## 使用list和tuple
+
+### list
+
+list是一种Python内置的数据类型，表示**有序集合**，可动态删除和插入。通过索引可以访问列表元素，**索引从0开始**，即访问第一个列表元素。并且列表是循环的，**可以通过索引－1访问最尾的元素**，索引－2访问倒数第二个元素。例如：
+
+```python
+>>> classmates = ['Michael', 'Bob', 'Tracy']
+>>> classmates
+['Michael', 'Bob', 'Tracy']
+>>> classmates[0]
+'Michael'
+>>> classmates[-1]
+'Tracy'
+>>> classmates[-2]
+'Bob'
+```
+
+另外，还可以用 `len()` 函数获取列表的元素个数。
+
+list 是一个**可变的**有序表，所以，可以往 list 中追加元素到末尾：
+
+```python
+>>> classmates.append('Adam')
+>>> classmates
+['Michael', 'Bob', 'Tracy', 'Adam']
+```
+
+也可以把元素插入到指定的位置，比如索引号为 1 的位置：
+
+```python
+>>> classmates.insert(1, 'Jack')
+>>> classmates
+['Michael', 'Jack', 'Bob', 'Tracy', 'Adam']
+```
+
+要删除 list 末尾的元素，用 pop() 方法：
+
+```python
+>>> classmates.pop()
+'Adam'
+>>> classmates
+['Michael', 'Jack', 'Bob', 'Tracy']
+```
+
+要删除指定位置的元素，用 pop(i) 方法，其中 i 是索引位置：
+
+```python
+>>> classmates.pop(1)
+'Jack'
+>>> classmates
+['Michael', 'Bob', 'Tracy']
+```
+
+要把某个元素替换成别的元素，可以直接赋值给对应的索引位置：
+
+```python
+>>> classmates[1] = 'Sarah'
+>>> classmates
+['Michael', 'Sarah', 'Tracy']
+```
+
+list 里面的元素的数据类型可以不同，比如：
+
+```python
+>>> L = ['Apple', 123, True]
+```
+
+list 里面的元素也可以是另一个 list，比如：
+
+```python
+>>> s = ['python', 'java', ['asp', 'php'], 'scheme'] # 四个元素，其中第三个元素是一个列表
+>>> len(s)
+4
+
+>>> s[0]
+'python'
+>>> s[2]
+['asp', 'php']
+>>> s[2][0]
+'asp'
+>>> s[2][1]
+'php'
+```
+
+要注意s只有4个元素，s[2]作为一个list类型的元素。要拿到'php'可以用 `s[2][1]`，即把s看作一个二维数组，这样的嵌套可以有很多层。
+
+如果一个 list 中一个元素也没有，就是一个空的 list，它的长度为 0：
+
+```python
+>>> L = []
+>>> len(L)
+0
+```
+
+---
+
+### tuple
+
+tuple也是一种**有序列表**，但**tuple一旦初始化就无法再修改**，也因为这个特性，所以代码更安全。和list不同，tuple用小括号来括起。例如：
+
+```python
+>>> classmates = ('Michael', 'Bob', 'Tracy')
+```
+
+定义空的tuple如下如下：
+
+```python
+>>> t = ()
+>>> t
+()
+```
+
+但是，要**定义一个只有1个元素的 tuple**，就要注意一下，如果使用t = (1)来定义，则得到的不是一个tuple，而是整数1，因为括号既可以表示tuple又可以表示数学公式中的小括号。这种情况下默认为后者。要定义1个元素的tuple格式如下，使用一个逗号进行区分：
+
+```python
+>>> t = (1)
+>>> t
+1
+
+>>> t = (1,)
+>>> t
+(1,)
+```
+
+tuple也有 "可变" 的例子，如果tuple的其中一个元素是list，则这个list元素的内容是可以修改的，如下：
+
+```python
+>>> t = ('a', 'b', ['A', 'B'])
+>>> t[2][0] = 'X'
+>>> t[2][1] = 'Y'
+>>> t
+('a', 'b', ['X', 'Y'])
+```
+
+这个例子实际修改的是list而不是tuple，tuple指向的位置不会变，而list指向的位置可变，上面的例子实际上是创建了字符串X和Y，然后让tuple的第三个元素也即list元素指向这两个新的字符串。
+
+---
+
+<br>
+
+## 使用dict和set
+
+### dict
+
+dict即字典，用于存储键值对，查找速度极快。如果使用list来存键值对就需要两个list，要先从key list找出key，再从value list找到对应项的值，因此list越长，耗时越长。用dict实现则可以直接根据key来找value。格式如下：
+
+```python
+>>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+>>> d['Michael']
+95
+```
+
+dict速度快是因为Python内部像字典一样建立了索引，字典有部首表，Python内部也会根据不同key算出一个存放的「页码」(哈希算法)，所以速度非常快。除了初始化赋值还可以对同一个key进行多次赋值，会覆盖原来的value，如果key不存在就会对dict插入一个新的键值对：
+
+```python
+>>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+>>> d
+{'Tracy': 85, 'Michael': 95, 'Bob': 75}
+
+>>> d['Michael'] = 20
+>>> d
+{'Tracy': 85, 'Michael': 20, 'Bob': 75}
+
+>>> d['Lincoln'] = 100
+>>> d
+{'Tracy': 85, 'Michael': 20, 'Bob': 75, 'Lincoln': 100}
+```
+
+要判断key是否在dict里面有两种方法：
+
+1.使用in关键字，有则返回True，无则返回False
+
+```python
+>>> 'Thomas' in d
+False
+```
+
+2.使用dict提供的get方法，有则返回key对应的value，无则返回空值None或者自己指定的值。
+
+```python
+>>> d.get('Thomas')
+None
+>>> d.get('Thomas', -1)
+-1
+```
+
+删除一个key则对应的value也会从dict中删除，使用pop方法来实现：
+
+```python
+>>> d.pop('Bob')
+75
+>>> d
+{'Tracy': 85, 'Michael': 20, 'Lincoln': 100}
+```
+
+**dict的插入和查找速度极快，不会随着key的增加而增加，但需要占用大量的内存**，内存浪费多。list则相反，插入和查找时间随元素增加而增加，但占用空间少。所以dict是一种用空间换时间的方法，注意**dict的key必须是不可变对象**，无法修改key，不然dict就混乱了。**字符串和整数等都可以作为key，list无法作为key**。
+
+---
+
+###set
+
+set和dict的原理是一样的，同样**不可以放入可变对象做key**，唯一的区别是**set只有key没有value**。显然**set里面是没有重复的元素的**，不然哈希时会出错。**set是有序的，需要使用列表/元组做初始化**，定义方式如下：
+
+```python
+>>> s = set([1, 2, 3])
+>>> s
+{1, 2, 3}
+
+>>> s = set((1,2,3))
+>>> s
+{1, 2, 3}
+```
+
+**列表中有重复元素时set会自动被过滤**，添加可以使用add方法，如s.add(4)。删除则用remove方法，如s.remove(4)。
+
+集合可以看成数学意义上无序和无重复的集合，**可以做交集、并集、差集等操作**。
+
+```python
+>>> s1 = set([1, 2, 3])
+>>> s2 = set([2, 3, 4])
+>>> s1 & s2
+{2, 3}
+>>> s1 | s2
+{1, 2, 3, 4}
+>>> s1-s2
+{1}
+```
+
+---
+
+### 再议不可变对象
+
+Python中一切皆对象，而对象又分可变对象和不可变两类对象两类，具体来说，它们的差别就是**对象的内容是否可变**。不可变对象包括int, float, string, tuple，空值等，可变对象包括list, dict, set等。要注意对象和变量的关系，**在Python里，变量都是对对象的引用**。举个例子：
+
+```python
+>>> a = 'abc'
+>>> a[0]
+'a'
+>>> a[0]='b'  # 字符串对象本身是不可变的
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'str' object does not support item assignment
+
+# 变量可以指向另一个字符串对象
+# 但字符串对象'abc'并没有改变，它依然存在于内存中
+>>> a = 'bbc'
+>>> a
+'bbc'
+```
+
+关于参数传递，可以简单总结为以下两点：
+
+- 当一个可变对象作为函数参数时，函数内对参数修改会生效。
+- 当一个不可变对象作为函数参数时，函数内对参数修改无效，因为实际上函数是创建一个新的对象并返回而已，没有修改传入的对象。例如：
+
+```python
+>>> a = ['c', 'b', 'a']
+>>> a.sort()
+>> a
+['a', 'b', 'c']
+```
+
+list是可变对象，使用函数操作，内容会变化，注意区分一下**变量**和**对象**，这里a是一个变量，它指向一个列表对象，这个列表对象的内容才是['c', 'b', 'a']。例如：
+
+```python
+>>> a = 'abc'
+>>> b = a.replace('a', 'A')
+>>> b
+'Abc'
+>>> a
+'abc'
+```
+
+字符串是不可变对象，所以replace函数并不会修改变量a指向的对象，实际上调用不可变对象的任意方法都不改变该对象自身的内容，只会创建新对象并返回，如果使用一个新的变量来接收返回的对象，就能得到操作结果。不接收则直接打印，**原变量指向的对象不会变化**。
+
+注意，虽然tuple是不可变对象，但是如果使用tuple作为dict或者set的key，还是有可能产生错误，因为tuple允许元素中包含列表，列表内容可变。如果使用了带有列表元素的tuple作为key就会报 **`TypeError: unhashable type: 'list'`** 的错误。
+
+---
+
+<br>
+
+## 条件判断
+
+### 条件判断
+
+Python中代码块是以缩进作区分的，**if－else条件判断注意要在判定条件后写冒号，并且代码块都正确对齐。多个判断条件可以使用多个elif来实现**。例如：
+
+```python
+age = 20
+if age >= 6:
+print('teenager')
+elif age >= 18:
+print('adult')
+else:
+print('kid')
+```
+
+判断条件并不一定要是一个判断式，可以简写为一个变量，**当变量为非零数值，非空字符串，非空list等时，判断为True，否则为False**。
+
+---
+
+### 再议input
+
+有时会采取 **`input('提示语句')`** 的方式读取用户输入，作为判定条件。要注意**用户输入属于字符串类型**，要进行数值比较必须先转换为对应的数据类型，否则会报错。
+
+Python提供int(), float(), str()等方法进行数据类型的转换。
+
+```python
+# 输入1表示Yes，输入0表示No
+>>> choose = input('If you choose yes, please input 1. Otherwise, input 0: ')
+If you choose yes, please input 1. Otherwise, input 0: 0
+
+>>> if choose: # 没有进行转换
+... print('Yes')
+... else:
+... print('No')
+...
+Yes
+
+>>> if int(choose): # 进行了转换
+... print('Yes')
+... else:
+... print('No')
+...
+No
+```
+
+---
+
+### 循环
+
+Python提供两种循环写法，一种是 **`for...in...`** 循环，一种是 **`while...`** 循环。for循环依次把list或tuple中的每个元素赋值给目标标识符，格式如下：
+
+```python
+>>> names = ['Michael', 'Bob', 'Tracy']
+>>> for name in names:
+... print(name)
+...
+Michael
+Bob
+Tracy
+```
+
+当列表为连续数值时，可以用range方法生成，格式如下：
+
+```python
+>>> sum = 0
+>>> for x in range(5):
+... sum = sum + x
+... print(sum)
+...
+0
+1
+3
+6
+10
+```
+
+while循环的写法和if－else很相似，也是在判定条件后面加一个冒号。例如：
+
+```python
+>>> sum = 0
+>>> n = 11
+>>> while n > 0:
+... sum = sum + n
+... n = n - 2
+... print(sum)
+...
+11
+20
+27
+32
+35
+36
+```
+
+另外，对于死循环的程序，可以通过**Ctrl＋C** 强制终止。
+
+---
+
+<br>
+
 ## 字符串和编码
 
 ### 字符编码
@@ -237,7 +620,7 @@ False
 
 关于Python3中编码的信息，可以再看看[官方文档](https://docs.python.org/3/howto/unicode.html#introduction-to-unicode)。
 
-***
+---
 
 ### 字符串
 
@@ -373,7 +756,7 @@ b'\xe4\xb8\xad\xe6\x96\x87'
 3
 ```
 
-***
+---
 
 ### 格式化
 
@@ -416,385 +799,4 @@ ValueError: incomplete format
 'growth rate: 7 %'
 ```
 
-***
-
-<br>
-
-## 使用list和tuple
-
-### list
-
-list是一种Python内置的数据类型，表示**有序集合**，可动态删除和插入。通过索引可以访问列表元素，**索引从0开始**，即访问第一个列表元素。并且列表是循环的，**可以通过索引－1访问最尾的元素**，索引－2访问倒数第二个元素。例如：
-
-```python
->>> classmates = ['Michael', 'Bob', 'Tracy']
->>> classmates
-['Michael', 'Bob', 'Tracy']
->>> classmates[0]
-'Michael'
->>> classmates[-1]
-'Tracy'
->>> classmates[-2]
-'Bob'
-```
-
-另外，还可以用 `len()` 函数获取列表的元素个数。
-
-list 是一个**可变的**有序表，所以，可以往 list 中追加元素到末尾：
-
-```python
->>> classmates.append('Adam')
->>> classmates
-['Michael', 'Bob', 'Tracy', 'Adam']
-```
-
-也可以把元素插入到指定的位置，比如索引号为 1 的位置：
-
-```python
->>> classmates.insert(1, 'Jack')
->>> classmates
-['Michael', 'Jack', 'Bob', 'Tracy', 'Adam']
-```
-
-要删除 list 末尾的元素，用 pop() 方法：
-
-```python
->>> classmates.pop()
-'Adam'
->>> classmates
-['Michael', 'Jack', 'Bob', 'Tracy']
-```
-
-要删除指定位置的元素，用 pop(i) 方法，其中 i 是索引位置：
-
-```python
->>> classmates.pop(1)
-'Jack'
->>> classmates
-['Michael', 'Bob', 'Tracy']
-```
-
-要把某个元素替换成别的元素，可以直接赋值给对应的索引位置：
-
-```python
->>> classmates[1] = 'Sarah'
->>> classmates
-['Michael', 'Sarah', 'Tracy']
-```
-
-list 里面的元素的数据类型可以不同，比如：
-
-```python
->>> L = ['Apple', 123, True]
-```
-
-list 里面的元素也可以是另一个 list，比如：
-
-```python
->>> s = ['python', 'java', ['asp', 'php'], 'scheme'] # 四个元素，其中第三个元素是一个列表
->>> len(s)
-4
-
->>> s[0]
-'python'
->>> s[2]
-['asp', 'php']
->>> s[2][0]
-'asp'
->>> s[2][1]
-'php'
-```
-
-要注意s只有4个元素，s[2]作为一个list类型的元素。要拿到'php'可以用 `s[2][1]`，即把s看作一个二维数组，这样的嵌套可以有很多层。
-
-如果一个 list 中一个元素也没有，就是一个空的 list，它的长度为 0：
-
-```python
->>> L = []
->>> len(L)
-0
-```
-
-***
-
-### tuple
-
-tuple也是一种**有序列表**，但**tuple一旦初始化就无法再修改**，也因为这个特性，所以代码更安全。和list不同，tuple用小括号来括起。例如：
-
-```python
->>> classmates = ('Michael', 'Bob', 'Tracy')
-```
-
-定义空的tuple如下如下：
-
-```python
->>> t = ()
->>> t
-()
-```
-
-但是，要**定义一个只有1个元素的 tuple**，就要注意一下，如果使用t = (1)来定义，则得到的不是一个tuple，而是整数1，因为括号既可以表示tuple又可以表示数学公式中的小括号。这种情况下默认为后者。要定义1个元素的tuple格式如下，使用一个逗号进行区分：
-
-```python
->>> t = (1)
->>> t
-1
-
->>> t = (1,)
->>> t
-(1,)
-```
-
-tuple也有 "可变" 的例子，如果tuple的其中一个元素是list，则这个list元素的内容是可以修改的，如下：
-
-```python
->>> t = ('a', 'b', ['A', 'B'])
->>> t[2][0] = 'X'
->>> t[2][1] = 'Y'
->>> t
-('a', 'b', ['X', 'Y'])
-```
-
-这个例子实际修改的是list而不是tuple，tuple指向的位置不会变，而list指向的位置可变，上面的例子实际上是创建了字符串X和Y，然后让tuple的第三个元素也即list元素指向这两个新的字符串。
-
-***
-
-<br>
-
-## 条件判断
-
-### 条件判断
-
-Python中代码块是以缩进作区分的，**if－else条件判断注意要在判定条件后写冒号，并且代码块都正确对齐。多个判断条件可以使用多个elif来实现**。例如：
-
-```python
-age = 20
-if age >= 6:
-print('teenager')
-elif age >= 18:
-print('adult')
-else:
-print('kid')
-```
-
-判断条件并不一定要是一个判断式，可以简写为一个变量，**当变量为非零数值，非空字符串，非空list等时，判断为True，否则为False**。
-
-***
-
-### 再议input
-
-有时会采取 **`input('提示语句')`** 的方式读取用户输入，作为判定条件。要注意**用户输入属于字符串类型**，要进行数值比较必须先转换为对应的数据类型，否则会报错。
-
-Python提供int(), float(), str()等方法进行数据类型的转换。
-
-```python
-# 输入1表示Yes，输入0表示No
->>> choose = input('If you choose yes, please input 1. Otherwise, input 0: ')
-If you choose yes, please input 1. Otherwise, input 0: 0
-
->>> if choose: # 没有进行转换
-... print('Yes')
-... else:
-... print('No')
-...
-Yes
-
->>> if int(choose): # 进行了转换
-... print('Yes')
-... else:
-... print('No')
-...
-No
-```
-
-***
-
-### 循环
-
-Python提供两种循环写法，一种是 **`for...in...`** 循环，一种是 **`while...`** 循环。for循环依次把list或tuple中的每个元素赋值给目标标识符，格式如下：
-
-```python
->>> names = ['Michael', 'Bob', 'Tracy']
->>> for name in names:
-... print(name)
-...
-Michael
-Bob
-Tracy
-```
-
-当列表为连续数值时，可以用range方法生成，格式如下：
-
-```python
->>> sum = 0
->>> for x in range(5):
-... sum = sum + x
-... print(sum)
-...
-0
-1
-3
-6
-10
-```
-
-while循环的写法和if－else很相似，也是在判定条件后面加一个冒号。例如：
-
-```python
->>> sum = 0
->>> n = 11
->>> while n > 0:
-... sum = sum + n
-... n = n - 2
-... print(sum)
-...
-11
-20
-27
-32
-35
-36
-```
-
-另外，对于死循环的程序，可以通过***Ctrl＋C***强制终止。
-
-***
-
-## 使用dict和set
-
-### dict
-
-dict即字典，用于存储键值对，查找速度极快。如果使用list来存键值对就需要两个list，要先从key list找出key，再从value list找到对应项的值，因此list越长，耗时越长。用dict实现则可以直接根据key来找value。格式如下：
-
-```python
->>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
->>> d['Michael']
-95
-```
-
-dict速度快是因为Python内部像字典一样建立了索引，字典有部首表，Python内部也会根据不同key算出一个存放的「页码」(哈希算法)，所以速度非常快。除了初始化赋值还可以对同一个key进行多次赋值，会覆盖原来的value，如果key不存在就会对dict插入一个新的键值对：
-
-```python
->>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
->>> d
-{'Tracy': 85, 'Michael': 95, 'Bob': 75}
-
->>> d['Michael'] = 20
->>> d
-{'Tracy': 85, 'Michael': 20, 'Bob': 75}
-
->>> d['Lincoln'] = 100
->>> d
-{'Tracy': 85, 'Michael': 20, 'Bob': 75, 'Lincoln': 100}
-```
-
-要判断key是否在dict里面有两种方法：
-
-1.使用in关键字，有则返回True，无则返回False
-
-```python
->>> 'Thomas' in d
-False
-```
-
-2.使用dict提供的get方法，有则返回key对应的value，无则返回空值None或者自己指定的值。
-
-```python
->>> d.get('Thomas')
-None
->>> d.get('Thomas', -1)
--1
-```
-
-删除一个key则对应的value也会从dict中删除，使用pop方法来实现：
-
-```python
->>> d.pop('Bob')
-75
->>> d
-{'Tracy': 85, 'Michael': 20, 'Lincoln': 100}
-```
-
-**dict的插入和查找速度极快，不会随着key的增加而增加，但需要占用大量的内存**，内存浪费多。list则相反，插入和查找时间随元素增加而增加，但占用空间少。所以dict是一种用空间换时间的方法，注意**dict的key必须是不可变对象**，无法修改key，不然dict就混乱了。**字符串和整数等都可以作为key，list无法作为key**。
-
-***
-
-###set
-
-set和dict的原理是一样的，同样**不可以放入可变对象做key**，唯一的区别是**set只有key没有value**。显然**set里面是没有重复的元素的**，不然哈希时会出错。**set是有序的，需要使用列表/元组做初始化**，定义方式如下：
-
-```python
->>> s = set([1, 2, 3])
->>> s
-{1, 2, 3}
-
->>> s = set((1,2,3))
->>> s
-{1, 2, 3}
-```
-
-**列表中有重复元素时set会自动被过滤**，添加可以使用add方法，如s.add(4)。删除则用remove方法，如s.remove(4)。
-
-集合可以看成数学意义上无序和无重复的集合，**可以做交集、并集、差集等操作**。
-
-```python
->>> s1 = set([1, 2, 3])
->>> s2 = set([2, 3, 4])
->>> s1 & s2
-{2, 3}
->>> s1 | s2
-{1, 2, 3, 4}
->>> s1-s2
-{1}
-```
-
-***
-
-### 再议不可变对象
-
-Python中一切皆对象，而对象又分可变对象和不可变两类对象两类，具体来说，它们的差别就是**对象的内容是否可变**。不可变对象包括int, float, string, tuple，空值等，可变对象包括list, dict, set等。要注意对象和变量的关系，**在Python里，变量都是对对象的引用**。举个例子：
-
-```python
->>> a = 'abc'
->>> a[0]
-'a'
->>> a[0]='b'  # 字符串对象本身是不可变的
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: 'str' object does not support item assignment
-
-# 变量可以指向另一个字符串对象
-# 但字符串对象'abc'并没有改变，它依然存在于内存中
->>> a = 'bbc'
->>> a
-'bbc'
-```
-
-关于参数传递，可以简单总结为以下两点：
-
-- 当一个可变对象作为函数参数时，函数内对参数修改会生效。
-- 当一个不可变对象作为函数参数时，函数内对参数修改无效，因为实际上函数是创建一个新的对象并返回而已，没有修改传入的对象。例如：
-
-```python
->>> a = ['c', 'b', 'a']
->>> a.sort()
->> a
-['a', 'b', 'c']
-```
-
-list是可变对象，使用函数操作，内容会变化，注意区分一下**变量**和**对象**，这里a是一个变量，它指向一个列表对象，这个列表对象的内容才是['c', 'b', 'a']。例如：
-
-```python
->>> a = 'abc'
->>> b = a.replace('a', 'A')
->>> b
-'Abc'
->>> a
-'abc'
-```
-
-字符串是不可变对象，所以replace函数并不会修改变量a指向的对象，实际上调用不可变对象的任意方法都不改变该对象自身的内容，只会创建新对象并返回，如果使用一个新的变量来接收返回的对象，就能得到操作结果。不接收则直接打印，**原变量指向的对象不会变化**。
-
-注意，虽然tuple是不可变对象，但是如果使用tuple作为dict或者set的key，还是有可能产生错误，因为tuple允许元素中包含列表，列表内容可变。如果使用了带有列表元素的tuple作为key就会报 **`TypeError: unhashable type: 'list'`** 的错误。
-
-***
+---
