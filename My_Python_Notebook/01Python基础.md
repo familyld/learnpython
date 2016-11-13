@@ -612,7 +612,7 @@ while循环的写法和if－else很相似，也是在判定条件后面加一个
 # -*- coding: utf-8 -*-
 ```
 
-第一行注释是为了告诉Linux/OS X系统，这是一个Python可执行程序，Windows系统则会忽略这个注释；
+第一行注释是为了告诉<del>Linux/OS X系统，这是一个Python可执行程序</del>（这里说得不准确，具体看我第5章[05模块](https://github.com/familyld/learnpython/blob/master/My_Python_Notebook/05%E6%A8%A1%E5%9D%97.md)的笔记），Windows系统则会忽略这个注释；
 
 第二行注释是为了告诉**Python解释器，按照UTF-8编码读取源代码**，否则，如果源代码中有中文的话，就会出现乱码了。
 
